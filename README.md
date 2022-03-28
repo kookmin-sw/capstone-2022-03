@@ -18,7 +18,6 @@ The project aims to guarantee the people's suffrage by organizing the bill propo
 ### 제공기능
 * 발의된 법안 모아보기
 * 법안 투표하기
-* 법안에 멘션 남기기
 
 </br>
 
