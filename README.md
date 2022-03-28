@@ -1,77 +1,28 @@
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-f059dc9a6f8d3a56e377f745f24479a46679e63a5d9fe6f495e02850cd0d8118.svg)](https://classroom.github.com/online_ide?assignment_repo_id=7184126&assignment_repo_type=AssignmentRepo)
-# Welcome to GitHub
+## 꾹꾹 (국민을 국회로)
+### 프로젝트 소개
+국회의원은 더 나은 사회를 만들기 위해 국민을 대표해 법안을 만드는 역할을 한다.
+그러나 법안의 심사과정에서 국민들의 의견을 수렴하는 창구가 알려지지 않았다. 또한 의견 수렴의 방식이 개선되지 않아 국민들의 참여율이 매우 저조하다.
+국민을 위한 법안을 만드는데 국민들이 참여하기 어렵다는 것이다.
 
-캡스톤 팀 생성을 축하합니다.
+해당 프로젝트는 현재 발의된 법안을 정리하고 여론을 형성하는 도구를 제공함으로서 국민들의 참정권을 보장하고자 한다.
 
-## 팀소개 및 페이지를 꾸며주세요.
+### Abstract
+The fate of member of parliament is creating legislation on behalf of the people to make a better society.
+However, in the process of reviewing the bill, the window for collecting and converging opinions from the public is not well-known.
+In addition, the method of collecting opinions has not improved. </br>
+As a result, it is difficult for the people to participate in making bills even though bills are for the people.
 
-- 프로젝트 소개
-  - 프로젝트 설치방법 및 데모, 사용방법, 프리뷰등을 readme.md에 작성.
-  - Api나 사용방법등 내용이 많을경우 wiki에 꾸미고 링크 추가.
+The project aims to guarantee the people's suffrage by organizing the bill proposals and providing a tool which forms public opinion.
+#
 
-- 팀페이지 꾸미기
-  - 프로젝트 소개 및 팀원 소개
-  - index.md 예시보고 수정.
+### 소개 영상 
 
-- GitHub Pages 리파지토리 Settings > Options > GitHub Pages 
-  - Source를 marster branch
-  - Theme Chooser에서 태마선택
-  - 수정후 팀페이지 확인하여 점검.
+</br>
 
-**팀페이지 주소** -> https://kookmin-sw.github.io/ '{{자신의 리파지토리 아이디}}'
+#
+### 팀 소개
+|**김상윤**|**민태식**|**안성열**|
+|:---:|:---:|:---:|
+|<img src="https://user-images.githubusercontent.com/24891555/160339622-5ccd745f-7bac-4047-b10e-4a4c2be42c20.png" width="300">|<img src="https://user-images.githubusercontent.com/24891555/160340738-9ab2ce92-001f-44a6-a4cf-e6c6597be2b4.jpeg" width="300">|<img src="https://user-images.githubusercontent.com/24891555/160343995-d313df3f-b252-4271-800e-4ff67111336f.jpg" width="300">|
+|웹크롤링, 서버|앱, UI, UX|블록체인, 서버|
 
-**예시)** 2020년 0조  https://kookmin-sw.github.io/capstone-2020-0/
-
-
-## 내용에 아래와 같은 내용들을 추가하세요.
-
-### 1. 프로잭트 소개
-
-프로젝트
-
-### 2. 소개 영상
-
-프로젝트 소개하는 영상을 추가하세요
-
-### 3. 팀 소개
-
-팀을 소개하세요.
-
-팀원정보 및 담당이나 사진 및 SNS를 이용하여 소개하세요.
-
-### 4. 사용법
-
-소스코드제출시 설치법이나 사용법을 작성하세요.
-
-### 5. 기타
-
-추가적인 내용은 자유롭게 작성하세요.
-
-
-## Markdown을 사용하여 내용꾸미기
-
-Markdown은 작문을 스타일링하기위한 가볍고 사용하기 쉬운 구문입니다. 여기에는 다음을위한 규칙이 포함됩니다.
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-자세한 내용은 [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Support or Contact
-
-readme 파일 생성에 추가적인 도움이 필요하면 [도움말](https://help.github.com/articles/about-readmes/) 이나 [contact support](https://github.com/contact) 을 이용하세요.
