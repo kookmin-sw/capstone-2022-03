@@ -18,6 +18,10 @@ The project aims to guarantee the people's suffrage by organizing the bill propo
 ### 소개 영상 
 
 ### 팀 소개
-* 김상윤 / 2016**** / 웹 크롤링, 서버, DB
-* 민태식 / 2016**** / 프론트엔드, UI, UX
-* 안성열 / 2016**** / 블록체인, 서버
+* 김상윤 / 2016******** / 웹 크롤링, 서버
+<img width="416" alt="상윤" src="https://user-images.githubusercontent.com/24891555/160339024-3fd4e155-1d15-4348-a0d1-0b6827932f4d.png">
+* 민태식 / 2016******** / 프론트엔드, UI, UX
+![태식](https://user-images.githubusercontent.com/24891555/160339045-432bea83-4d73-495b-a244-4b218cbdf8fe.jpeg)
+
+* 안성열 / 2016******** / 블록체인, 서버
+![IMG_7040](https://user-images.githubusercontent.com/24891555/160339066-1eb4cd1c-e0c6-43e9-888e-e24be1e8a65a.jpg)
