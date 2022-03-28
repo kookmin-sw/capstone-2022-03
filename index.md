@@ -13,7 +13,7 @@ In addition, the method of collecting opinions has not improved.
 
 As a result, it is difficult for the people to participate in making bills even though bills are for the people.
 
-The project aims to guarantee the people's suffrage by organizing the bill proposals and providing a tool to form public opinion.
+The project aims to guarantee the people's suffrage by organizing the bill proposals and providing a tool which forms public opinion.
 
 ### 소개 영상 
 
