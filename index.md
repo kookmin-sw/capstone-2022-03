@@ -1,37 +1,23 @@
-## Welcome to GitHub Pages
+## 꾹꾹 (국민을 국회로)
+### 프로젝트 소개
+국회의원은 더 나은 사회를 만들기 위해 국민을 대표해 법안을 만드는 역할을 한다.
+그러나 법안의 심사과정에서 국민들의 의견을 수렴하는 창구가 알려지지 않았다. 또한 의견 수렴의 방식이 개선되지 않아 국민들의 참여율이 매우 저조하다.
+국민을 위한 법안을 만드는데 국민들이 참여하기 어렵다는 것이다.
 
-You can use the [editor on GitHub](https://github.com/kookmin-sw/cap-template/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
+해당 프로젝트는 현재 발의된 법안을 정리하고 여론을 형성하는 도구를 제공함으로서 국민들의 참정권을 보장하고자 한다.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Abstract
+The fate of member of parliament is creating legislation on behalf of the people to make a better society.
+However, in the process of reviewing the bill, the window for collecting and converging opinions from the public is not well-known.
+In addition, the method of collecting opinions has not improved.
 
-### Markdown
+As a result, it is difficult for the people to participate in making bills even though bills are for the people.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+The project aims to guarantee the people's suffrage by organizing the bill proposals and providing a tool to form public opinion.
 
-```markdown
-Syntax highlighted code block
+### 소개 영상 
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/kookmin-sw/cap-template/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+### 팀 소개
+* 김상윤 / 2016**** / 웹 크롤링, 서버, DB
+* 민태식 / 2016**** / 프론트엔드, UI, UX
+* 안성열 / 2016**** / 블록체인, 서버
