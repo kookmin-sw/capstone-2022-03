@@ -15,6 +15,21 @@ As a result, it is difficult for the people to participate in making bills even 
 The project aims to guarantee the people's suffrage by organizing the bill proposals and providing a tool which forms public opinion.
 #
 
+### 제공기능
+* 발의된 법안 모아보기
+* 법안 투표하기
+* 법안에 멘션 남기기
+
+</br>
+
+### 사용도구
+* 앱 : Figma, React-Native
+* 웹크롤링 : BeautifulSoup4
+* 서버 : Node.js, Web3, MongoDB
+* 블록체인 API : Geth, Truffle
+
+</br>
+
 ### 소개 영상 
 
 </br>
