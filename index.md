@@ -9,19 +9,20 @@
 ### Abstract
 The fate of member of parliament is creating legislation on behalf of the people to make a better society.
 However, in the process of reviewing the bill, the window for collecting and converging opinions from the public is not well-known.
-In addition, the method of collecting opinions has not improved.
-
+In addition, the method of collecting opinions has not improved. </br>
 As a result, it is difficult for the people to participate in making bills even though bills are for the people.
 
 The project aims to guarantee the people's suffrage by organizing the bill proposals and providing a tool which forms public opinion.
+#
 
 ### 소개 영상 
 
-### 팀 소개
-* 김상윤 / 2016******** / 웹 크롤링, 서버
-<img width="416" alt="상윤" src="https://user-images.githubusercontent.com/24891555/160339024-3fd4e155-1d15-4348-a0d1-0b6827932f4d.png">
-* 민태식 / 2016******** / 프론트엔드, UI, UX
-![태식](https://user-images.githubusercontent.com/24891555/160339045-432bea83-4d73-495b-a244-4b218cbdf8fe.jpeg)
+</br>
 
-* 안성열 / 2016******** / 블록체인, 서버
-![IMG_7040](https://user-images.githubusercontent.com/24891555/160339066-1eb4cd1c-e0c6-43e9-888e-e24be1e8a65a.jpg)
+#
+### 팀 소개
+|**김상윤**|**민태식**|**안성열**|
+|:---:|:---:|:---:|
+|<img src="https://user-images.githubusercontent.com/24891555/160339622-5ccd745f-7bac-4047-b10e-4a4c2be42c20.png" width="300">|<img src="https://user-images.githubusercontent.com/24891555/160340738-9ab2ce92-001f-44a6-a4cf-e6c6597be2b4.jpeg" width="300">|<img src="https://user-images.githubusercontent.com/24891555/160343995-d313df3f-b252-4271-800e-4ff67111336f.jpg" width="300">|
+|웹크롤링, 서버|앱, UI, UX|블록체인, 서버|
+
