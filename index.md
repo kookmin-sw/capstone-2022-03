@@ -20,6 +20,7 @@ The project aims to guarantee the people's suffrage by organizing the bill propo
 </br>
 
 #
+
 ### 팀 소개
 |**김상윤**|**민태식**|**안성열**|
 |:---:|:---:|:---:|
