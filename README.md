@@ -24,10 +24,10 @@ The project aims to guarantee the people's suffrage by organizing the bill propo
 
 
 ## Prototype
-<img width="180" alt="메인페이지" src="https://user-images.githubusercontent.com/24891555/161218368-2b7d6b9e-8c61-4d63-9446-7dfb49c92a21.png" align="left">
-<img width="180" alt="모음페이지" src="https://user-images.githubusercontent.com/24891555/161218375-69512015-f981-4d9a-bfaa-912de8284fca.png" align="left">
-<img width="180" alt="투표" src="https://user-images.githubusercontent.com/24891555/161218390-f352fb9f-a687-49bb-b7ed-77013de734aa.png" align="left">
-<img width="180" alt="투표" src="https://user-images.githubusercontent.com/24891555/161218405-5db41991-7fc5-45af-8340-cf2d569cf2d5.png">
+<img width="180" alt="메인페이지" src="https://user-images.githubusercontent.com/24891555/161413555-bc01523e-cbdc-4fbb-8cec-a89b54a9acaa.png" align="left">
+<img width="180" alt="발의법안페이지" src="https://user-images.githubusercontent.com/24891555/161413598-350a6150-3e4c-4aed-8318-fedd65f03d5d.png" align="left">
+<img width="180" alt="상세보기페이지" src="https://user-images.githubusercontent.com/24891555/161413559-9425efea-9e27-476f-b3a1-b3f30edeb540.png" align="left">
+<img width="180" alt="투표페이지" src="https://user-images.githubusercontent.com/24891555/161413561-5ba90913-d5c4-4833-ad59-21e9d83fe221.png">
 
 
 ## 프로젝트 기대효과
@@ -41,6 +41,6 @@ The project aims to guarantee the people's suffrage by organizing the bill propo
 ## 팀 소개
 
 
-|<img src="https://user-images.githubusercontent.com/24891555/160339622-5ccd745f-7bac-4047-b10e-4a4c2be42c20.png" width="250">|<img src="https://user-images.githubusercontent.com/24891555/160340738-9ab2ce92-001f-44a6-a4cf-e6c6597be2b4.jpeg" width="250">|<img src="https://user-images.githubusercontent.com/24891555/160343995-d313df3f-b252-4271-800e-4ff67111336f.jpg" width="250">|
+|<img src="https://ifh.cc/g/J9csdn.jpg" width="250" height="250">|<img src="https://user-images.githubusercontent.com/24891555/160340738-9ab2ce92-001f-44a6-a4cf-e6c6597be2b4.jpeg" width="250">|<img src="https://user-images.githubusercontent.com/24891555/160343995-d313df3f-b252-4271-800e-4ff67111336f.jpg" width="250">|
 |:--|:--|:--|
 |이름: 김상윤 </br> 학번: ****3092 </br> Email: skwk50000@gmail.com </br> 역할 : 웹크롤링 API, 서버, DB|이름: 민태식 </br> 학번: ****3106 </br> Email: rth2443@kookmin.ac.kr </br> 역할 : 앱, UX, UI|이름: 안성열 </br> 학번: ****3121 </br> Email: zxcv123594@gmail.com </br> 역할 : 블록체인 API, 서버|
