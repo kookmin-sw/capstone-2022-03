@@ -41,6 +41,6 @@ The project aims to guarantee the people's suffrage by organizing the bill propo
 ## 팀 소개
 
 
-|<img src="https://user-images.githubusercontent.com/24891555/160339622-5ccd745f-7bac-4047-b10e-4a4c2be42c20.png" width="250">|<img src="https://user-images.githubusercontent.com/24891555/160340738-9ab2ce92-001f-44a6-a4cf-e6c6597be2b4.jpeg" width="250">|<img src="https://user-images.githubusercontent.com/24891555/160343995-d313df3f-b252-4271-800e-4ff67111336f.jpg" width="250">|
+|<img src="https://ifh.cc/g/J9csdn.jpg" width="250" height="250">|<img src="https://user-images.githubusercontent.com/24891555/160340738-9ab2ce92-001f-44a6-a4cf-e6c6597be2b4.jpeg" width="250">|<img src="https://user-images.githubusercontent.com/24891555/160343995-d313df3f-b252-4271-800e-4ff67111336f.jpg" width="250">|
 |:--|:--|:--|
 |이름: 김상윤 </br> 학번: ****3092 </br> Email: skwk50000@gmail.com </br> 역할 : 웹크롤링 API, 서버, DB|이름: 민태식 </br> 학번: ****3106 </br> Email: rth2443@kookmin.ac.kr </br> 역할 : 앱, UX, UI|이름: 안성열 </br> 학번: ****3121 </br> Email: zxcv123594@gmail.com </br> 역할 : 블록체인 API, 서버|
