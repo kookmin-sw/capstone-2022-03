@@ -1,5 +1,5 @@
 # 국민을 국회로
-<img width="400" alt="logo" src="https://ifh.cc/g/MSGhF8.png" align="left">
+<img width="400" alt="logo" src="https://ifh.cc/g/MSGhF8.png">
 
 ## 프로젝트 소개
 국회의원은 더 나은 사회를 만들기 위해 국민을 대표해 법안을 만드는 역할을 한다.
