@@ -44,3 +44,39 @@ The project aims to guarantee the people's suffrage by organizing the bill propo
 |<img src="https://ifh.cc/g/J9csdn.jpg" width="250" height="250">|<img src="https://user-images.githubusercontent.com/24891555/160340738-9ab2ce92-001f-44a6-a4cf-e6c6597be2b4.jpeg" width="250">|<img src="https://user-images.githubusercontent.com/24891555/160343995-d313df3f-b252-4271-800e-4ff67111336f.jpg" width="250">|
 |:--|:--|:--|
 |이름: 김상윤 </br> 학번: ****3092 </br> Email: skwk50000@gmail.com </br> 역할 : 웹크롤링 API, 서버, DB|이름: 민태식 </br> 학번: ****3106 </br> Email: rth2443@kookmin.ac.kr </br> 역할 : 앱, UX, UI|이름: 안성열 </br> 학번: ****3121 </br> Email: zxcv123594@gmail.com </br> 역할 : 블록체인 API, 서버|
+
+
+## 채굴 작업 참여
+
+| Mac OS 기반으로 작성되었습니다.
+
+| 관리자의 AWS 서버 실행 후 가능합니다.
+
+| 채굴에 참여함으로써 얻는 보상은 없습니다.
+
+</br>
+
+1. Geth(이더리움 네트워크) 설치 및 확인
+> brew install ethereum
+> geth version
+
+3. 블록데이터를 저장할 공간 생성 및 이동
+> mkdir mine_directory
+> cd mine_directory
+
+4. genesis 파일 생성
+- 깃허브 저장소의 genesis.json file download
+> mv genesis.json ~/mine_directory
+
+5. Geth 초기화 (port,bootnodes hash code는 추후 업데이트 될 예정입니다.)
+> geth —datadir node —networkid 2022 —port 0000 —bootnodes “———————“ console
+
+6. 채굴에 참여할 계정 생성
+> personal.newAccount(“<패스워드>”)
+
+7. 채굴시작 및 종료
+> miner.start(<작업쓰레드개수>)
+> miner.stop()
+
+8. 획득 이더리움 확인
+> eth.getBalance(eth.accounts[0])
