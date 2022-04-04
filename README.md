@@ -18,7 +18,7 @@ The project aims to guarantee the people's suffrage by organizing the open bill 
 
 ## 소개 영상 링크
 
-[![Video Label](https://user-images.githubusercontent.com/24891555/161373041-e14a691c-7c36-4e96-a95c-1ae679c534eb.png)](https://youtu.be/zJ4FUAzRcO4)
+[![Video Label](https://user-images.githubusercontent.com/24891555/161373041-e14a691c-7c36-4e96-a95c-1ae679c534eb.png)](https://youtu.be/kUm5M0ekxXQ)
 
 </br>
 
