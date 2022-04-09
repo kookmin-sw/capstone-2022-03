@@ -200,3 +200,46 @@
 14:54:52.719926 db@open done T·117.989949ms
 16:36:46.384402 db@close closing
 16:36:46.385445 db@close done T·1.035158ms
+=============== Apr 9, 2022 (KST) ===============
+11:40:06.282555 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+11:40:06.284622 CURRENT: missing target file: MANIFEST-000046
+11:40:06.285472 CURRENT.bak: missing target file: MANIFEST-000043
+=============== Apr 9, 2022 (KST) ===============
+11:40:06.285921 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+11:40:06.286111 table@recovery F·3
+11:40:06.286148 table@recovery recovering @79
+11:40:06.288641 table@recovery recovered @79 Gk·560 Ck·0 Cb·0 S·39308 Q·1021
+11:40:06.288669 table@recovery recovering @80
+11:40:06.290060 table@recovery recovered @80 Gk·6 Ck·0 Cb·0 S·4562 Q·1028
+11:40:06.290086 table@recovery recovering @83
+11:40:06.291511 table@recovery recovered @83 Gk·4 Ck·0 Cb·0 S·4538 Q·1033
+11:40:06.291535 table@recovery recovered F·3 N·570 Gk·570 Ck·0 Q·1033
+11:40:06.370101 version@stat F·[3] S·47KiB[47KiB] Sc·[0.75]
+11:40:06.390403 db@open opening
+11:40:06.391426 journal@recovery F·1
+11:40:06.398432 journal@recovery recovering @84
+11:40:06.426153 memdb@flush created L0@85 N·9 S·4KiB "Sna..tor,v1041":"unc..own,v1035"
+11:40:06.427551 version@stat F·[4] S·51KiB[51KiB] Sc·[1.00]
+11:40:06.450422 db@janitor F·7 G·0
+11:40:06.450537 db@open done T·60.033071ms
+11:40:06.453649 table@compaction L0·4 -> L1·0 S·51KiB Q·1044
+11:40:06.536065 table@build created L1@87 N·560 S·37KiB "\x06Y\xde..\xeet},v1014":"׳J..JM\xb4,v126"
+11:40:06.536330 version@stat F·[0 1] S·37KiB[0B 37KiB] Sc·[0.00 0.00]
+11:40:06.574014 table@compaction committed F-3 S-14KiB Ke·0 D·19 T·120.137477ms
+11:40:06.575036 table@remove removed @85
+11:40:06.612095 table@remove removed @83
+11:40:06.614925 table@remove removed @80
+11:40:06.633142 table@remove removed @79
+13:58:45.378120 db@close closing
+13:58:45.379475 db@close done T·1.355083ms
+=============== Apr 9, 2022 (KST) ===============
+13:59:17.626030 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+13:59:17.629181 version@stat F·[0 1] S·37KiB[0B 37KiB] Sc·[0.00 0.00]
+13:59:17.629334 db@open opening
+13:59:17.629624 journal@recovery F·1
+13:59:17.635364 journal@recovery recovering @86
+13:59:17.656388 memdb@flush created L0@88 N·26 S·4KiB "Sna..tor,v1068":"unc..own,v1045"
+13:59:17.660561 version@stat F·[1 1] S·42KiB[4KiB 37KiB] Sc·[0.25 0.00]
+13:59:17.749481 db@janitor F·5 G·1
+13:59:17.749606 db@janitor removing manifest-85
+13:59:17.752854 db@open done T·123.480317ms

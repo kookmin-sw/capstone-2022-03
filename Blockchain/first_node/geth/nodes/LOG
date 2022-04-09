@@ -187,3 +187,43 @@
 14:54:52.867461 db@open done T·106.201774ms
 16:36:46.385776 db@close closing
 16:36:46.386306 db@close done T·529.403µs
+=============== Apr 9, 2022 (KST) ===============
+11:40:06.731221 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+11:40:06.732730 CURRENT: missing target file: MANIFEST-000043
+11:40:06.733080 CURRENT.bak: missing target file: MANIFEST-000040
+=============== Apr 9, 2022 (KST) ===============
+11:40:06.733680 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+11:40:06.733889 table@recovery F·2
+11:40:06.733914 table@recovery recovering @79
+11:40:06.740521 table@recovery recovered @79 Gk·11490 Ck·0 Cb·0 S·440728 Q·33133
+11:40:06.740574 table@recovery recovering @80
+11:40:06.741178 table@recovery recovered @80 Gk·1 Ck·0 Cb·0 S·164 Q·33135
+11:40:06.741204 table@recovery recovered F·2 N·11491 Gk·11491 Ck·0 Q·33135
+11:40:06.820361 version@stat F·[2] S·430KiB[430KiB] Sc·[0.50]
+11:40:06.840441 db@open opening
+11:40:06.840923 journal@recovery F·1
+11:40:06.845463 journal@recovery recovering @81
+11:40:06.866024 memdb@flush created L0@82 N·1 S·164B "loc..seq,v33137":"loc..seq,v33137"
+11:40:06.867583 version@stat F·[3] S·430KiB[430KiB] Sc·[0.75]
+11:40:06.888404 db@janitor F·6 G·0
+11:40:06.888540 db@open done T·47.974898ms
+13:58:45.380011 db@close closing
+13:58:45.380862 db@close done T·847.533µs
+=============== Apr 9, 2022 (KST) ===============
+13:59:17.815054 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+13:59:17.816978 version@stat F·[3] S·430KiB[430KiB] Sc·[0.75]
+13:59:17.817099 db@open opening
+13:59:17.817359 journal@recovery F·1
+13:59:17.822175 journal@recovery recovering @83
+13:59:17.842411 memdb@flush created L0@84 N·1 S·164B "loc..seq,v33139":"loc..seq,v33139"
+13:59:17.847562 version@stat F·[4] S·430KiB[430KiB] Sc·[1.00]
+13:59:17.930698 db@janitor F·7 G·1
+13:59:17.930769 db@janitor removing manifest-82
+13:59:17.931160 db@open done T·114.021313ms
+13:59:17.931411 table@compaction L0·4 -> L1·0 S·430KiB Q·33140
+13:59:17.983003 table@build created L1@87 N·11490 S·430KiB "loc..seq,v33139":"version,v1"
+13:59:17.983147 version@stat F·[0 1] S·430KiB[0B 430KiB] Sc·[0.00 0.00]
+13:59:18.001177 table@compaction committed F-3 S-492B Ke·0 D·3 T·69.645427ms
+13:59:18.002063 table@remove removed @82
+13:59:18.002439 table@remove removed @80
+13:59:18.004474 table@remove removed @79

@@ -3,9 +3,6 @@ pragma solidity ^0.8.13;
 contract Vote1 {
     // attribute
     address administrator;
-
-    string private bill_title;
-    uint private bill_id;
     bool private is_vote_live;
 
     vote_paper[] private ballot_box;
@@ -25,10 +22,8 @@ contract Vote1 {
     }
 
     // constructor
-    constructor(string memory _bill_title, uint _bill_id) {
+    constructor() {
         administrator = msg.sender;
-        bill_title = _bill_title;
-        bill_id = _bill_id;
         is_vote_live = true;
     }
     // function
