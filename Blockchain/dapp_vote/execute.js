@@ -2,21 +2,30 @@ const Web3 = require('web3');
 const web3 = new Web3(Web3.givenProvider || 'http://172.30.25.115:8546');
 let bill_list = [];
 let CA_list = [];
-let bill_index = 0;
-const user_id = 123
-const opinion = true;
-let accounts;
 
-web3.eth.getAccounts().then(result => {
-    console.log("in : " + result);
-    accounts = result;
-})
-console.log(accounts);
-//
-// async function make_bill() {
-//     return await accounts;
-// }
-// make_bill();
+// get accounts
+async function get_accounts() {
+    return await web3.eth.getAccounts();
+}
+// constructor
+async function make_bill(_bill_list, _CA_list) {
+    await require('./deploy')
+        .then(value => {
+            _bill_list.push(value);
+            _CA_list.push(value.options.address);
+            console.log(bill_list);
+        })
+}
+// 투표하기
+async function makeVote(user_id, opinion, sender_address, gas) {
+    const accounts = await get_accounts().then(console.log);
+    const target_contract = bill_list[0];
+
+    await target_contract.methods.makeVote(user_id, opinion).send({from:accounts[0], gas : '3000000'});
+}
+
+make_bill(bill_list, CA_list);
+// makeVote(123, true, 1, 1);
 
 // 새로운 법안에 대한 스마트 컨트랙트를 배포하고 bill_list에 CA를 저장한다.
 // async function make_bill() {

@@ -243,3 +243,5 @@
 13:59:17.749481 db@janitor F·5 G·1
 13:59:17.749606 db@janitor removing manifest-85
 13:59:17.752854 db@open done T·123.480317ms
+16:39:50.998507 db@close closing
+16:39:51.000073 db@close done T·1.56518ms
