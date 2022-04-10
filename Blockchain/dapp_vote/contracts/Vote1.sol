@@ -8,12 +8,13 @@ contract Vote1 {
     vote_paper[] private ballot_box;
     // struct
     struct vote_paper {
-        uint user_id;
+        string user_address;
         bool pros_and_cons;
     }
     // mapping
     // 중복투표 불가능 하도록 설정하기 위한 사전 작업이다.
     mapping(address => bool) has_user_voted;
+
     // modifier
     // onlyAdministrator 태그를 붙이면 관리자만 실행이 가능하다.
     modifier onlyAdministrator {
@@ -26,9 +27,10 @@ contract Vote1 {
         administrator = msg.sender;
         is_vote_live = true;
     }
+
     // function
     // 투표권을 행사하는 함수
-    function makeVote(uint _user_id, bool _pros_and_cons) public {
+    function makeVote(string memory _user_address, bool _pros_and_cons) public {
         // 투표가 진행중인 법안이어야 한다.
         require(is_vote_live == true);
         // 관리자는 투표할 수 없어야 한다.
@@ -39,7 +41,7 @@ contract Vote1 {
         require(has_user_voted[msg.sender] == false);
 
         // 유권자가 투표권을 행사한다.
-        ballot_box.push(vote_paper(_user_id, _pros_and_cons));
+        ballot_box.push(vote_paper(_user_address, _pros_and_cons));
         // 유권자가 투표를 완료하여 더 이상 투표가 불가능하다.
         has_user_voted[msg.sender] = true;
     }
@@ -57,11 +59,11 @@ contract Vote1 {
         return ballot_box;
     }
 
-    function voter_list() public view returns (uint[] memory){
-        uint[] memory voters = new uint[](ballot_box.length);
+    function voter_list() public view returns (string[] memory){
+        string[] memory voters = new string[](ballot_box.length);
 
         for(uint i=0; i<ballot_box.length; i++) {
-            voters[i] = ballot_box[i].user_id;
+            voters[i] = ballot_box[i].user_address;
         }
         return voters;
     }
