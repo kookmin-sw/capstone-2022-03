@@ -7,7 +7,7 @@ const http = require('http');   // to create http server
 
 // connect to blockchain network
 // Please change endpoint variable with "AWS server address"
-const endpoint = 'http://10.30.113.147:8546';
+const endpoint = 'http://172.30.40.125:8546';
 const web3 = new Web3(Web3.givenProvider || endpoint);
 
 // Compile part
@@ -51,10 +51,6 @@ async function deploy(user_address) {
 }
 
 // Server Function part
-function getContract(contract_address) {
-    const index = contract_address_list.indexOf(contract_address);
-    return contract_list[index];
-}
 
 // Blockchain Function part
 async function makeVote(user_address, opinion, target_contract) {
@@ -78,9 +74,8 @@ async function voterList(user_address, target_contract) {
 }
 
 // Attribute part
-contract_list = [];     // for managing smart contract(=bill)
-contract_address_list = []; // for matching contract_list with CA
-user_address_list = []; // for .... later
+contract_list = {};     // for managing smart contract(=bill)
+user_address_list = {}; // key : user_id , value : user_address
 
 // Server part
 http.createServer((req, res) => {
@@ -90,64 +85,68 @@ http.createServer((req, res) => {
     var input_component = req.url.split("/");
     var input_command = input_component[1];
     var user_address = input_component[2];
-    console.log("command : " + input_command + ", user_account : " + user_address);
 
     switch(input_command) {
+        // use only for testing server.
+        case ('get_contract_address_list'):
+            console.log(Object.keys(contract_list));
+            res.end('get contract');
+            break;
         // deploy smart contract
         case ('make_bill'):    // should be /make_bill/"user_addr"
             console.log('make bill start');
 
             deploy(user_address).then(result => {
-                contract_list.push(result)
-                contract_address_list.push(result.options.address);
+                contract_list[result.options.address] = result;
+            }).catch(function(err) {
+                console.log(err);
             });
 
             console.log('New bill has been created');
             res.end("New bill has been created");
             break;
-        case ('make_vote'):   // should be /make_vote/"user_addr"/0or1/"contract_address"
-            // 수정 전
-            // console.log('make vote start');
-            // const opinion = Boolean(input_component[3]);
-            // //var target_contract = getContract(input_component[4]);
-            //
-            // makeVote(user_address, opinion, getContract(input_component[4]));
-            // console.log('New vote is made');
-            // res.end("Voting process is done");
-            // break;
 
-            // 수정 후
+        case ('make_vote'):   // should be /make_vote/"user_addr"/0or1/"contract_address"
             console.log('make vote start');
             const opinion = Boolean(input_component[3]);
-            var target_contract = getContract()
+            var target_contract = contract_list[input_component[4]];
 
-            makeVote(user_address, opinion, target_contract);
+            makeVote(user_address, opinion, target_contract).catch(function(err) {
+                console.log(err);
+            });
             console.log('New vote is made');
             res.end("Voting process is done");
             break;
-
-        case ('finish_vote'):  // should be /finish_vote/"user_addr"/"contract_address
+        case ('finish_vote'):  // should be /finish_vote/"user_addr"/"contract_address"
             console.log('finish vote start');
-            var target_contract = getContract(input_component[3]);
+            var target_contract = contract_list[input_component[4]];
 
-            finishVote(user_address, target_contract);
+            finishVote(user_address, target_contract).catch(function(err) {
+                console.log(err);
+            });
             console.log('Vote has been finished');
             res.end("Voting process is finished");
             break;
-        case('result_vote'):   // should be /result_vote/"user_addr"/"contract_address
+        case('result_vote'):   // should be /result_vote/"user_addr"/"contract_address"
             console.log('result vote start');
+            var target_contract = contract_list[input_component[4]];
 
-            var target_contract = getContract(input_component[3]);
-            const vote_result = resultVote(user_address, target_contract);
-            console.log('Vote result : ' + vote_result);
+            resultVote(user_address, target_contract).then(value => console.log("Vote result : " + value))
+                .catch(function(err) {
+                    console.log(err);
+                });
+
             res.end("The result is printed in console");
             break;
         case('voter_list'):    // should be /voter_list/"user_addr"/"contract_address
             console.log('voter list start');
+            var target_contract = contract_list[input_component[4]];
 
-            var target_contract = getContract(input_component[3]);
-            const voter_list = voterList(user_address, target_contract);
-            console.log('Voter list : ' + vote_result);
+            voterList(user_address, target_contract).then(value => console.log("Voter list : " + value))
+                .catch(function(err) {
+                    console.log(err);
+                });
+
             res.end("voters are printed in console");
             break;
         case('favicon.ico'):
@@ -156,22 +155,4 @@ http.createServer((req, res) => {
             console.log('Wrong access : ' + req.url);
             res.end("Wrong access");
     }
-    // if (input_command == '/make_bill') {
-    //     deploy().then(result => {
-    //         contract_list.push(result);
-    //         console.log('새로운 스마트 컨트랙트 생성');
-    //         res.write("make bill");
-    //         res.end();
-    //     });
-    // } else if (input_command == '/vote') {
-    //     makeVote().then(console.log("voted"));
-    //     res.write("vote Done");
-    //     res.end();
-    // } else if (input_command == '/result') {
-    //     resultVote().then(value => {
-    //         console.log(value);
-    //     })
-    //     res.write("result Done");
-    //     res.end();
-    // }
 }).listen(8080);

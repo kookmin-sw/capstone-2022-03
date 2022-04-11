@@ -1,7 +1,7 @@
-const contracts = ["1111","2222","3333"];
+var user = {}
 
-const CA = ["1","2","3"]
+user[1] = "0x11";
+user[3] = "0x33";
+user[2] = "0x22";
 
-const index = CA.indexOf("1")
-console.log(index)
-console.log(contracts[index])
+console.log(user)
