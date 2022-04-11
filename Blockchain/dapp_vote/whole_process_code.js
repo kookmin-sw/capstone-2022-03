@@ -7,7 +7,7 @@ const http = require('http');   // to create http server
 
 // connect to blockchain network
 // Please change endpoint variable with "AWS server address"
-const endpoint = 'http://172.30.40.104:8546';
+const endpoint = 'http://10.30.113.147:8546';
 const web3 = new Web3(Web3.givenProvider || endpoint);
 
 // Compile part
@@ -39,20 +39,6 @@ function compile() {
 // Deploy part
 // It will be separated into "deploy.js" module later
 async function deploy(user_address) {
-    // 수정 전 코드
-    // const output2 = compile()
-    // const interface = output2.abi;
-    // const bytecode = output2.evm.bytecode.object;
-    //
-    // const accounts = await web3.eth.getAccounts();
-    //
-    // const deployed_contract = await new web3.eth.Contract(interface)
-    //     .deploy({ data: bytecode })
-    //     .send({gas : '3000000', from : accounts[0]});
-    //
-    // return deployed_contract;
-
-    // 수정 후 코드
     const compiled_source = compile();
     const interface = compiled_source.abi;
     const bytecode = compiled_source.evm.bytecode.object;
@@ -72,14 +58,7 @@ function getContract(contract_address) {
 
 // Blockchain Function part
 async function makeVote(user_address, opinion, target_contract) {
-    // 수정 전 코드
-    // const accounts = await web3.eth.getAccounts();
-    // const target_contract = contract_list[0];
-    // await target_contract.methods.makeVote(123, true).send({from:accounts[1], gas : '3000000'});
-
-    // 수정 후 코드
     await target_contract.methods.makeVote(user_address, opinion).send({from:user_address, gas : '3000000'});
-
 }
 async function finishVote(user_address,target_contract) {
     await target_contract.methods.finishVote().send({from:user_address, gas : '3000000'});
@@ -109,28 +88,44 @@ http.createServer((req, res) => {
     // the second component as a user_address
     // And the rest of them as an option
     var input_component = req.url.split("/");
-    console.log(input_component);
     var input_command = input_component[1];
     var user_address = input_component[2];
+    console.log("command : " + input_command + ", user_account : " + user_address);
 
     switch(input_command) {
         // deploy smart contract
         case ('make_bill'):    // should be /make_bill/"user_addr"
             console.log('make bill start');
 
-            deploy(user_address).then(result => contract_list.push(result));
+            deploy(user_address).then(result => {
+                contract_list.push(result)
+                contract_address_list.push(result.options.address);
+            });
+
             console.log('New bill has been created');
             res.end("New bill has been created");
             break;
         case ('make_vote'):   // should be /make_vote/"user_addr"/0or1/"contract_address"
+            // 수정 전
+            // console.log('make vote start');
+            // const opinion = Boolean(input_component[3]);
+            // //var target_contract = getContract(input_component[4]);
+            //
+            // makeVote(user_address, opinion, getContract(input_component[4]));
+            // console.log('New vote is made');
+            // res.end("Voting process is done");
+            // break;
+
+            // 수정 후
             console.log('make vote start');
             const opinion = Boolean(input_component[3]);
-            //var target_contract = getContract(input_component[4]);
+            var target_contract = getContract()
 
-            makeVote(user_address, opinion, getContract(input_component[4]));
+            makeVote(user_address, opinion, target_contract);
             console.log('New vote is made');
             res.end("Voting process is done");
             break;
+
         case ('finish_vote'):  // should be /finish_vote/"user_addr"/"contract_address
             console.log('finish vote start');
             var target_contract = getContract(input_component[3]);
