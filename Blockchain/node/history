@@ -23,3 +23,11 @@ admin.peers
 eth.blockNumber
 eixt
 admin.peers
+eth.blockNumber
+eth.getBalance(eth.accounts[0])
+eth.blockNumber
+eth.accounts
+eth.blockNumber
+eth.getAccounts
+eth.getAccounts()
+eth.accounts
