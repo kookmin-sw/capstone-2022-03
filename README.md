@@ -59,6 +59,4 @@ The project aims to guarantee the people's suffrage by organizing the open bill 
 
 </br>
 
-## 프로젝트 기획 및 개발 회의록 링크
-[![Video Label](https://user-images.githubusercontent.com/24891555/162608368-201bdb69-dfd7-4971-8ae5-9f5849d52dbc.png)](https://elfin-bottle-d20.notion.site/2022-e5de333ed6cb4b3aabb0c3874a134b2e)
 
