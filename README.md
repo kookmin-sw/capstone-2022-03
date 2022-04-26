@@ -24,12 +24,15 @@ All club members can browse the histories of payment.
 
 </br>
 
-## 시스템 설계도
+## 시스템 조직도
+<img src="https://user-images.githubusercontent.com/24891555/165308828-3154dd8d-f176-4b36-a80b-51e6fda0e5be.PNG" width=800 >
+
 
 
 </br>
 
 ## Prototype
+<img src="https://user-images.githubusercontent.com/24891555/165309468-fce96b5d-7186-4d5c-b60a-f6c5caa775b5.PNG" width=800>
 
 
 </br>
