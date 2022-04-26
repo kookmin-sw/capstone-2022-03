@@ -1,0 +1,25 @@
+eth.blockNumber
+admin.nodeInfo.enrr
+admin.nodeInfo.enr
+eth.blockNumber
+admin.peers
+eth.accounts
+miner.start(1)
+miner.stop()
+eth.blockNumber
+eth.getBalance
+eth.getBalance(eth.accounts[0])
+eth.sendTransaction({from:eth.accounts[0]), to:"0x4322608e1d952fdbfeb9476015128a968167bdec", value: "300000000"})
+eth.sendTransaction({from:eth.accounts[0], to:"0x4322608e1d952fdbfeb9476015128a968167bdec", value: "300000000"})
+miner.start(1)
+miner.stop()
+eth.blockNumber
+eth.getBalance(eth.accounts[0])
+eth.getTransaction("0x61b2b60bfd25aee70978b4f31d512194865ca18bc637bf6962a2919b381e965e"
+)
+admin.peers
+admin
+admin.peers
+eth.blockNumber
+eixt
+admin.peers
