@@ -114,3 +114,40 @@
 13:25:02.596630 table@remove removed @18
 13:25:02.599011 table@remove removed @15
 13:25:02.601708 table@remove removed @14
+15:31:18.453769 db@close closing
+15:31:18.458030 db@close done T·4.686684ms
+=============== Apr 26, 2022 (KST) ===============
+15:31:28.310907 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:31:28.314461 version@stat F·[0 1] S·12KiB[0B 12KiB] Sc·[0.00 0.00]
+15:31:28.314546 db@open opening
+15:31:28.314771 journal@recovery F·1
+15:31:28.320359 journal@recovery recovering @25
+15:31:28.341928 memdb@flush created L0@28 N·23 S·458B "unc..own,v491":"unc..own,v469"
+15:31:28.347172 version@stat F·[1 1] S·12KiB[458B 12KiB] Sc·[0.25 0.00]
+15:31:28.438034 db@janitor F·5 G·1
+15:31:28.438109 db@janitor removing table-24
+15:31:28.438415 db@open done T·123.835777ms
+15:31:46.569102 db@close closing
+15:31:46.569372 db@close done T·268.672µs
+=============== Apr 26, 2022 (KST) ===============
+15:31:50.269656 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:31:50.270012 version@stat F·[1 1] S·12KiB[458B 12KiB] Sc·[0.25 0.00]
+15:31:50.270051 db@open opening
+15:31:50.270162 journal@recovery F·1
+15:31:50.273617 journal@recovery recovering @29
+15:31:50.278498 memdb@flush created L0@31 N·2 S·217B "unc..own,v494":"unc..own,v493"
+15:31:50.281635 version@stat F·[2 1] S·12KiB[675B 12KiB] Sc·[0.50 0.00]
+15:31:50.363339 db@janitor F·5 G·0
+15:31:50.363432 db@open done T·93.347544ms
+15:56:19.451121 db@close closing
+15:56:19.452070 db@close done T·945.055µs
+=============== Apr 26, 2022 (KST) ===============
+15:56:47.464652 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:56:47.466504 version@stat F·[2 1] S·12KiB[675B 12KiB] Sc·[0.50 0.00]
+15:56:47.466558 db@open opening
+15:56:47.466714 journal@recovery F·1
+15:56:47.471908 journal@recovery recovering @32
+15:56:47.492353 memdb@flush created L0@34 N·6 S·261B "unc..own,v501":"unc..own,v496"
+15:56:47.498182 version@stat F·[3 1] S·13KiB[936B 12KiB] Sc·[0.75 0.00]
+15:56:47.582835 db@janitor F·6 G·0
+15:56:47.582937 db@open done T·116.358172ms
