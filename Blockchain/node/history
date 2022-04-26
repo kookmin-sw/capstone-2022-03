@@ -32,3 +32,4 @@ eth.getAccounts
 eth.getAccounts()
 eth.accounts
 eth.sendTransaction({from : eth.accounts[0], to:"0x8695914CBbb291a0FD0A8749EE670Be958E19d31", value : "3000000"})
+eth.accounts
