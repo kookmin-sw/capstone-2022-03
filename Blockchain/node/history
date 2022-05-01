@@ -31,3 +31,5 @@ eth.blockNumber
 miner.start(1)
 miner.start(4)
 miner.stop()
+eth.blockNumber
+ls

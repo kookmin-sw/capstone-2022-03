@@ -127,3 +127,40 @@
 12:02:01.089957 table@remove removed @16
 12:04:19.127639 db@close closing
 12:04:19.128697 db@close done T·1.056869ms
+=============== May 1, 2022 (KST) ===============
+14:05:22.209329 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+14:05:22.211074 version@stat F·[0 1] S·25KiB[0B 25KiB] Sc·[0.00 0.00]
+14:05:22.211140 db@open opening
+14:05:22.211307 journal@recovery F·1
+14:05:22.215975 journal@recovery recovering @27
+14:05:22.235968 memdb@flush created L0@30 N·1 S·164B "loc..seq,v793":"loc..seq,v793"
+14:05:22.241433 version@stat F·[1 1] S·25KiB[164B 25KiB] Sc·[0.25 0.00]
+14:05:22.324432 db@janitor F·5 G·1
+14:05:22.324509 db@janitor removing table-26
+14:05:22.325318 db@open done T·114.150215ms
+14:11:27.183049 db@close closing
+14:11:27.184052 db@close done T·1.001927ms
+=============== May 1, 2022 (KST) ===============
+14:11:47.755425 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+14:11:47.758662 version@stat F·[1 1] S·25KiB[164B 25KiB] Sc·[0.25 0.00]
+14:11:47.758771 db@open opening
+14:11:47.759017 journal@recovery F·1
+14:11:47.762077 journal@recovery recovering @31
+14:11:47.782433 memdb@flush created L0@33 N·1 S·164B "loc..seq,v795":"loc..seq,v795"
+14:11:47.787339 version@stat F·[2 1] S·25KiB[328B 25KiB] Sc·[0.50 0.00]
+14:11:47.871405 db@janitor F·5 G·0
+14:11:47.871498 db@open done T·112.70518ms
+14:18:30.048135 db@close closing
+14:18:30.049199 db@close done T·1.062008ms
+=============== May 1, 2022 (KST) ===============
+14:18:40.141314 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+14:18:40.142794 version@stat F·[2 1] S·25KiB[328B 25KiB] Sc·[0.50 0.00]
+14:18:40.142982 db@open opening
+14:18:40.143167 journal@recovery F·1
+14:18:40.143949 journal@recovery recovering @34
+14:18:40.163736 memdb@flush created L0@36 N·1 S·164B "loc..seq,v797":"loc..seq,v797"
+14:18:40.165198 version@stat F·[3 1] S·25KiB[492B 25KiB] Sc·[0.75 0.00]
+14:18:40.247477 db@janitor F·6 G·0
+14:18:40.247594 db@open done T·104.570638ms
+14:26:09.064024 db@close closing
+14:26:09.065157 db@close done T·1.131063ms
