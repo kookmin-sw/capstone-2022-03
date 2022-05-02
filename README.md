@@ -1,5 +1,5 @@
-# 모두의 회비
-<img src="https://user-images.githubusercontent.com/24891555/165217635-8184d153-4433-4178-9a8e-b054a800b43c.png" width=250>
+# 모두모영
+<img src="https://user-images.githubusercontent.com/24891555/166237418-f5ed5614-9faf-444a-8a15-1ef1703b7eef.png" width=250>
 
 
 # 💡 프로젝트 소개
@@ -10,7 +10,7 @@
 
 ### 👀 회비내역을 모두가 확인하세요!
 
-### 🔒 사용한 회비 내역을 모두 블록체인에 안전하게 저장됩니다. 잃어버려도 괜찮아요!
+### 🔒 사용한 회비 내역은 모두 블록체인에 안전하게 저장됩니다. 잃어버려도 괜찮아요!
 
 ### Abstract
 
@@ -26,7 +26,6 @@ All club members can browse the histories of payment.
 
 ## 시스템 조직도
 <img src="https://user-images.githubusercontent.com/24891555/165308828-3154dd8d-f176-4b36-a80b-51e6fda0e5be.PNG" width=800 >
-
 
 
 </br>
