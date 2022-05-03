@@ -1,6 +1,8 @@
-# 모두모영
-<img src="https://user-images.githubusercontent.com/24891555/166237418-f5ed5614-9faf-444a-8a15-1ef1703b7eef.png" width=250>
+</br>
 
+<img src="https://user-images.githubusercontent.com/24891555/166401824-f2359a8c-6d8a-45f3-b7a3-0979e2cfa09c.png" width=400>
+
+</br>
 
 # 💡 프로젝트 소개
 
