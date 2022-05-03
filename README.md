@@ -1,6 +1,8 @@
-# 여기모영
-<img src="https://user-images.githubusercontent.com/24891555/166400117-3a163057-c0e6-41cb-bdb0-ec3c5228dc95.png" width=250>
+</br>
 
+<img src="https://user-images.githubusercontent.com/24891555/166401824-f2359a8c-6d8a-45f3-b7a3-0979e2cfa09c.png" width=400>
+
+</br>
 
 # 💡 프로젝트 소개
 
