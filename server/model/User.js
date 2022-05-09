@@ -13,6 +13,9 @@ const userSchema = mongoose.Schema({
     password: {
         type: String
     },
+    address: {
+        type: String
+    },
     joined_club: {
         type: [String]
     },

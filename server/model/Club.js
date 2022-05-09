@@ -37,11 +37,17 @@ const clubSchema = mongoose.Schema({
     club_id: {
         type: String
     },
-    club_constructor: {
+    club_leader_id: {
         type: String
     },
     club_balance: {
         type: Number
+    },
+    club_bank_account: {
+        type: String
+    },
+    club_bank_name: {
+        type : String
     },
     image: String,
     joined_user: {
@@ -50,6 +56,9 @@ const clubSchema = mongoose.Schema({
     receipt: {
         type: [receiptSchema]
     },
+    contract : {
+        type : String
+    }
 });
 
 const Club = mongoose.model('Club', clubSchema)
