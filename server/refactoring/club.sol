@@ -60,7 +60,7 @@ contract club {
         return bank_name;
     }
 
-    function getLeader() public onlyLeader view returns (user memory) {
+    function getLeader() public view returns (user memory) {
         return leader;
     }
 

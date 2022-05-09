@@ -30,13 +30,44 @@ exports.getReceiptAmount = async function (caller, contract) {
 }
 
 // club part
-exports.makeClub = async function (caller, leader_name) {
+exports.makeClub = async function (caller, club_title, bank_account, bank_name, leader_name) {
     // compile_result[0] = abi, [1] = bytecode
     const compile_result = compile.club();
 
     return await new web3.eth.Contract(compile_result[0])
-        .deploy({ data : compile_result[1], arguments: [leader_name]})
+        .deploy({ data : compile_result[1], arguments: [club_title, bank_account, bank_name, leader_name]})
         .send({ from : caller, gas : 3000000 })
+}
+exports.getClubTitle = async function (caller, contract) {
+    try {
+        return await contract.methods.getClubTitle()
+            .call({ from : caller })
+    } catch {
+        console.log('caller is not a leader');
+        return 'not leader';
+    }
+
+}
+exports.getClubBank = async function (caller, contract) {
+    var bank = "";
+    try {
+        await contract.methods.getBankName()
+            .call({ from : caller })
+            .then(result => {
+                bank = bank + result + " ";
+
+                contract.methods.getBankAccount()
+                    .call({ from : caller })
+                    .then(result => {
+                        bank = bank + result;
+                    })
+
+                return bank;
+            })
+    } catch {
+        console.log('caller is not a leader');
+        return 'not leader';
+    }
 }
 exports.getClubLeader = async function (caller, contract) {
     return await contract.methods.getLeader()
