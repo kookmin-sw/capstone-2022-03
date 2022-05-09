@@ -58,24 +58,19 @@ exports.userAddress = function(data) {
 
 exports.makeClub = function(data, address, res) {
     const club = new Club(data)
-    let club_id = club._id
-
+    club.club_id = String(club._id).slice(0,5);
     club.club_address = address;
-    club.club_id = String(club_id).slice(0,5);
     club.club_balance = 0;
-    club.joined_user = data.club_leader_id;
+    club.joined_user.push(data.club_leader_id);
 
     club.save((err, clubInfo) => {
         if (err) { return res.json({ success : false, err })}
         return res.status(200).json({ success : true })
     })
-    User.findOneAndUpdate({_id : data.club_leader_id}, { $push: { joined_club: data.club_id}}, (err, isPushed_1) => {
+
+    User.findOneAndUpdate({_id : data.club_leader_id}, { $push: { joined_club: club._id}}, (err, isPushed_1) => {
         if(isPushed_1) { return res.json({ isPushed_1 : false, message : "모임 참가에 실패하였습니다." })}
-        else {
-            User.findOneAndUpdate({ _id : data.user_id}, {$push : {joined_club: data.club_id}}, (err, isPushed_2) => {
-                if(!isPushed_2) { return res.json({ isPushed_2 : false, message : "모임 참가에 실패하였습니다." })}
-                else { res.json({ success : true, message : "모임 참가에 성공하였습니다. "}) }
-            })
+        else { console.log('err', err)
         }
     })
 }
@@ -105,12 +100,26 @@ exports.addReceipt = function(data, res) {
 }
 
 exports.myClubList = function(data, res) {
-    User.find({_id : data.user_id}, (err, myClub) => {
-        console.log(myClub)
+    var myClubs = [];
+
+    const getClubs = async function (club_list) {
+        for (let i in club_list) {
+            Club.findOne({ _id: i})
+                .then(result => { myClubs.push(result)} )
+        }
+    }
+    User.findOne({_id : data.user_id}, (err, target_user) => {
+        getClubs(target_user.joined_club)
+            .then(() => {return myClubs})
     })
 }
 exports.addMember = function(data, res) {
-    Club.findOne({ club_id : data.club_id }, (err, club) => {
-        club.joined_club.push(data.user_id)
+    User.findOne({name : data.member_name}, (err, user) => {
+        Club.findOneAndUpdate({club_id : data.club_id }, { $push: { joined_user: user._id}}, (err, isPushed_1) => {
+            if(isPushed_1) { return res.json({ isPushed_1 : false, message : "총무 추가 완료" })}
+            else { console.log('err', err)
+            }
+        })
     })
+
 }
