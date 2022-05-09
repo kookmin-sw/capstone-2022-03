@@ -27,23 +27,22 @@ server.get('/', (req, res) => {
 server.post('/register', (req, res) => {
     //회원가입 할때 필요한 정보들을 client에서 가져오면 그것들을 database에 넣어준다.
     const user = new User(req.body)
-    web3.eth.personal.newAccount(user._id).then((result)=>{
-        console.log("생성된 주소 : ", result);
-        /// address 를 result로 업데이트 하는 코드
-    })
 
-    // 비밀번호의 경우 암호화 필요, 이때 mongoose의 기능이용, 따라서 User.js에서 암호화 작업 진행후
-    user.save((err, userInfo) => {
-        if(err) return res.json({ success: false,  err})
-        console.log(String(userInfo._id))
-        return res.status(200).json({
-            success: true
+    web3.eth.personal.newAccount(user._id)
+        .then((result)=>{
+        console.log("생성된 주소 : ", result);
+        user['address'] = result;
+    }).then(result => {
+        user.save((err, userInfo) => {
+            if(err) return res.json({ success: false,  err})
+            console.log(String(userInfo._id))
+            return res.status(200).json({
+                success: true
+            })
         })
     })
-
-
-
 })
+
 server.post('/login', (req, res) => {
     // 요청된 이메일을 데이터베이스에서 있는지 찾는다.
     User.findOne({email : req.body.email}, (err, user) => {
@@ -84,13 +83,16 @@ const web3 = new Web3(Web3.givenProvider || blockchain_endpoint);
 contract_list = []
 user_address = {};
 
-
 server.get('/blockchain', (req,res) =>{
     res.send('blockchain page');
 
     let req_components = url.parse(req.url, true).query;
     let command = req_components.command;
 
+    // 사용자가 로그인 : DB에 저장된 유저 정보 user{name, email, address} 를 앱 서버로 전송
+    // 앱 서버는 해당정보를 계속 가지고 있음. => user{name, email, address}
+    //
+    //
     //mock-up
     const caller = "0xA291948917c682461eD5432E8D128047e4928517";
     const club_id = 0;

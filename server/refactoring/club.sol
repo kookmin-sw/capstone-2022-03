@@ -3,6 +3,10 @@
 pragma solidity ^0.8.13;
 
 contract club {
+    string private club_title;
+    string private bank_account;
+    string private bank_name;
+
     user private leader;
     user[] private members;
 
@@ -31,14 +35,48 @@ contract club {
         _;
     }
 
-    constructor (string memory name) {
-        leader.name = name;
+    constructor (string memory _club_title, string memory _bank_account, string memory _bank_name, string memory leader_name) {
+        club_title = _club_title;
+        bank_account = _bank_account;
+        bank_name = _bank_name;
+
+        leader.name = leader_name;
         leader.account = msg.sender;
         leader.department = "head";
 
         members.push(leader);
     }
 
+    // getter functions
+    function getClubTitle() public onlyLeader view returns(string memory) {
+        return club_title;
+    }
+
+    function getBankAccount() public onlyLeader view returns(string memory) {
+        return bank_account;
+    }
+
+    function getBankName() public onlyLeader view returns(string memory) {
+        return bank_name;
+    }
+
+    function getLeader() public onlyLeader view returns (user memory) {
+        return leader;
+    }
+
+    function getMembers() public view returns (user[] memory) {
+        return members;
+    }
+
+    function getBalance() public view returns (uint) {
+        return balance;
+    }
+
+    function getReceipts() public view returns (string[] memory){
+        return receipts;
+    }
+
+    // setter functions
     function addMember(address account, string memory name, string memory department) public onlyLeader {
         members.push(user(account, name, department));
     }
@@ -47,19 +85,15 @@ contract club {
         balance = balance + fee;
     }
 
-    function getMoney() public view returns (uint) {
-        return balance;
-    }
-
-    function getMembers() public view returns (user[] memory) {
-        return members;
-    }
-
     function addReceipt(string memory receipt) public onlyMember {
         receipts.push(receipt);
     }
 
-    function getReceipts() public view returns (string[] memory){
-        return receipts;
+    function calcBalance(uint payment) public {
+        balance = balance - payment;
+    }
+
+    function checkPaymentAmount(uint payment) public view {
+        if (balance < payment) { revert(); }
     }
 }

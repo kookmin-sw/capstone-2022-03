@@ -4,28 +4,29 @@ const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 
 const userSchema = mongoose.Schema({
-    id: {
-        type: String,
-        required: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
     name: {
-        type: String,
-        required: true
-    },
-    role: {
         type: String
     },
-    joined_club : {
-        type: Array
+    email: {
+        type: String
     },
+    password: {
+        type: String
+    },
+    image: String,
     token: {
         type: String
     },
     tokenExp: {
+        type: String
+    },
+    // gender: {
+    //     type: String
+    // },
+    // age: {
+    //     type: String
+    // },
+    address: {
         type: String
     }
 })
@@ -34,7 +35,7 @@ userSchema.pre('save', function(next){
     var user = this;
 
     if(user.isModified('password')) {
-            // 비밀번호를 암호화 시킨다.
+        // 비밀번호를 암호화 시킨다.
         bcrypt.genSalt(saltRounds, function(err, salt) {
             if(err) return next(err)
             bcrypt.hash(user.password, salt, function(err, hash) {
@@ -51,15 +52,15 @@ userSchema.pre('save', function(next){
 userSchema.methods.comparePassword = function(plainPassword, cb) {
     //plainPassword = 1234567와 데이터베이스에 있는 암호화된 비밀번호를 같은지 체크해야된다.
     bcrypt.compare(plainPassword, this.password, function(err, isMatch) {
-        if(err) return cb(err),
+        if(err) return cb(err);
         cb(null, isMatch)
-    }) 
-}
+    });
+};
 
 userSchema.methods.generateToken = function(cb) {
     var user = this;
     // jsonwebtoken을 이용해서 토큰을 생성하기
-    var token = jwt.sign(user._id, 'secretToken')
+    var token = jwt.sign(String(user._id), 'secretToken')
 
     user.token = token;
     user.save(function(err, user) {

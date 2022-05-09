@@ -7,13 +7,16 @@ contract receipt {
 
     string private place;
     string private date;
+    string private detail;
     uint private amount;
 
-    constructor (string memory _place, string memory _date, uint _amount) {
+
+    constructor (string memory _place, string memory _date, string memory _detail, uint _amount) {
         owner = msg.sender;
 
         place = _place;
         date = _date;
+        detail = _detail;
         amount = _amount;
     }
 
@@ -29,11 +32,11 @@ contract receipt {
         return date;
     }
 
-    function getAmount() public view returns (uint) {
-        return amount;
+    function getDetail() public view returns (string memory) {
+        return detail;
     }
 
-    function getAddress() public view returns (address) {
-        return address(this);
+    function getAmount() public view returns (uint) {
+        return amount;
     }
 }

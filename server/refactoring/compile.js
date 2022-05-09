@@ -24,7 +24,7 @@ exports.receipt = function() {
     const compile_output = JSON.parse(solc.compile(JSON.stringify(compile_input)));
     const result = [compile_output.contracts["receipt.sol"].receipt.abi, compile_output.contracts["receipt.sol"].receipt.evm.bytecode.object];
 
-    return result
+    return result;
 }
 exports.club = function () {
     const filePath = path.resolve(__dirname, 'club.sol');

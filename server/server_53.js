@@ -3,15 +3,21 @@ const server = express()
 const server_port = 3001
 
 const bodyParser = require("body-parser");
+server.use(bodyParser.urlencoded({extended: true}));
+server.use(bodyParser.json());
 const cookieParser = require('cookie-parser');
+server.use(cookieParser());
+
 const mongoose = require('mongoose')
 const config = require("./config/key");
 const {User} = require("./model/User");
 
-
-server.use(bodyParser.urlencoded({extended: true}));
-server.use(bodyParser.json());
-server.use(cookieParser());
+const path = require('path');
+const fs = require('fs');
+const solc = require('solc');
+const Web3 = require('web3');
+const blockchain_endpoint = 'http://172.31.8.46:8545';
+const web3 = new Web3(Web3.givenProvider || blockchain_endpoint);
 
 console.log('now DB connecting...')
 mongoose.connect(config.mongoURI)
@@ -19,7 +25,6 @@ mongoose.connect(config.mongoURI)
     .catch(err => console.log(err))
 
 
-//////////////////////////////////////////// 로그인 및 회원가입 - 상윤
 server.get('/', (req, res) => {
     res.send('joined server');
     console.log('joined server');
@@ -32,7 +37,8 @@ server.post('/register', (req, res) => {
         .then((result)=>{
             console.log("생성된 주소 : ", result);
             user['address'] = result;
-        }).then(result => {
+        })
+        .then(result => {
         user.save((err, userInfo) => {
             if(err) return res.json({ success: false,  err})
             console.log('Object id : ' ,String(userInfo._id))
@@ -42,7 +48,6 @@ server.post('/register', (req, res) => {
         })
     })
 })
-
 server.post('/login', (req, res) => {
     // 요청된 이메일을 데이터베이스에서 있는지 찾는다.
     User.findOne({email : req.body.email}, (err, user) => {
@@ -70,19 +75,6 @@ server.post('/login', (req, res) => {
     })
 })
 //.then(() => {console.log("회원가입 완료!")});
-
-
-
-
-
-
-//////////////////////////////////////////// 블록체인 - 성열
-const path = require('path');
-const fs = require('fs');
-const solc = require('solc');
-const Web3 = require('web3');
-const blockchain_endpoint = 'http://172.31.8.46:8545';
-const web3 = new Web3(Web3.givenProvider || blockchain_endpoint);
 
 function compile() {
     const filePath = path.resolve(__dirname, 'contracts', 'capstone_receipt.sol');

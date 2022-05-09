@@ -8,10 +8,9 @@ exports.makeReceipt = async function (caller, place, date, detail, amount) {
     // compile_result[0] = abi, [1] = bytecode
     const compile_result = compile.receipt()
 
-    await new web3.eth.Contract(compile_result[0])
+    return await new web3.eth.Contract(compile_result[0])
         .deploy({ data : compile_result[1], arguments: [place, date, detail, amount]})
         .send({ from : caller, gas : 3000000 })
-        .then(result => { return result })
 }
 exports.getReceiptPlace = async function (caller, contract) {
     return await contract.methods.getPlace()
@@ -30,20 +29,14 @@ exports.getReceiptAmount = async function (caller, contract) {
         .call({ from : caller })
 }
 
-
-
-
-
-
 // club part
 exports.makeClub = async function (caller, leader_name) {
     // compile_result[0] = abi, [1] = bytecode
-    const compile_result = compile.club()
+    const compile_result = compile.club();
 
-    await new web3.eth.Contract(compile_result[0])
+    return await new web3.eth.Contract(compile_result[0])
         .deploy({ data : compile_result[1], arguments: [leader_name]})
         .send({ from : caller, gas : 3000000 })
-        .then(result => { return result })
 }
 exports.getClubLeader = async function (caller, contract) {
     return await contract.methods.getLeader()
@@ -54,14 +47,12 @@ exports.getClubMembers = async function (caller, contract) {
         .call({ from : caller })
 }
 exports.getClubBalance = async function (caller, contract) {
-    return await contract.methods.getMembers()
+    return await contract.methods.getBalance()
         .call({ from : caller })
 }
 exports.getClubReceipts = async function (caller, contract) {
-    const receipts_address = await contract.methods.getLeader()
+    return await contract.methods.getReceipts()
         .call({ from : caller })
-
-
 }
 exports.addClubMember = async function (caller, contract, address, name, department) {
     // caller must be a leader
@@ -72,28 +63,24 @@ exports.addClubMember = async function (caller, contract, address, name, departm
         console.log('caller is not a leader');
     }
 }
-exports.addClubFee = async function (caller, contract, fee) {
+exports.addClubReceipt = async function (caller, club_contract, receipt_contract) {
     try {
-        await contract.methods.addFee(fee)
-            .send({ from : caller, gas : 3000000 })
-    } catch {
-        console.log('caller is not a leader');
-    }
-}
-exports.addReceipt = async function (caller, contract, receipt_address) {
-    try {
-        await contract.methods.addReceipt(receipt_address)
+        await club_contract.methods.addReceipt(receipt_contract.options.address)
             .send({ from : caller, gas : 3000000 })
     } catch {
         console.log('caller is not a member');
     }
-}
-// 여기 중요함 ㅇㅇ
-exports.updateClubBalance = async function (caller, contract, payment) {
+
     try {
-        await contract.methods.checkPaymentAmount(payment)
+        await receipt_contract.methods.getAmount()
             .call({ from : caller})
+            .then(result => {
+                club_contract.methods.addFee(result)
+                    .send({ from : caller, gas : 3000000 });
+            }).catch(() => {
+                console.log('caller is not a leader');
+            })
     } catch {
-        console.log('payment >>>>> balance');
+        console.log('클럽 컨트랙트의 밸런스 업데이트하는데 에러남')
     }
 }

@@ -1,21 +1,21 @@
 const express = require('express')
-const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser');
 const server = express()
 const server_port = 7000
+
+const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser');
+const mongoose = require('mongoose')
+const config = require("./config/key");
+const {User} = require("./model/User");
+
 
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(bodyParser.json());
 server.use(cookieParser());
 
-const mongoose = require('mongoose')
-const config = require("./config/key");
-const {User} = require("./model/User");
-
 mongoose.connect(config.mongoURI)
     .then(() => console.log('MongoDB Connected...'))
     .catch(err => console.log(err))
-
 
 
 
@@ -68,10 +68,13 @@ server.post('/login', (req, res) => {
     })
 })
 //.then(() => {console.log("회원가입 완료!")});
-// 로그인 및 회원가입 : 상윤
+
+
+
+
+
 
 //////////////////////////////////////////// 블록체인 - 성열
-const url = require('url');
 const path = require('path');
 const fs = require('fs');
 const solc = require('solc');
@@ -79,9 +82,85 @@ const Web3 = require('web3');
 const blockchain_endpoint = 'http://10.30.114.49:8546';
 const web3 = new Web3(Web3.givenProvider || blockchain_endpoint);
 
-contract_list = []
-user_address = {};
+function compile() {
+    const filePath = path.resolve(__dirname, 'contracts', 'capstone_receipt.sol');
+    const source_code = fs.readFileSync(filePath, 'utf8');
+    const solidity_compile_input = {
+        language: 'Solidity',
+        sources: {
+            'capstone_receipt.sol' : {
+                content: source_code
+            }
+        },
+        settings: {
+            outputSelection: {
+                '*': {
+                    '*': [ '*' ]
+                }
+            }
+        }
+    };
+    const solidity_compiled_result = JSON.parse(solc.compile(JSON.stringify(solidity_compile_input)));
+    return solidity_compiled_result.contracts["capstone_receipt.sol"].capstone_receipt;
 
+}
+async function deploy(caller, user_nickname) {
+    const solidity_compiled_result = compile();
+    const interface = solidity_compiled_result.abi;
+    const bytecode = solidity_compiled_result.evm.bytecode.object;
+
+    const deployed_contract = await new web3.eth.Contract(interface)
+        .deploy({data : bytecode, arguments : [user_nickname]})
+        .send({gas : '3000000' , from : caller});
+
+    return deployed_contract;
+}
+async function createClub(caller, user_name) {
+    console.log('start creating new club');
+
+    deploy(caller, user_name).then(result => {
+        contract_objects.push(result);
+        console.log('finish creating new club');
+        console.log(result);
+    });
+}
+async function addMember(caller, club_id, member_address, member_name, member_department) {
+    console.log('start adding new member');
+    await contract_objects[club_id].methods.addMember(member_address, member_name, member_department).send({from:caller, gas:'3000000'})
+        .then(console.log('finish adding new member'));
+}
+async function getMembers(caller, club_id){
+    await contract_objects[club_id].methods.getMembers().call({from : caller})
+        .then(result => {
+            console.log('members : ', result);
+        });
+}
+async function addMoney(caller, club_id, money) {
+    console.log('start adding money');
+    await contract_objects[club_id].methods.addMoney(money).send({from : caller, gas : '3000000'})
+        .then(console.log('finish adding money'));
+}
+async function getMoney(caller, club_id) {
+    await contract_objects[club_id].methods.getMoney().call({from: caller})
+        .then(result => {
+            console.log('money : ', result);
+        })
+}
+async function addReceipt(caller, club_id, payment_place, payment_amount) {
+    console.log('start adding new Receipt');
+    await contract_objects[club_id].methods.addReceipt(payment_place, payment_amount).send({from : caller, gas : '3000000'})
+        .then((result) => {
+            console.log('finish adding new Receipt');
+        }).catch((err) => {
+            console.log('Not enough money');
+        })
+}
+async function getReceipt(caller, club_id) {
+    await contract_objects[club_id].methods.getReceipts().call({from:caller})
+        .then(result => { console.log('Receipt : ', result)});
+}
+
+contract_objects = []
 
 server.post('/blockchain', (req,res) =>{
     res.send('blockchain page');
@@ -122,90 +201,6 @@ server.post('/blockchain', (req,res) =>{
             break;
     }
 })
-
-function compile() {
-    const filePath = path.resolve(__dirname, 'contracts', 'capstone_receipt.sol');
-    const source_code = fs.readFileSync(filePath, 'utf8');
-    const solidity_compile_input = {
-        language: 'Solidity',
-        sources: {
-            'capstone_receipt.sol' : {
-                content: source_code
-            }
-        },
-        settings: {
-            outputSelection: {
-                '*': {
-                    '*': [ '*' ]
-                }
-            }
-        }
-    };
-    const solidity_compiled_result = JSON.parse(solc.compile(JSON.stringify(solidity_compile_input)));
-    return solidity_compiled_result.contracts["capstone_receipt.sol"].capstone_receipt;
-
-}
-async function createAccount(password) {
-    await web3.cre
-}
-async function deploy(caller, user_nickname) {
-    const solidity_compiled_result = compile();
-    const interface = solidity_compiled_result.abi;
-    const bytecode = solidity_compiled_result.evm.bytecode.object;
-
-    const deployed_contract = await new web3.eth.Contract(interface)
-        .deploy({data : bytecode, arguments : [user_nickname]})
-        .send({gas : '3000000' , from : caller});
-
-    return deployed_contract;
-}
-async function createClub(caller, user_name) {
-    console.log('start creating new club');
-
-    deploy(caller, user_name).then(result => {
-        contract_list.push(result);
-        console.log('finish creating new club');
-    });
-}
-
-async function addMember(caller, club_id, member_address, member_name, member_department) {
-    console.log('start adding new member');
-    await contract_list[club_id].methods.addMember(member_address, member_name, member_department).send({from:caller, gas:'3000000'})
-        .then(console.log('finish adding new member'));
-}
-async function getMembers(caller, club_id){
-    await contract_list[club_id].methods.getMembers().call({from : caller})
-        .then(result => {
-            console.log('members : ', result);
-        });
-}
-async function addMoney(caller, club_id, money) {
-    console.log('start adding money');
-    await contract_list[club_id].methods.addMoney(money).send({from : caller, gas : '3000000'})
-        .then(console.log('finish adding money'));
-}
-async function getMoney(caller, club_id) {
-    await contract_list[club_id].methods.getMoney().call({from: caller})
-        .then(result => {
-            console.log('money : ', result);
-        })
-}
-async function addReceipt(caller, club_id, payment_place, payment_amount) {
-    console.log('start adding new Receipt');
-    await contract_list[club_id].methods.addReceipt(payment_place, payment_amount).send({from : caller, gas : '3000000'})
-        .then((result) => {
-            console.log('finish adding new Receipt');
-        }).catch((err) => {
-            console.log('Not enough money');
-        })
-}
-async function getReceipt(caller, club_id) {
-    await contract_list[club_id].methods.getReceipts().call({from:caller})
-        .then(result => { console.log('Receipt : ', result)});
-}
-
-
-
 
 server.listen(server_port, () => {
     console.log('server open');

@@ -2,15 +2,7 @@ const express = require('express')
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 const server = express()
-const url = require('url');
-const path = require('path');
-const fs = require('fs');
-const solc = require('solc');
-const Web3 = require('web3');
 const server_port = 7000
-const blockchain_endpoint = 'http://10.30.114.177:8546';
-const web3 = new Web3(Web3.givenProvider || blockchain_endpoint);
-
 
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(bodyParser.json());
@@ -19,6 +11,7 @@ server.use(cookieParser());
 const mongoose = require('mongoose')
 const config = require("./config/key");
 const {User} = require("./model/User");
+
 mongoose.connect(config.mongoURI)
     .then(() => console.log('MongoDB Connected...'))
     .catch(err => console.log(err))
@@ -26,12 +19,8 @@ mongoose.connect(config.mongoURI)
 
 
 
-// 서버 최초 접속
-// 서버 최초 접속
 
-
-
-// 로그인 및 회원가입 : 상윤
+//////////////////////////////////////////// 로그인 및 회원가입 - 상윤
 server.get('/', (req, res) => {
     res.send('joined server');
 })
@@ -39,17 +28,21 @@ server.post('/register', (req, res) => {
     //회원가입 할때 필요한 정보들을 client에서 가져오면 그것들을 database에 넣어준다.
     const user = new User(req.body)
 
-    //비밀번호의 경우 암호화 필요, 이때 mongoose의 기능이용, 따라서 User.js에서 암호화 작업 진행후
+    // 비밀번호의 경우 암호화 필요, 이때 mongoose의 기능이용, 따라서 User.js에서 암호화 작업 진행후
     user.save((err, userInfo) => {
         if(err) return res.json({ success: false,  err})
+
+        const blockchain_pw = userInfo._id;
+        web3.eth.personal.newAccount(blockchain_pw).then(result => {
+            console.log("생성된 주소 : ", result);
+        })
         return res.status(200).json({
             success: true
-            // make user account
-            // blockchain 연동
-
         })
     })
+
 })
+
 server.post('/login', (req, res) => {
     // 요청된 이메일을 데이터베이스에서 있는지 찾는다.
     User.findOne({email : req.body.email}, (err, user) => {
@@ -78,10 +71,15 @@ server.post('/login', (req, res) => {
 //.then(() => {console.log("회원가입 완료!")});
 // 로그인 및 회원가입 : 상윤
 
+//////////////////////////////////////////// 블록체인 - 성열
+const url = require('url');
+const path = require('path');
+const fs = require('fs');
+const solc = require('solc');
+const Web3 = require('web3');
+const blockchain_endpoint = 'http://10.30.114.177:8546';
+const web3 = new Web3(Web3.givenProvider || blockchain_endpoint);
 
-
-
-// 블록체인 통신 : 성열
 contract_list = []
 user_address = {};
 
@@ -103,13 +101,26 @@ server.get('/blockchain', (req,res) =>{
     const member_department = 'first_depart'
     //mock-up
 
+    // change part
+    // let caller = 앱에 로그인한 유저의 전자지갑 주소
+    // let club_id = 현재 보고있는 모임의 고유번호
+    // let member_address = 참가시킬 사람의 아이디 -> 전자지갑 주소 참조
+    // let member_name = 참가시킬 사람의 아이디 -> nickname 참조
+    // let money = 이미지 처리로 추출된 회비 입금 금액
+    // let payment_place = 이미지 처리로 추출된 결제 장소
+    // let payment_amount = 이미지 처리로 추출된 영수증의 총 금액
+    // let user_name = 모임 회장의 이름
+    // let member_department = 참가시킬 부서명
+    // change part
+
+
     console.log('\n==== command : ', command);
     switch (command)  {
         case ('create_club') :    // address caller, string user_name
             createClub(caller, user_name);
             break;
         case ('add_member'):
-            addMember(caller, club_id, member_address,member_name, member_department);
+            addMember(caller, club_id, member_address, member_name, member_department);
             break;
         case ('get_member'):
             getMembers(caller, club_id);
@@ -153,14 +164,17 @@ function compile() {
     return solidity_compiled_result.contracts["capstone_receipt.sol"].capstone_receipt;
 
 }
-async function deploy(user_address, user_nickname) {
+async function createAccount(password) {
+    await web3.cre
+}
+async function deploy(caller, user_nickname) {
     const solidity_compiled_result = compile();
     const interface = solidity_compiled_result.abi;
     const bytecode = solidity_compiled_result.evm.bytecode.object;
 
     const deployed_contract = await new web3.eth.Contract(interface)
         .deploy({data : bytecode, arguments : [user_nickname]})
-        .send({gas : '3000000' , from : user_address});
+        .send({gas : '3000000' , from : caller});
 
     return deployed_contract;
 }
@@ -171,6 +185,14 @@ async function createClub(caller, user_name) {
         contract_list.push(result);
         console.log('finish creating new club');
     });
+}
+
+async function createAccount(blockchain_pw) {
+    await web3.eth.personal.newAccount(blockchain_pw)
+        .then((result) => {
+            console.log(result);
+            return result;
+        })
 }
 async function addMember(caller, club_id, member_address, member_name, member_department) {
     console.log('start adding new member');
@@ -207,7 +229,6 @@ async function getReceipt(caller, club_id) {
     await contract_list[club_id].methods.getReceipts().call({from:caller})
         .then(result => { console.log('Receipt : ', result)});
 }
-// 블록체인 통신 : 성열
 
 
 
