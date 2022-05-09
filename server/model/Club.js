@@ -1,46 +1,57 @@
-const receiptSchema = mongoose.Schema({
-    payment_place: {
-        type: String,
-        required : true
+const mongoose = require('mongoose');
+
+const itemSchema = new mongoose.Schema({
+    item_name: {
+        type: String
     },
-    payment_amount: {
-        type: Number,
-        required : true
+    item_cost: {
+        type: Number
+    },
+})
+
+const receiptSchema = new mongoose.Schema({
+    user_id: {
+        type: String
+    },
+    payment_place: {
+        type: String
+    },
+    payment_cost: {
+        type: Number
     },
     payment_date: {
-        type: String,
-        required : true
+        type: Date, default: Date.now
     },
     payment_item: {
-        type: String
-    }
-})
+        type: [itemSchema]
+    },
+});
 
 const clubSchema = mongoose.Schema({
     club_title: {
-        type: String,
-        required: true
+        type: String
+    },
+    club_address: {
+        type: String
     },
     club_id: {
-        type: Number,
-        required: true
+        type: String
     },
-    bank_account_number: {
-        type: String,
-        required: true
-    },
-    bank_owner_name: {
-        type: String,
-        required: true
+    club_constructor: {
+        type: String
     },
     club_balance: {
         type: Number
     },
+    image: String,
     joined_user: {
         type: [String]
     },
-    receipts: {
+    receipt: {
         type: [receiptSchema]
-    }
+    },
+});
 
-})
+const Club = mongoose.model('Club', clubSchema)
+
+module.exports = { Club }

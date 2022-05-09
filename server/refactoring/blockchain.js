@@ -3,6 +3,11 @@ const blockchain_endpoint = 'http://127.0.0.1:8888';
 const web3 = new Web3(Web3.givenProvider || blockchain_endpoint);
 const compile = require('./compile')
 
+//
+exports.makeAccount = async function (id) {
+    return await web3.eth.personal.newAccount(id);
+}
+
 // receipt part
 exports.makeReceipt = async function (caller, place, date, detail, amount) {
     // compile_result[0] = abi, [1] = bytecode

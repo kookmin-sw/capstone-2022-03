@@ -3,9 +3,12 @@ const server = express()
 const server_port = 8080
 
 const blockchain = require('./blockchain')
+const db = require('./database')
 
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
+
+
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(bodyParser.json());
 server.use(cookieParser());
@@ -14,13 +17,12 @@ server.post('/', (req, res) => {
 
 })
 server.post('/register', (req, res) => {
-
+    db.register(req.body);
 })
 server.post('/login', (req, res) => {
 
 })
 
-// 일반 DB
 server.post('/create_club', (req, res) => {
 
 })
@@ -47,38 +49,38 @@ server.post('/receipt_detail', (req, res) => {
 
 
 
-// 블록체인 DB
-server.post('/create_club/blockchain', (req, res) => {
-
-})
-server.post('/create_receipt/blockchain', (req,res) => {
-    blockchain.makeReceipt(req.body.caller, req.body.place, req.body.date, req.body.detail, req.body.amount)
-        .then(result => {
-            // result is the contract of receipt
-            blockchain.addClubReceipt(req.body.caller, req.body.contract, result)
-        })
-})
-server.post('/add_member/blockchain', (req, res) => {
-
-})
-server.post('/add_fee/blockchain', (req, res) => {
-
-})
-server.post('/add_receipt/blockchain', (req, res) => {
-
-})
-server.post('/club_receipt/blockchain', (req, res) => {
-
-})
-server.post('/receipt_detail/blockchain', (req, res) => {
-
-})
-
+// server.post('/create_club/blockchain', (req, res) => {
+//     blockchain.makeClub(req.body.caller, req.body.club_title, req.body.bank_number, req.body.bank_name, req.body.user_id)
+// })
+// server.post('/create_receipt/blockchain', (req,res) => {
+//     blockchain.makeReceipt(req.body.caller, req.body.place, req.body.date, req.body.detail, req.body.amount)
+//         .then(result => {
+//             // result is the contract of receipt
+//             blockchain.addClubReceipt(req.body.caller, req.body.contract, result)
+//         })
+// })
+// server.post('/add_member/blockchain', (req, res) => {
+//
+// })
+// server.post('/add_fee/blockchain', (req, res) => {
+//
+// })
+// server.post('/add_receipt/blockchain', (req, res) => {
+//
+// })
+// server.post('/club_receipt/blockchain', (req, res) => {
+//
+// })
+// server.post('/receipt_detail/blockchain', (req, res) => {
+//
+// })
 
 
+db.connenct();
 server.listen(server_port, () => {
     console.log('server open');
 })
+
 
 // for test
 // const caller = '0x424a3aA3407FC509a58297Fe774D0AA48fbF81b7'
