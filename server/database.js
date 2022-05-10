@@ -126,20 +126,16 @@ exports.addMember = function(data, res) {
             Club.findOneAndUpdate({ _id : data.club_id}, {$push : { joined_member : user._id}}, (err, club) => {
                 if(err) {
                     return res.json({success: false, message: err})
+                } else if (!club.joined_user.includes(user._id)){
+                    return res.json({
+                        success : false, message : '모임에 없는 사람입니다.'
+                    })
                 } else {
                     return res.json({ success : true, message : club.joined_member })
                 }
             })
         }
     })
-    // User.findOne({name : data.member_name}, (err, user) => {
-    //     Club.findOneAndUpdate({club_id : data.club_id }, { $push: { joined_user: user._id}}, (err, isPushed_1) => {
-    //         if(isPushed_1) { return res.json({ isPushed_1 : false, message : "총무 추가 완료" })}
-    //         else { console.log('err', err)
-    //         }
-    //     })
-    // })
-
 }
 exports.addFee = function(data, res) {
     Club.findOneAndUpdate({ _id : data.club_id}, {$inc: { club_balance: data.fee }}, (err, club)=>{
