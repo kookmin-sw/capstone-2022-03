@@ -30,8 +30,8 @@ export function RegisterScreen() {
     // const _ANDROID_AVD_API_HOST = 'http://3.39.196.91:3001/login'; //localhost 테스트용
     // const _IOS_API_HOST = 'http://3.39.196.91:3001/login'; //localhost 테스트용
 
-    const _ANDROID_AVD_API_HOST = 'http://10.0.2.2:7000/login'; //localhost 테스트용
-    const _IOS_API_HOST = 'http://127.0.0.1:7000/login'; //localhost 테스트용
+    const _ANDROID_AVD_API_HOST = 'http://10.0.2.2:7000/register'; //localhost 테스트용
+    const _IOS_API_HOST = 'http://127.0.0.1:7000/register'; //localhost 테스트용
 
     async function onRegister() {
         if (password != checkpassword) { //비밀번호 확인이 제대로 되었나 탐지
@@ -82,17 +82,11 @@ export function RegisterScreen() {
             }
         }
     }
-    // function goToLogin() {
-    //     navigation.navigate("Login");
-    // }
+
     return (
         <View style={styles.container}>
             <View style={styles.topArea}>
                 <View style={styles.titleArea}>
-                    {/* <Image
-                        source={require('../src/icon/logo.png')}
-                        style={{ width: 50, height: 50 }}
-                    /> */}
                     <Image
                         source={require('../src/icon/Register.png')}
                         style={{ width: wp(30), resizeMode: 'contain' }}
@@ -150,7 +144,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1, //전체의 공간을 차지한다는 의미
         flexDirection: 'column',
-        backgroundColor: 'white',
+        backgroundColor: '#f2f2f2',
         paddingLeft: wp(7),
         paddingRight: wp(7),
     },
@@ -171,7 +165,7 @@ const styles = StyleSheet.create({
     TextArea: {
         flex: 0.3,
         justifyContent: 'center',
-        backgroundColor: 'white',
+        backgroundColor: '#f2f2f2',
     },
     Text: {
         fontSize: wp('4%'),
@@ -184,7 +178,6 @@ const styles = StyleSheet.create({
 
     formArea: {
         justifyContent: 'center',
-        // paddingTop: wp(10),
         flex: 1.5,
     },
     textFormTop: {
@@ -197,6 +190,7 @@ const styles = StyleSheet.create({
         height: hp(6),
         paddingLeft: 10,
         paddingRight: 10,
+        backgroundColor: 'white'
     },
     textFormBottom: {
         borderWidth: 2,
@@ -208,10 +202,10 @@ const styles = StyleSheet.create({
         height: hp(6),
         paddingLeft: 10,
         paddingRight: 10,
+        backgroundColor: 'white'
     },
     btnArea: {
         height: hp(8),
-        // backgroundColor: 'orange',
         justifyContent: 'center',
         alignItems: 'center',
         paddingBottom: hp(1.5),

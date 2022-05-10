@@ -7,7 +7,6 @@ import Plus from '../src/icon/plus.png';
 import storage from '@react-native-firebase/storage';
 import config from '../config.json';
 import test from '../src/icon/test.jpeg';
-// import storage from '@react-native-firebase/storage';
 
 export function CameraScreen() {
     const navigation = useNavigation();
@@ -86,11 +85,6 @@ export function CameraScreen() {
                     console.log('this.is response', googleVisionRes);
                 }
             }).catch((error) => { console.log(error) })
-        // .then((res) => console.log(res.json()))
-        // await googleVisionRes.text()
-        //     .then(googleVisionRes => {
-        //         console.log(googleVisionRes.description);
-        //     }).catch((err) => { console.log(err) })
     }
 
 
