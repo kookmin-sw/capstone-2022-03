@@ -6,6 +6,7 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import { useIsFocused } from '@react-navigation/native';
 import { greaterThan } from 'react-native-reanimated';
 
 // StatusBar의 배경을 투명하게 만들고, 폰트를 검정색을 설정
@@ -20,7 +21,7 @@ const StatusBarHeight =
     Platform.OS === 'ios' ? getStatusBarHeight(true) : StatusBar.currentHeight;
 
 function MainScreen({ route, navigation }) {
-    console.log(route);
+    const isFocused = useIsFocused();
     // const { email } = route.params;  //유저 정보
     //route를 통해 로그인 페이지로부터 user_id를 전달받는다. 
     //로그인정보를 확인하고 인증 되었을때 
@@ -119,6 +120,10 @@ function MainScreen({ route, navigation }) {
         );
     };
 
+    useEffect(() => {
+        console.log("모든 요소가 변경될때 마다 실행");
+    }, [isFocused]);
+
     return (
         <View style={styles.container}>
             <View style={styles.header}></View>
@@ -127,10 +132,6 @@ function MainScreen({ route, navigation }) {
                     source={require('../src/icon/textlogo.png')}
                     style={{ width: wp(30), resizeMode: 'contain' }}
                 />
-                {/* <Text style={{ fontSize: 25, color: 'black', }}>
-                    여기모영
-                </Text>
-                <Text style={{ fontSize: 15, color: 'grey' }}>skwx50000님, 안녕하세요! </Text> */}
             </View>
             <View style={styles.content}>
                 <Text style={{ fontSize: 25, fontWeight: '700', color: 'black', marginTop: 15, marginLeft: 15, marginBottom: 5 }}>모임 목록</Text>
