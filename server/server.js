@@ -39,6 +39,9 @@ server.post('/add_member', (req, res) => {
 server.post('/add_fee', (req, res) => {
     db.addFee(req.body, res)
 })
+server.post('/add_member', (req, res) => {
+    db.addMember(req.body, res)
+})
 
 
 server.post('/user_address', (req, res) => {
@@ -55,14 +58,10 @@ server.post('/rmClub', (req, res) => {
     res.send('done')
 })
 server.post('/rmUser', (req, res) => {
-    db.rmUser(req.body)
-    res.send('done')
+    db.rmUser(req.body, res)
 })
 
 
-server.post('/add_member', (req, res) => {
-    db.addMember(req.body, res)
-})
 server.post('/add_receipt', (req, res) => {
 
 })

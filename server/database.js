@@ -105,19 +105,7 @@ exports.joinClub = function(data, res) {
             return res.status(200).json({ success : true, message : club })
         }
     })
-
-    // Club.findOneAndUpdate({_id : data.club_id}, { $push: { joined_user: data.user_id}}, (err, isPushed_1) => {
-    //     if(isPushed_1) { return res.json({ isPushed_1 : false, message : "모임 참가에 실패하였습니다." })}
-    //     else {
-    //         User.findOneAndUpdate({ _id : data.user_id}, {$push : {joined_club: data.club_id}}, (err, isPushed_2) => {
-    //             if(!isPushed_2) { return res.json({ isPushed_2 : false, message : "모임 참가에 실패하였습니다." })}
-    //             else { res.json({ success : true, message : "모임 참가에 성공하였습니다. "}) }
-    //         })}
-    // })
 }
-
-// addMemebr 수정해야함
-// 총무를 추가했는데, 모임의 회원이 아닌 경우에 대한 에러 수정
 exports.addMember = function(data, res) {
     User.findOne({name : data.member_name, email : data.member_email}, (err, user) => {
         if (err) {
@@ -144,6 +132,10 @@ exports.addFee = function(data, res) {
 }
 
 
+
+
+
+
 exports.userAddress = function(data, res) {
     User.findOne({ _id : data.user_id }, (err, user) => {
         if (!user) {
@@ -168,15 +160,28 @@ exports.allClub = function(res) {
 exports.allUser = function(res) {
     User.find().then(result => res.send(result))
 }
-exports.rmUser = function (data) {
-    User.findOneAndDelete({ name : data.name})
-        .then(result => {console.log(result)})
-    // 해당 클럽에 joined_user 검색 후
-    // joined_user 리스트에 해당하는 모든 User에서 joined_club을 삭제해야한다.
+exports.rmUser = function (data, res) {
+    // 수정한 부분 : 유저가 삭제된 경우, 유저가 속한 클럽들을 조회하고, 해당 클럽들에서 user._id를 삭제한다.
+    // 수정해야 하는 부분 : 이때, 유저가 모임의 리더인 경우 어떻게 처리할지..?
+    // 해당 모임도 삭제 해버린다. or 모임을 먼저 삭제해야 한다.
+    User.findOneAndDelete({ name : data.name}, {},(err, user) => {
+        const temp_joined_club = user.joined_club
+        for(let i of temp_joined_club) {
+            Club.findOneAndUpdate({_id : i}, {$pull : {joined_user : user._id}}, (err, club) => {
+                console.log(club)
+            })
+        }
+        console.log(user)
+    })
 }
-exports.rmClub = function (data) {
-    Club.findOneAndDelete({ club_title : data.club_title })
-        .then(result => {console.log(result)})
-    // 해당 클럽에 joined_user 검색 후
-    // joined_user 리스트에 해당하는 모든 User에서 joined_club을 삭제해야한다.
+exports.rmClub = function (data, res) {
+    Club.findOneAndDelete({ club_title : data.club_title}, {}, (err, club) => {
+        const temp_joined_user = club.joined_user
+        for(let i of temp_joined_user) {
+            User.findOneAndUpdate({_id : i}, {$pull : { joined_club : club._id}}, (err, user) => {
+                console.log(user)
+            })
+        }
+        console.log(club)
+    })
 }
