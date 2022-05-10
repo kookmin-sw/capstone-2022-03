@@ -63,7 +63,7 @@ export function LoginScreen() {
     }
 
     function goToRegister() {
-        navigation.navigate("Register");
+        navigation.push("Register");
     }
 
     return (
@@ -108,7 +108,7 @@ export function LoginScreen() {
                     </TouchableOpacity>
                 </View>
             </View>
-            <View style={{ flex: 0.1 }}>
+            <View style={{ flex: 0.5 }}>
                 <View style={styles.btnArea}>
                     <TouchableOpacity style={styles.btn_register}
                         onPress={() => goToRegister()}>
@@ -155,13 +155,9 @@ const styles = StyleSheet.create({
 
     formArea: {
         justifyContent: 'center',
-        // paddingTop: wp(10),
         flex: 1.5,
     },
     textFormTop: {
-        // borderWidth: 2,
-        // borderBottomWidth: 1,
-        // borderColor: '#208cf7',
         backgroundColor: 'white',
         borderTopLeftRadius: 7,
         borderTopRightRadius: 7,
