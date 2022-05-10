@@ -13,8 +13,8 @@ server.use(bodyParser.urlencoded({extended: true}));
 server.use(bodyParser.json());
 server.use(cookieParser());
 
-server.get('/', (req, res) => {
-    res.send('hello world')
+server.post('/user_address', (req, res) => {
+    db.userAddress(req.body, res)
 })
 server.post('/register', (req, res) => {
     blockchain.makeAccount(req.body.name)
@@ -25,20 +25,34 @@ server.post('/register', (req, res) => {
 server.post('/login', (req, res) => {
     db.login(req.body, res);
 })
-
-server.post('/create_club', (req, res) => {
-    // 일반 DB
-    db.makeClub(req.body, '', res)
-    // 블록체인 사용
+server.post('/clubs', (req, res) => {
+    db.allClub(res);
 })
-server.post('/my_club', (req, res) => {
-    db.myClubList(req.body, res);
+server.post('/users', (req, res) => {
+    db.allUser(res);
 })
-server.post('/add_member', (req, res) => {
-    db.addMember(req.body, res)
+server.post('/rmClub', (req, res) => {
+    db.rmClub(req.body)
+    res.send('done')
+})
+server.post('/rmUser', (req, res) => {
+    db.rmUser(req.body)
+    res.send('done')
 })
 server.post('/add_fee', (req, res) => {
+    db.addFee(req.body, res)
+})
+server.post('/create_club', (req, res) => {
+    // 일반 DB
+    db.createClub(req.body, '', res)
+    // 블록체인 사용
+})
 
+
+
+
+server.post('/add_member', (req, res) => {
+    db.addMember(req.body, res)
 })
 server.post('/add_receipt', (req, res) => {
 
@@ -49,8 +63,14 @@ server.post('/club_receipt', (req, res) => {
 server.post('/receipt_detail', (req, res) => {
 
 })
+server.post('/my_clubs', (req, res) => {
+    db.myClubs(req.body, res);
+})
+
+
 
 server.listen(server_port, () => {
     console.log('capstone server open');
 })
+
 db.connenct();

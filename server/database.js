@@ -3,6 +3,7 @@ const config = require("./config/dev")
 const {User} = require("./model/User.js")
 const {Club} = require("./model/Club.js")
 
+// 테스트 완료 함수
 exports.connenct = function () {
     mongoose.connect(config.mongoURI)
         .then(() => console.log('DB connected...'))
@@ -13,8 +14,11 @@ exports.register = function (data, address, res) {
     const user = new User(data)
 
     user.save((err, userInfo) => {
-        if (err) { return res.json({ success : false, err}) }
-        return res.status(200).json({ success : true })
+        if (err) {
+            return res.json({ success : false, err})
+        } else {
+            return res.status(200).json({ success : true })
+        }
     })
 }
 exports.login = function (data, res) {
@@ -50,30 +54,44 @@ exports.login = function (data, res) {
         })
     })
 }
-exports.userAddress = function(data) {
-    User.findOne({ _id : data }, (err, user) => {
-        return user.address;
+exports.userAddress = function(data, res) {
+    User.findOne({ _id : data.user_id }, (err, user) => {
+        if (!user) {
+            console.log(err)
+            return res.json({ message : 'there is not user' })
+        } else {
+            return res.status(200).json({ user_address : user.address })
+        }
     })
 }
-
-exports.makeClub = function(data, address, res) {
+exports.createClub = function(data, address, res) {
     const club = new Club(data)
-    club.club_id = String(club._id).slice(0,5);
+    club.club_id = String(club._id).slice(String(club._id)-5, String(club._id)-1);
     club.club_address = address;
     club.club_balance = 0;
     club.joined_user.push(data.club_leader_id);
 
-    club.save((err, clubInfo) => {
-        if (err) { return res.json({ success : false, err })}
-        return res.status(200).json({ success : true })
-    })
+    club.save();
+    User.findOneAndUpdate({_id : data.club_leader_id}, { $push: { joined_club: club._id}})
+    res.send('done');
 
-    User.findOneAndUpdate({_id : data.club_leader_id}, { $push: { joined_club: club._id}}, (err, isPushed_1) => {
-        if(isPushed_1) { return res.json({ isPushed_1 : false, message : "모임 참가에 실패하였습니다." })}
-        else { console.log('err', err)
-        }
-    })
+    // club.save((err, clubInfo) => {
+    //     if (err) { return res.json({ success : false, err }) }
+    //     else { return res.json({ success : true }) }
+    // })
+    // User.findOneAndUpdate({_id : data.club_leader_id}, { $push: { joined_club: club._id}}, (err, isPushed_1) => {
+    //     if(!isPushed_1) { return res.json({ isPushed_1 : false, message : "모임 참가에 실패하였습니다." }) }
+    //     else { return res.json({ create_club : true }) }
+    // })
 }
+exports.addFee = function(data, res) {
+    Club.findOneAndUpdate({ _id : data.club_id}, {$inc: { club_balance: data.fee }})
+    res.send('add fee done')
+}
+
+
+// 테스트 미완료 함수
+
 exports.gotoClub = function(data, res) {
     Club.findOne({_id : data.club_id}, (err, isMatch) => {
         if(!isMatch) { return res.json({ gotoClub : false, message: "제공된 club_id에 해당하는 모임이 없습니다!" })}
@@ -99,20 +117,6 @@ exports.addReceipt = function(data, res) {
     })
 }
 
-exports.myClubList = function(data, res) {
-    var myClubs = [];
-
-    const getClubs = async function (club_list) {
-        for (let i in club_list) {
-            Club.findOne({ _id: i})
-                .then(result => { myClubs.push(result)} )
-        }
-    }
-    User.findOne({_id : data.user_id}, (err, target_user) => {
-        getClubs(target_user.joined_club)
-            .then(() => {return myClubs})
-    })
-}
 exports.addMember = function(data, res) {
     User.findOne({name : data.member_name}, (err, user) => {
         Club.findOneAndUpdate({club_id : data.club_id }, { $push: { joined_user: user._id}}, (err, isPushed_1) => {
@@ -121,5 +125,27 @@ exports.addMember = function(data, res) {
             }
         })
     })
+
+}
+
+exports.allClub = function(res) {
+    Club.find().then(result => res.send(result))
+}
+exports.allUser = function(res) {
+    User.find().then(result => res.send(result))
+}
+exports.rmUser = function (data) {
+    User.findOneAndDelete({ name : data.name})
+        .then(result => {console.log(result)})
+    // 해당 클럽에 joined_user 검색 후
+    // joined_user 리스트에 해당하는 모든 User에서 joined_club을 삭제해야한다.
+}
+exports.rmClub = function (data) {
+    Club.findOneAndDelete({ club_title : data.club_title })
+        .then(result => {console.log(result)})
+    // 해당 클럽에 joined_user 검색 후
+    // joined_user 리스트에 해당하는 모든 User에서 joined_club을 삭제해야한다.
+}
+exports.myClubs = function(data, res) {
 
 }
