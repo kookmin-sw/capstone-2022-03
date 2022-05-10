@@ -19,13 +19,26 @@ server.post('/register', (req, res) => {
             db.register(req.body, address, res)
         })
 })
-
+server.post('/login', (req, res) => {
+    db.login(req.body, res);
+})
+server.post('/create_club', (req, res) => {
+    // 일반 DB
+    db.createClub(req.body, '', res)
+    // 블록체인 사용
+})
+server.post('/my_clubs', (req, res) => {
+    db.myClubs(req.body, res);
+})
+server.post('/goto_club', (req, res) => {
+    db.gotoClub(req.body, res)
+})
+server.post('/add_member', (req, res) => {
+    db.addMember(req.body, res)
+})
 
 server.post('/user_address', (req, res) => {
     db.userAddress(req.body, res)
-})
-server.post('/login', (req, res) => {
-    db.login(req.body, res);
 })
 server.post('/clubs', (req, res) => {
     db.allClub(res);
@@ -44,19 +57,8 @@ server.post('/rmUser', (req, res) => {
 server.post('/add_fee', (req, res) => {
     db.addFee(req.body, res)
 })
-server.post('/create_club', (req, res) => {
-    // 일반 DB
-    db.createClub(req.body, '', res)
-    // 블록체인 사용
-})
-server.post('/my_clubs', (req, res) => {
-    db.myClubs(req.body, res);
-})
 
 
-server.post('/goto_club', (req, res) => {
-    db.gotoClub(req.body, res)
-})
 server.post('/add_member', (req, res) => {
     db.addMember(req.body, res)
 })

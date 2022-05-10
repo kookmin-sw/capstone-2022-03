@@ -15,7 +15,7 @@ exports.register = function (data, address, res) {
 
     user.save((err, userInfo) => {
         if (err) {
-            return res.json({ success : false, err})
+            return res.json({ success : false, message : err })
         } else {
             return res.status(200).json({ success : true })
         }
@@ -23,15 +23,13 @@ exports.register = function (data, address, res) {
 }
 exports.login = function (data, res) {
     User.findOne({ email : data.email }, (err, user) => {
-        if (!user) { return res.json({ loginSuccess : false, message : "제공된 이메일에 해당하는 유저가 없습니다!"}) }
+        if (!user) { return res.json({ success : false, message : "제공된 이메일에 해당하는 유저가 없습니다!" }) }
 
         user.comparePassword(data.password, (err, isMatch) => {
-            if(!isMatch){ return res.json({ loginSuccess : false, message : "비밀번호가 틀렸습니다." }) }
+            if(!isMatch){ return res.json({ success : false, message : "비밀번호가 틀렸습니다." }) }
 
             user.generateToken((err, user) => {
-                if (err) { return res.status(400).send(err); }
-
-                console.log('user joined club :', user.joined_club);
+                if (err) { return res.send({ success : false, message : "토큰 생성 오류"}) }
 
                 var data = {}
                 const find_data = async function() {
@@ -47,21 +45,11 @@ exports.login = function (data, res) {
                     console.log(data)
                     res.cookie("x_auth", user.token)
                         .status(200)
-                        .json({ loginSuccess : true, userId : user._id, name : user.name, joined_club : data })
+                        .json({ success : true, message : user })
                 })
             })
             console.log(user._id, user.name, "님이 로그인 하였습니다.")
         })
-    })
-}
-exports.userAddress = function(data, res) {
-    User.findOne({ _id : data.user_id }, (err, user) => {
-        if (!user) {
-            console.log(err)
-            return res.json({ message : 'there is not user' })
-        } else {
-            return res.status(200).json({ user_address : user.address })
-        }
     })
 }
 exports.createClub = function(data, address, res) {
@@ -71,20 +59,26 @@ exports.createClub = function(data, address, res) {
     club.club_balance = 0;
     club.club_leader_id = data.user_id;
     club.joined_user.push(data.user_id);
+    club.joined_member.push(data.user_id);
 
     club.save()
     User.findOneAndUpdate({_id : data.user_id}, { $push: { joined_club : club._id }}, (err, user) => {
-        res.send(user);
+        if (err) {
+            return res.json({ success : false, message : err })
+        } else {
+            return res.status(200).json({ success : true, message : club})
+        }
     })
 }
-exports.addFee = function(data, res) {
-    Club.findOneAndUpdate({ _id : data.club_id}, {$inc: { club_balance: data.fee }}, (err, club)=>{
-        res.send(club);
+exports.gotoClub = function(data, res) {
+    Club.findOne({_id : data.club_id}, (err, club) => {
+        if (err) { return res.json({ success : false, message : err })
+        } else { return res.json({ success : true, message : club }) }
     })
 }
 exports.myClubs = function(data, res) {
     User.findOne({_id : data.user_id}, (err, user) => {
-        let list = []
+        let list = [];
         const temp = async function() {
             for (let i of user.joined_club) {
                 await Club.findOne({_id : i})
@@ -99,22 +93,65 @@ exports.myClubs = function(data, res) {
         })
     })
 }
+exports.joinClub = function(data, res) {
+    Club.findOneAndUpdate({_id : data.club_id}, {$push : { joined_user: data.user_id }}, (err, club) => {
+        if(err) { return res.json({ success : false, message : err })
+        } else {
+            User.findOneAndUpdate({_id : data.user_id}, {$push : { joined_club : club._id}}, (err, user) => {
+                if(err) { return res.json({ success : false, message : err })
+                }
+            })
+            return res.status(200).json({ success : true, message : club })
+        }
+    })
+
+    // Club.findOneAndUpdate({_id : data.club_id}, { $push: { joined_user: data.user_id}}, (err, isPushed_1) => {
+    //     if(isPushed_1) { return res.json({ isPushed_1 : false, message : "모임 참가에 실패하였습니다." })}
+    //     else {
+    //         User.findOneAndUpdate({ _id : data.user_id}, {$push : {joined_club: data.club_id}}, (err, isPushed_2) => {
+    //             if(!isPushed_2) { return res.json({ isPushed_2 : false, message : "모임 참가에 실패하였습니다." })}
+    //             else { res.json({ success : true, message : "모임 참가에 성공하였습니다. "}) }
+    //         })}
+    // })
+}
+exports.addMember = function(data, res) {
+    User.findOne({name : data.member_name, email : data.member_email}, (err, user) => {
+        if (err) {
+            return res.json({success : false, message : err})
+        } else {
+            Club.findOneAndUpdate({ _id : data.club_id}, {$push : { joined_member : user._id}}, (err, club) => {
+                if(err) {
+                    return res.json({success: false, message: err})
+                } else {
+                    return res.json({ success : true, message : club.joined_member })
+                }
+            })
+        }
+    })
+    // User.findOne({name : data.member_name}, (err, user) => {
+    //     Club.findOneAndUpdate({club_id : data.club_id }, { $push: { joined_user: user._id}}, (err, isPushed_1) => {
+    //         if(isPushed_1) { return res.json({ isPushed_1 : false, message : "총무 추가 완료" })}
+    //         else { console.log('err', err)
+    //         }
+    //     })
+    // })
+
+}
 
 
-// 테스트 미완료 함수
-exports.gotoClub = function(data, res) {
-    Club.findOne({_id : data.club_id}, (err, club) => {
-        return res.send(club)
+exports.userAddress = function(data, res) {
+    User.findOne({ _id : data.user_id }, (err, user) => {
+        if (!user) {
+            console.log(err)
+            return res.json({ message : 'there is not user' })
+        } else {
+            return res.status(200).json({ user_address : user.address })
+        }
     })
 }
-exports.joinClub = function(data, res) {
-    Club.findOneAndUpdate({_id : data.club_id}, { $push: { joined_user: data.user_id}}, (err, isPushed_1) => {
-        if(isPushed_1) { return res.json({ isPushed_1 : false, message : "모임 참가에 실패하였습니다." })}
-        else {
-            User.findOneAndUpdate({ _id : data.user_id}, {$push : {joined_club: data.club_id}}, (err, isPushed_2) => {
-                if(!isPushed_2) { return res.json({ isPushed_2 : false, message : "모임 참가에 실패하였습니다." })}
-                else { res.json({ success : true, message : "모임 참가에 성공하였습니다. "}) }
-            })}
+exports.addFee = function(data, res) {
+    Club.findOneAndUpdate({ _id : data.club_id}, {$inc: { club_balance: data.fee }}, (err, club)=>{
+        res.send(club);
     })
 }
 exports.addReceipt = function(data, res) {
@@ -125,17 +162,6 @@ exports.addReceipt = function(data, res) {
         else { return res.json({ isPushed : true, message: "영수증 저장에 성공하였습니다." })}
     })
 }
-exports.addMember = function(data, res) {
-    User.findOne({name : data.member_name}, (err, user) => {
-        Club.findOneAndUpdate({club_id : data.club_id }, { $push: { joined_user: user._id}}, (err, isPushed_1) => {
-            if(isPushed_1) { return res.json({ isPushed_1 : false, message : "총무 추가 완료" })}
-            else { console.log('err', err)
-            }
-        })
-    })
-
-}
-
 exports.allClub = function(res) {
     Club.find().then(result => res.send(result))
 }

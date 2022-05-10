@@ -26,9 +26,6 @@ const userSchema = mongoose.Schema({
     tokenExp: {
         type: String
     },
-    address: {
-        type: String
-    }
 })
 
 userSchema.pre('save', function (next) {
