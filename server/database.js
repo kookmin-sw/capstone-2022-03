@@ -66,36 +66,45 @@ exports.userAddress = function(data, res) {
 }
 exports.createClub = function(data, address, res) {
     const club = new Club(data)
-    club.club_id = String(club._id).slice(String(club._id)-5, String(club._id)-1);
+    club.club_id = String(club._id).slice(String(club._id).length-5, String(club._id).length);
     club.club_address = address;
     club.club_balance = 0;
-    club.joined_user.push(data.club_leader_id);
+    club.club_leader_id = data.user_id;
+    club.joined_user.push(data.user_id);
 
-    club.save();
-    User.findOneAndUpdate({_id : data.club_leader_id}, { $push: { joined_club: club._id}})
-    res.send('done');
-
-    // club.save((err, clubInfo) => {
-    //     if (err) { return res.json({ success : false, err }) }
-    //     else { return res.json({ success : true }) }
-    // })
-    // User.findOneAndUpdate({_id : data.club_leader_id}, { $push: { joined_club: club._id}}, (err, isPushed_1) => {
-    //     if(!isPushed_1) { return res.json({ isPushed_1 : false, message : "모임 참가에 실패하였습니다." }) }
-    //     else { return res.json({ create_club : true }) }
-    // })
+    club.save()
+    User.findOneAndUpdate({_id : data.user_id}, { $push: { joined_club : club._id }}, (err, user) => {
+        res.send(user);
+    })
 }
 exports.addFee = function(data, res) {
-    Club.findOneAndUpdate({ _id : data.club_id}, {$inc: { club_balance: data.fee }})
-    res.send('add fee done')
+    Club.findOneAndUpdate({ _id : data.club_id}, {$inc: { club_balance: data.fee }}, (err, club)=>{
+        res.send(club);
+    })
+}
+exports.myClubs = function(data, res) {
+    User.findOne({_id : data.user_id}, (err, user) => {
+        let list = []
+        const temp = async function() {
+            for (let i of user.joined_club) {
+                await Club.findOne({_id : i})
+                    .clone()
+                    .then((club) => {
+                        list.push({ club_title : club.club_title, balance : club.club_balance, leader : user.name, users : club.joined_user.length})
+                    })
+            }
+        }
+        temp().then(() => {
+            res.send(list)
+        })
+    })
 }
 
 
 // 테스트 미완료 함수
-
 exports.gotoClub = function(data, res) {
-    Club.findOne({_id : data.club_id}, (err, isMatch) => {
-        if(!isMatch) { return res.json({ gotoClub : false, message: "제공된 club_id에 해당하는 모임이 없습니다!" })}
-        else { return res.json({ gotoClub : true, message: "해당 club으로 이동이 완료되었습니다." })}
+    Club.findOne({_id : data.club_id}, (err, club) => {
+        return res.send(club)
     })
 }
 exports.joinClub = function(data, res) {
@@ -116,7 +125,6 @@ exports.addReceipt = function(data, res) {
         else { return res.json({ isPushed : true, message: "영수증 저장에 성공하였습니다." })}
     })
 }
-
 exports.addMember = function(data, res) {
     User.findOne({name : data.member_name}, (err, user) => {
         Club.findOneAndUpdate({club_id : data.club_id }, { $push: { joined_user: user._id}}, (err, isPushed_1) => {
@@ -145,7 +153,4 @@ exports.rmClub = function (data) {
         .then(result => {console.log(result)})
     // 해당 클럽에 joined_user 검색 후
     // joined_user 리스트에 해당하는 모든 User에서 joined_club을 삭제해야한다.
-}
-exports.myClubs = function(data, res) {
-
 }

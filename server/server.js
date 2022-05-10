@@ -13,14 +13,16 @@ server.use(bodyParser.urlencoded({extended: true}));
 server.use(bodyParser.json());
 server.use(cookieParser());
 
-server.post('/user_address', (req, res) => {
-    db.userAddress(req.body, res)
-})
 server.post('/register', (req, res) => {
     blockchain.makeAccount(req.body.name)
         .then(address => {
             db.register(req.body, address, res)
         })
+})
+
+
+server.post('/user_address', (req, res) => {
+    db.userAddress(req.body, res)
 })
 server.post('/login', (req, res) => {
     db.login(req.body, res);
@@ -47,10 +49,14 @@ server.post('/create_club', (req, res) => {
     db.createClub(req.body, '', res)
     // 블록체인 사용
 })
+server.post('/my_clubs', (req, res) => {
+    db.myClubs(req.body, res);
+})
 
 
-
-
+server.post('/goto_club', (req, res) => {
+    db.gotoClub(req.body, res)
+})
 server.post('/add_member', (req, res) => {
     db.addMember(req.body, res)
 })
@@ -62,9 +68,6 @@ server.post('/club_receipt', (req, res) => {
 })
 server.post('/receipt_detail', (req, res) => {
 
-})
-server.post('/my_clubs', (req, res) => {
-    db.myClubs(req.body, res);
 })
 
 

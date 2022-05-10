@@ -53,6 +53,9 @@ const clubSchema = mongoose.Schema({
     joined_user: {
         type: [String]
     },
+    joined_member: {
+        type: [String]
+    },
     receipt: {
         type: [receiptSchema]
     },
