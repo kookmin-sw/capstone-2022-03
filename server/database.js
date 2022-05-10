@@ -66,7 +66,8 @@ exports.createClub = function(data, address, res) {
         if (err) {
             return res.json({ success : false, message : err })
         } else {
-            return res.status(200).json({ success : true, message : club})
+            console.log(user)
+            return res.status(200).json({ success : true, message : club })
         }
     })
 }
@@ -114,6 +115,9 @@ exports.joinClub = function(data, res) {
     //         })}
     // })
 }
+
+// addMemebr 수정해야함
+// 총무를 추가했는데, 모임의 회원이 아닌 경우에 대한 에러 수정
 exports.addMember = function(data, res) {
     User.findOne({name : data.member_name, email : data.member_email}, (err, user) => {
         if (err) {
@@ -137,6 +141,11 @@ exports.addMember = function(data, res) {
     // })
 
 }
+exports.addFee = function(data, res) {
+    Club.findOneAndUpdate({ _id : data.club_id}, {$inc: { club_balance: data.fee }}, (err, club)=>{
+        res.send(club);
+    })
+}
 
 
 exports.userAddress = function(data, res) {
@@ -147,11 +156,6 @@ exports.userAddress = function(data, res) {
         } else {
             return res.status(200).json({ user_address : user.address })
         }
-    })
-}
-exports.addFee = function(data, res) {
-    Club.findOneAndUpdate({ _id : data.club_id}, {$inc: { club_balance: data.fee }}, (err, club)=>{
-        res.send(club);
     })
 }
 exports.addReceipt = function(data, res) {
