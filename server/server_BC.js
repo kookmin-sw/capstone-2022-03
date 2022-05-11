@@ -23,13 +23,12 @@ server.post('/login', (req, res) => {
     db.login(req.body, res);
 })
 server.post('/create_club', (req, res) => {
-    blockchain.createClub(req.body)
-        .then(result => {
-            console.log(typeof(result))
-            // console.log(result)
-            db.createClub(req.body, result, res)
-        })
-
+    if (req.body.flag == true){
+        blockchain.createClub(req.body)
+            .then(result => { db.createClub(req.body, result, res) })
+    } else {
+        db.createClub(req.body, '', res)
+    }
 })
 server.post('/my_clubs', (req, res) => {
     db.myClubs(req.body, res);
@@ -37,10 +36,19 @@ server.post('/my_clubs', (req, res) => {
 server.post('/goto_club', (req, res) => {
     db.gotoClub(req.body, res)
 })
+
+
 server.post('/add_member', (req, res) => {
+    if(req.body.flag == true){
+        db.getUserInfo(req.body.member_name, req.body.member_email)
+            .then(userInfo => {
+                blockchain.addClubMember(req.body, userInfo)
+            })
+    }
     db.addMember(req.body, res)
 })
 server.post('/add_fee', (req, res) => {
+    blockchain.addBalance(req.body)
     db.addFee(req.body, res)
 })
 server.post('/join_club', (req, res) => {

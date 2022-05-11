@@ -105,6 +105,11 @@ exports.joinClub = function(data, res) {
         }
     })
 }
+exports.getUserInfo = function(name, email) {
+    User.findOne({name : name, email : email}, (err, user) => {
+        return user;
+    })
+}
 exports.addMember = function(data, res) {
     User.findOne({name : data.member_name, email : data.member_email}, (err, user) => {
         if (err) {
@@ -129,16 +134,6 @@ exports.addFee = function(data, res) {
         res.send(club);
     })
 }
-
-
-exports.saveContract = function(contract, res) {
-
-}
-
-
-
-
-
 
 exports.userAddress = function(data, res) {
     User.findOne({ _id : data.user_id }, (err, user) => {

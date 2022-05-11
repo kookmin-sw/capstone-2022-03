@@ -3,7 +3,6 @@ const blockchain_endpoint = 'http://127.0.0.1:8888';
 const web3 = new Web3(Web3.givenProvider || blockchain_endpoint);
 const compile = require('./compile')
 
-//
 exports.makeAccount = async function (id) {
     return await web3.eth.personal.newAccount(id);
 }
@@ -89,11 +88,11 @@ exports.getClubReceipts = async function (caller, contract) {
     return await contract.methods.getReceipts()
         .call({ from : caller })
 }
-exports.addClubMember = async function (caller, contract, address, name, department) {
-    // caller must be a leader
+
+exports.addClubMember = async function(data, memberInfo) {
     try {
-        await contract.methods.addMember(address, name, department)
-            .send({ from : caller, gas : 3000000 })
+        await data.contract.methods.addMember(memberInfo.address, memberInfo.name, data.department)
+            .send({ from : data.user_address, gas : 3000000 })
     } catch {
         console.log('caller is not a leader');
     }
