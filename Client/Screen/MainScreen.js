@@ -8,6 +8,7 @@ import {
 } from 'react-native-responsive-screen';
 import { useIsFocused } from '@react-navigation/native';
 import CustomButton from '../src/CustomButton';
+import router from '../src/Router.json';
 // StatusBar의 배경을 투명하게 만들고, 폰트를 검정색을 설정
 StatusBar.setBarStyle("dark-content");
 if (Platform.OS === 'android') {
@@ -19,12 +20,11 @@ if (Platform.OS === 'android') {
 const StatusBarHeight =
     Platform.OS === 'ios' ? getStatusBarHeight(true) : StatusBar.currentHeight;
 
-function MainScreen({ navigation }) {
+function MainScreen({ navigation, route }) {
     const isFocused = useIsFocused();
-    // const { email } = route.params;  //유저 정보
-    //route를 통해 로그인 페이지로부터 user_id를 전달받는다. 
-    //로그인정보를 확인하고 인증 되었을때 
-    //user_id를 통해서 유저의 정보를 내려받고 데이터로 활용한다.
+    const { user_id, user_name, user_email, user_address } = route.params;  //유저 정보
+
+    console.log(user_id, user_name, user_email, user_address);
 
     const sample_data = [
         {
@@ -118,8 +118,29 @@ function MainScreen({ navigation }) {
         );
     };
 
+    async function onMain() {
+        console.log("start");
+        fetch(router.aws + "/my_clubs", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "user_id": user_id
+            })
+        }).then(res => res.json())
+            .then(res => {
+                if (res.success) {
+                    console.log(res);
+                }
+            })
+    }
+
+
     useEffect(() => {
         console.log("모든 요소가 변경될때 마다 실행");
+        onMain();
+
     }, [isFocused]);
 
     return (
