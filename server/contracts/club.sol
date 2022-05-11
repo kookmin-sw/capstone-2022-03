@@ -6,7 +6,7 @@ contract club {
     string private club_title;
     string private bank_account;
     string private bank_name;
-    stinrg private bank_holder;
+    string private bank_holder;
 
     user private leader;
     user[] private members;
@@ -16,7 +16,7 @@ contract club {
 
     struct user {
         address account;
-        string name;
+        string id;
         string department;
     }
 
@@ -36,13 +36,13 @@ contract club {
         _;
     }
 
-    constructor (string memory _club_title, string memory _bank_account, string memory _bank_name, string memory _bank_holder, string memory leader_name) {
+    constructor (string memory _club_title, string memory _bank_account, string memory _bank_name, string memory _bank_holder, string memory _leader_id) {
         club_title = _club_title;
         bank_account = _bank_account;
         bank_name = _bank_name;
         bank_holder = _bank_holder;
 
-        leader.name = leader_name;
+        leader.id = _leader_id;
         leader.account = msg.sender;
         leader.department = "head";
 
@@ -83,8 +83,8 @@ contract club {
     }
 
     // setter functions
-    function addMember(address account, string memory name, string memory department) public onlyLeader {
-        members.push(user(account, name, department));
+    function addMember(address account, string memory id, string memory department) public onlyLeader {
+        members.push(user(account, id, department));
     }
 
     function addFee(uint fee) public onlyLeader {

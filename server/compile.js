@@ -3,7 +3,7 @@ const fs = require('fs')
 const solc = require('solc')
 
 exports.receipt = function() {
-    const filePath = path.resolve(__dirname, 'receipt.sol');
+    const filePath = path.resolve(__dirname, 'contracts/', 'receipt.sol');
     const source_code = fs.readFileSync(filePath, 'utf-8');
     const compile_input = {
         language: 'Solidity',
@@ -27,7 +27,7 @@ exports.receipt = function() {
     return result;
 }
 exports.club = function () {
-    const filePath = path.resolve(__dirname, 'club.sol');
+    const filePath = path.resolve(__dirname, 'contracts/', 'club.sol');
     const source_code = fs.readFileSync(filePath, 'utf-8');
     const compile_input = {
         language: 'Solidity',

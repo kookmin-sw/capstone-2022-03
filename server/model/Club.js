@@ -31,9 +31,6 @@ const clubSchema = mongoose.Schema({
     club_title: {
         type: String
     },
-    club_address: {
-        type: String
-    },
     club_id: {
         type: String
     },
@@ -63,7 +60,7 @@ const clubSchema = mongoose.Schema({
         type: [receiptSchema]
     },
     contract : {
-        type : String
+        type : Object
     }
 });
 

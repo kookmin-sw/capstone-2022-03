@@ -1,6 +1,6 @@
 const express = require('express')
 const server = express()
-const server_port = 3001
+const server_port = 8080
 
 const blockchain = require('./blockchain')
 const db = require('./database')
@@ -23,9 +23,13 @@ server.post('/login', (req, res) => {
     db.login(req.body, res);
 })
 server.post('/create_club', (req, res) => {
-    // 일반 DB
-    db.createClub(req.body, '', res)
-    // 블록체인 사용
+    blockchain.createClub(req.body)
+        .then(result => {
+            console.log(typeof(result))
+            // console.log(result)
+            db.createClub(req.body, result, res)
+        })
+
 })
 server.post('/my_clubs', (req, res) => {
     db.myClubs(req.body, res);

@@ -9,7 +9,7 @@ exports.makeAccount = async function (id) {
 }
 
 // receipt part
-exports.makeReceipt = async function (caller, place, date, detail, amount) {
+exports.createReceipt = async function (caller, place, date, detail, amount) {
     // compile_result[0] = abi, [1] = bytecode
     const compile_result = compile.receipt()
 
@@ -35,13 +35,12 @@ exports.getReceiptAmount = async function (caller, contract) {
 }
 
 // club part
-exports.makeClub = async function (caller, club_title, bank_account, bank_name, leader_name) {
-    // compile_result[0] = abi, [1] = bytecode
+exports.createClub = async function (data) {
     const compile_result = compile.club();
 
     return await new web3.eth.Contract(compile_result[0])
-        .deploy({ data : compile_result[1], arguments: [club_title, bank_account, bank_name, leader_name]})
-        .send({ from : caller, gas : 3000000 })
+        .deploy({ data : compile_result[1], arguments: [data.club_title, data.club_bank_account, data.club_bank_name, data.club_bank_holder, data.user_name]})
+        .send({ from : data.user_address, gas : 3000000 })
 }
 exports.getClubTitle = async function (caller, contract) {
     try {

@@ -52,10 +52,10 @@ exports.login = function (data, res) {
         })
     })
 }
-exports.createClub = function(data, address, res) {
+exports.createClub = function(data, contract, res) {
     const club = new Club(data)
     club.club_id = String(club._id).slice(String(club._id).length-5, String(club._id).length);
-    club.club_address = address;
+    club.contract = contract;
     club.club_balance = 0;
     club.club_leader_id = data.user_id;
     club.joined_user.push(data.user_id);
@@ -66,7 +66,6 @@ exports.createClub = function(data, address, res) {
         if (err) {
             return res.json({ success : false, message : err })
         } else {
-            console.log(user)
             return res.status(200).json({ success : true, message : club })
         }
     })
@@ -129,6 +128,11 @@ exports.addFee = function(data, res) {
     Club.findOneAndUpdate({ _id : data.club_id}, {$inc: { club_balance: data.fee }}, (err, club)=>{
         res.send(club);
     })
+}
+
+
+exports.saveContract = function(contract, res) {
+
 }
 
 
