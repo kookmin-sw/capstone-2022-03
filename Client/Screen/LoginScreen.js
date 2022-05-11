@@ -7,10 +7,15 @@ import {
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import router from '../src/Router.json';
+
 export function LoginScreen() {
     const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [user_id, setUser_id] = useState('');
+    const [user_name, setUser_name] = useState('');
+    const [user_email, setUser_email] = useState('');
+    const [user_address, setUser_address] = useState('');
 
 
     async function onLogin() {
@@ -30,11 +35,22 @@ export function LoginScreen() {
                     })
                 }).then(res => res.json())
                     .then(res => {
-                        if (res.loginSuccess) {
-                            console.log(res.userId, res.name, "님이 로그인 하였습니다.");
-                            navigation.navigate("Main");
+                        if (res.success) {
+                            setUser_id(res._id);
+                            setUser_name(res.name);
+                            setUser_email(res.email);
+                            setUser_address(res.address);
+                            console.log(user_id, user_name, user_email, user_address);
                         }
                     })
+                    .then(
+                        navigation.navigate('Main', {
+                            user_id: user_id,
+                            user_name: user_name,
+                            user_email: user_email,
+                            user_address: user_address,
+                        })
+                    )
             }
             else if (Platform.OS === 'android') {
                 fetch(router.aws + "/login", {
@@ -48,9 +64,12 @@ export function LoginScreen() {
                     })
                 }).then(res => res.json())
                     .then(res => {
-                        if (res.loginSuccess) {
-                            console.log(res.userId, res.name, "님이 로그인 하였습니다.");
+                        if (res.success) {
+                            setUser_id(res.userId);
+                            setUser_name(res.name);
+                            console.log(user_id, user_name);
                             navigation.navigate("Main");
+                            navigation.navigate('Main', { user_id: user_id })
                         }
                     })
             }
