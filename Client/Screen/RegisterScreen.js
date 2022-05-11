@@ -27,8 +27,8 @@ export function RegisterScreen() {
     const [checkpassword, setCheckPassword] = useState('');
     const [validateEmail, setValidateEmail] = useState(false); //추후 Email 중복확인을 위하여 만든 코드
 
-    // const _ANDROID_AVD_API_HOST = 'http://3.39.196.91:3001/login'; //localhost 테스트용
-    // const _IOS_API_HOST = 'http://3.39.196.91:3001/login'; //localhost 테스트용
+    // const _ANDROID_AVD_API_HOST = 'http://3.39.196.91:3001/register'; //localhost 테스트용
+    // const _IOS_API_HOST = 'http://3.39.196.91:3001/register'; //localhost 테스트용
 
     const _ANDROID_AVD_API_HOST = 'http://10.0.2.2:7000/register'; //localhost 테스트용
     const _IOS_API_HOST = 'http://127.0.0.1:7000/register'; //localhost 테스트용

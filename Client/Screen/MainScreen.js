@@ -7,8 +7,7 @@ import {
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import { useIsFocused } from '@react-navigation/native';
-import { greaterThan } from 'react-native-reanimated';
-
+import CustomButton from '../src/CustomButton';
 // StatusBar의 배경을 투명하게 만들고, 폰트를 검정색을 설정
 StatusBar.setBarStyle("dark-content");
 if (Platform.OS === 'android') {
@@ -20,7 +19,7 @@ if (Platform.OS === 'android') {
 const StatusBarHeight =
     Platform.OS === 'ios' ? getStatusBarHeight(true) : StatusBar.currentHeight;
 
-function MainScreen({ route, navigation }) {
+function MainScreen({ navigation }) {
     const isFocused = useIsFocused();
     // const { email } = route.params;  //유저 정보
     //route를 통해 로그인 페이지로부터 user_id를 전달받는다. 
@@ -30,7 +29,7 @@ function MainScreen({ route, navigation }) {
     const sample_data = [
         {
             "club_title": "소융대 학생회",
-            "club_id": 1,
+            "club_id": "1",
             "account_number": "123-45-678",
             "accountConstructor": "민태식",
             "onwer_name": "안성열",
@@ -39,7 +38,7 @@ function MainScreen({ route, navigation }) {
         },
         {
             "club_title": "캡스톤 3팀",
-            "club_id": 2,
+            "club_id": "2",
             "account_number": "123-45-678",
             "accountConstructor": "민태식",
             "onwer_name": "김상윤",
@@ -48,7 +47,7 @@ function MainScreen({ route, navigation }) {
         },
         {
             "club_title": "농구 동아리",
-            "club_id": 3,
+            "club_id": "3",
             "account_number": "123-45-678",
             "accountConstructor": "민태식",
             "onwer_name": "민태식",
@@ -57,7 +56,7 @@ function MainScreen({ route, navigation }) {
         },
         {
             "club_title": "총학 학생회",
-            "club_id": 4,
+            "club_id": "4",
             "account_number": "123-45-678",
             "accountConstructor": "민태식",
             "onwer_name": "안성열",
@@ -66,7 +65,7 @@ function MainScreen({ route, navigation }) {
         },
         {
             "club_title": "축구 동아리",
-            "club_id": 5,
+            "club_id": "5",
             "account_number": "123-45-678",
             "accountConstructor": "민태식",
             "onwer_name": "김상윤",
@@ -75,7 +74,7 @@ function MainScreen({ route, navigation }) {
         },
         {
             "club_title": "밴드 동아리",
-            "club_id": 6,
+            "club_id": "6",
             "account_number": "123-45-678",
             "accountConstructor": "민태식",
             "onwer_name": "민태식",
@@ -90,6 +89,8 @@ function MainScreen({ route, navigation }) {
                 onPress={() => {
                     navigation.push('Club')
                     navigation.navigate('Club', { club_title: item.club_title })
+                    navigation.navigate('Club', { club_title: item.club_id })
+                    navigation.navigate('Club', { club_title: item.club_balance })
                 }}
             >
                 <View style={styles.card} key={i}>
@@ -100,9 +101,6 @@ function MainScreen({ route, navigation }) {
                     </View>
                     <View>
                         <Text style={styles.itemClubBalance}>{item.club_balance}</Text>
-                        {/* <Text style={styles.itemPercentText}>
-                            뭐가 들어가면 좋을까
-                        </Text> */}
                     </View>
                 </View>
             </TouchableOpacity>
@@ -136,6 +134,7 @@ function MainScreen({ route, navigation }) {
             <View style={styles.content}>
                 <Text style={{ fontSize: 25, fontWeight: '700', color: 'black', marginTop: 15, marginLeft: 15, marginBottom: 5 }}>모임 목록</Text>
                 <FlatList
+                    showsVerticalScrollIndicator={false}
                     style={styles.list}
                     data={sample_data}
                     renderItem={_renderItem}
@@ -144,18 +143,18 @@ function MainScreen({ route, navigation }) {
                 <Text style={{ fontSize: 10, fontWeight: '700', color: 'white', marginLeft: 30, }}>emptyspace</Text>
             </View>
             <View style={styles.footer}>
-                <Button
-                    buttonColor={'grey'}
+                <CustomButton
+                    buttonColor={'#4169e1'}
                     title="모임 생성"
                     onPress={() => navigation.push('CreateClub')}
                 />
-                <Button
-                    buttonColor={'grey'}
+                <CustomButton
+                    buttonColor={'#4169e1'}
                     title="모임 참가"
                     onPress={() => navigation.push('JoinClub')}
                 />
-                <Button
-                    buttonColor={'grey'}
+                <CustomButton
+                    buttonColor={'#4169e1'}
                     title="카메라 데모"
                     onPress={() => navigation.push('Camera')}
                 />
@@ -176,14 +175,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    // logo: {
-    //     width: '100%',
-    //     height: '5%',
-    //     justifyContent: 'space-evenly',
-    //     paddingTop: 10,
-    //     marginLeft: 15,
-    // },
-
     title: {
         width: '100%',
         height: '10%',
