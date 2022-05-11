@@ -48,7 +48,9 @@ server.post('/add_member', (req, res) => {
     db.addMember(req.body, res)
 })
 server.post('/add_fee', (req, res) => {
-    blockchain.addBalance(req.body)
+    if (req.body.flag == true) {
+        blockchain.addFee(req.body)
+    }
     db.addFee(req.body, res)
 })
 server.post('/join_club', (req, res) => {
