@@ -16,22 +16,36 @@ server.use(cookieParser());
 server.post('/register', (req, res) => {
     blockchain.makeAccount(req.body.name)
         .then(address => {
-            db.register(req.body, address, res)
+            blockchain.unlockAccount(address, req.body.name)
+                .then(() => {
+                    db.register(req.body, address, res)
+                })
         })
 })
 server.post('/login', (req, res) => {
     db.login(req.body, res);
 })
 server.post('/create_club', (req, res) => {
-    if (req.body.flag == true){
+    // 블록체인 사용
+    if (req.body.flag == 'BC'){
         blockchain.createClub(req.body)
-            .then(result => { db.createClub(req.body, result, res) })
-    } else {
-        db.createClub(req.body, '', res)
+            .then((contract) => {
+                db.createClubBC(req.body, contract, contract.options.address, res)
+            })
+    // 일반DB 사용
+    } else if (req.body.flag == 'DB') {
+        db.createClub(req.body, res)
     }
 })
 server.post('/my_clubs', (req, res) => {
-    db.myClubs(req.body, res);
+    if(req.body.flag == 'BC'){
+        db.getUserContracts(req.body)
+            .then((contract_list) => {
+                blockchain.myClubs(contract_list, res)
+            })
+    } else if(req.body.flag == 'DB') {
+        db.myClubs(req.body, res);
+    }
 })
 server.post('/goto_club', (req, res) => {
     db.gotoClub(req.body, res)
@@ -68,8 +82,7 @@ server.post('/users', (req, res) => {
     db.allUser(res);
 })
 server.post('/rmClub', (req, res) => {
-    db.rmClub(req.body)
-    res.send('done')
+    db.rmClub(req.body, res)
 })
 server.post('/rmUser', (req, res) => {
     db.rmUser(req.body, res)
@@ -89,6 +102,7 @@ server.post('/receipt_detail', (req, res) => {
 
 
 server.listen(server_port, () => {
+    blockchain.setCaller();
     console.log('capstone server open');
 })
 

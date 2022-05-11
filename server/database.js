@@ -3,7 +3,6 @@ const config = require("./config/dev")
 const {User} = require("./model/User.js")
 const {Club} = require("./model/Club.js")
 
-// 테스트 완료 함수
 exports.connenct = function () {
     mongoose.connect(config.mongoURI)
         .then(() => console.log('DB connected...'))
@@ -52,10 +51,9 @@ exports.login = function (data, res) {
         })
     })
 }
-exports.createClub = function(data, contract, res) {
+exports.createClub = function(data, res) {
     const club = new Club(data)
     club.club_id = String(club._id).slice(String(club._id).length-5, String(club._id).length);
-    club.contract = contract;
     club.club_balance = 0;
     club.club_leader_id = data.user_id;
     club.joined_user.push(data.user_id);
@@ -66,10 +64,57 @@ exports.createClub = function(data, contract, res) {
         if (err) {
             return res.json({ success : false, message : err })
         } else {
-            return res.status(200).json({ success : true, message : club })
+            return res.status(200).json({ success : true, _id : user._id, name : user.name, email : user.email, address : user.address })
         }
     })
 }
+
+exports.getUserContracts = async function(data) {
+    var joined_club = [];
+
+    await User.findOne({ _id : data.user_id}, (err, user) => {
+        joined_club = user.joined_club
+    }).clone()
+
+    var contract_list = [];
+
+    const getInfo = async function(joined_club) {
+        for (let i of joined_club) {
+            await Club.findOne({ _id : i}).then(club =>{
+                contract_list.push(club.contract)
+            })
+        }
+        return contract_list
+    }
+    return await getInfo(joined_club)
+}
+exports.createClubBC = function(data, contract, address, res) {
+    const club = new Club()
+    club.club_id = String(club._id).slice(String(club._id).length-5, String(club._id).length);
+    club.contract = contract;
+    club.address = address;
+
+    club.save()
+    User.findOneAndUpdate({_id : data.user_id}, { $push: { joined_club : club._id }}, (err, user) => {
+        if (err) {
+            return res.json({ success : false, message : err })
+        } else {
+            return res.status(200).json({ success : true, message : club.address })
+        }
+    })
+}
+
+
+
+
+
+
+
+
+
+
+
+
 exports.gotoClub = function(data, res) {
     Club.findOne({_id : data.club_id}, (err, club) => {
         if (err) { return res.json({ success : false, message : err })
@@ -105,8 +150,8 @@ exports.joinClub = function(data, res) {
         }
     })
 }
-exports.getUserInfo = function(name, email) {
-    User.findOne({name : name, email : email}, (err, user) => {
+exports.getUserInfo = function(user_id) {
+    User.findOne({_id : user_id}, (err, user) => {
         return user;
     })
 }
@@ -134,6 +179,7 @@ exports.addFee = function(data, res) {
         res.send(club);
     })
 }
+
 
 exports.userAddress = function(data, res) {
     User.findOne({ _id : data.user_id }, (err, user) => {
@@ -164,28 +210,29 @@ exports.rmUser = function (data, res) {
     // 수정해야 하는 부분 : 이때, 유저가 모임의 리더인 경우 어떻게 처리할지..?
     // 해당 모임도 삭제 해버린다. or 모임을 먼저 삭제해야 한다.
     User.findOneAndDelete({ name : data.name}, {},(err, user) => {
-        const temp_joined_club = user.joined_club
-        for(let i of temp_joined_club) {
-            Club.findOneAndUpdate({_id : i}, {$pull : {joined_user : user._id}}, (err, club) => {
-                console.log(club)
-            })
-        }
+        // const temp_joined_club = user.joined_club
+        // for(let i of temp_joined_club) {
+        //     Club.findOneAndUpdate({_id : i}, {$pull : {joined_user : user._id}}, (err, club) => {
+        //         console.log(club)
+        //     })
+        // }
         console.log(user)
         res.status(200).send({ success : true, message : user })
     })
 }
 exports.rmClub = function (data, res) {
-    Club.findOneAndDelete({ club_title : data.club_title}, {}, (err, club) => {
-        const temp_joined_user = club.joined_user
-        for(let i of temp_joined_user) {
-            User.findOneAndUpdate({_id : i}, {$pull : { joined_club : club._id}}, (err, user) => {
-                if (err) {
-                    res.json({ success : false, message : err })
-                } else {
-                    console.log(user)
-                }
-            })
-        }
+    Club.findOneAndDelete({ _id : data.club_id}, {}, (err, club) => {
+        // const temp_joined_user = club.joined_user
+        // for(let i of temp_joined_user) {
+        //     User.findOneAndUpdate({_id : i}, {$pull : { joined_club : club._id}}, (err, user) => {
+        //         if (err) {
+        //             res.json({ success : false, message : err })
+        //         } else {
+        //             console.log(user)
+        //         }
+        //     })
+        // }
+        res.status(200).send({ success : true, message : club })
         console.log(club)
     })
 }

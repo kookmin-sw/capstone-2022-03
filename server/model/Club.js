@@ -28,6 +28,9 @@ const receiptSchema = new mongoose.Schema({
 });
 
 const clubSchema = mongoose.Schema({
+    flag : {
+        type : Boolean
+    },
     club_title: {
         type: String
     },
@@ -60,7 +63,10 @@ const clubSchema = mongoose.Schema({
         type: [receiptSchema]
     },
     contract : {
-        type : Object
+        type : [Object]
+    },
+    address : {
+        type : String
     }
 });
 

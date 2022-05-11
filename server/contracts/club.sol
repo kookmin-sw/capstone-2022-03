@@ -4,102 +4,100 @@ pragma solidity ^0.8.13;
 
 contract club {
     string private club_title;
-    string private bank_account;
-    string private bank_name;
-    string private bank_holder;
+    uint private club_balance;
 
-    user private leader;
-    user[] private members;
-
-    uint private balance = 0;
+    User private leader;
+    User[] private members;
+    User[] private users;
+    Bank private bank;
     string[] private receipts;
 
-    struct user {
-        address account;
+    struct User {
+        address addr;
         string id;
+        string name;
         string department;
     }
-
-    modifier onlyLeader() {
-        require(msg.sender == leader.account);
-        _;
+    struct Bank {
+        string name;
+        string account;
+        string holder;
+    }
+    struct Info {
+        string title;
+        uint balance;
+        string name;
+        uint user_size;
     }
 
-    modifier onlyMember() {
-        bool is_member = false;
-        for(uint i=0; i<members.length; i++){
-            if (msg.sender == members[i].account) {
-                is_member = true;
-            }
-        }
-        require(is_member == true);
-        _;
-    }
 
-    constructor (string memory _club_title, string memory _bank_account, string memory _bank_name, string memory _bank_holder, string memory _leader_id) {
+//    modifier onlyLeader() {
+//        require(msg.sender == leader.addr);
+//        _;
+//    }
+//
+//    modifier onlyMember() {
+//        bool is_member = false;
+//        for(uint i=0; i<members.length; i++){
+//            if (msg.sender == members[i].addr) {
+//                is_member = true;
+//                break;
+//            }
+//        }
+//        require(is_member == true);
+//        _;
+//    }
+//
+//    modifier onlyUser() {
+//        bool is_user = false;
+//        for(uint i=0; i<users.length; i++){
+//            if (msg.sender == users[i].addr) {
+//                is_user = true;
+//                break;
+//            }
+//        }
+//        require(is_user == true);
+//        _;
+//    }
+
+
+    constructor
+    (string memory _club_title,
+        string memory bank_name, string memory bank_account, string memory bank_holder,
+        address leader_address, string memory leader_id, string memory leader_name) {
         club_title = _club_title;
-        bank_account = _bank_account;
-        bank_name = _bank_name;
-        bank_holder = _bank_holder;
+        club_balance = 0;
 
-        leader.id = _leader_id;
-        leader.account = msg.sender;
+        bank.name = bank_name;
+        bank.account = bank_account;
+        bank.holder = bank_holder;
+
+        leader.addr = leader_address;
+        leader.id = leader_id;
         leader.department = "head";
+        leader.name = leader_name;
 
         members.push(leader);
+        users.push(leader);
     }
 
-    // getter functions
-    function getClubTitle() public onlyLeader view returns(string memory) {
-        return club_title;
+    function clubInfo() public view returns (Info memory){
+        Info memory temp;
+        temp.title = club_title;
+        temp.balance = club_balance;
+        temp.name = leader.name;
+        temp.user_size = users.length;
+
+        return temp;
     }
 
-    function getBankAccount() public onlyLeader view returns(string memory) {
-        return bank_account;
+    function addUser(address addr, string memory id, string memory name, string memory department) public {
+        users.push(User(addr, id, name, department));
     }
-
-    function getBankName() public onlyLeader view returns(string memory) {
-        return bank_name;
+    function addMember(address addr, string memory id, string memory name, string memory department) public {
+        members.push(User(addr, id, name, department));
     }
-
-    function getBankHolder() public onlyLeader view returns(string memory) {
-        return bank_holder;
-    }
-
-    function getLeader() public view returns (user memory) {
-        return leader;
-    }
-
-    function getMembers() public view returns (user[] memory) {
-        return members;
-    }
-
-    function getBalance() public view returns (uint) {
-        return balance;
-    }
-
-    function getReceipts() public view returns (string[] memory){
-        return receipts;
-    }
-
-    // setter functions
-    function addMember(address account, string memory id, string memory department) public onlyLeader {
-        members.push(user(account, id, department));
-    }
-
-    function addFee(uint fee) public onlyLeader {
-        balance = balance + fee;
-    }
-
-    function addReceipt(string memory receipt) public onlyMember {
-        receipts.push(receipt);
-    }
-
-    function calcBalance(uint payment) public {
-        balance = balance - payment;
-    }
-
-    function checkPaymentAmount(uint payment) public view {
-        if (balance < payment) { revert(); }
+    function addBalance(uint fee) public {
+        club_balance = club_balance + fee;
     }
 }
