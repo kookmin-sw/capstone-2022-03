@@ -6,6 +6,7 @@ contract club {
     string private club_title;
     string private bank_account;
     string private bank_name;
+    stinrg private bank_holder;
 
     user private leader;
     user[] private members;
@@ -35,10 +36,11 @@ contract club {
         _;
     }
 
-    constructor (string memory _club_title, string memory _bank_account, string memory _bank_name, string memory leader_name) {
+    constructor (string memory _club_title, string memory _bank_account, string memory _bank_name, string memory _bank_holder, string memory leader_name) {
         club_title = _club_title;
         bank_account = _bank_account;
         bank_name = _bank_name;
+        bank_holder = _bank_holder;
 
         leader.name = leader_name;
         leader.account = msg.sender;
@@ -58,6 +60,10 @@ contract club {
 
     function getBankName() public onlyLeader view returns(string memory) {
         return bank_name;
+    }
+
+    function getBankHolder() public onlyLeader view returns(string memory) {
+        return bank_holder;
     }
 
     function getLeader() public view returns (user memory) {
