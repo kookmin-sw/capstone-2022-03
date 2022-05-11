@@ -95,7 +95,7 @@ exports.myClubs = function(data, res) {
     })
 }
 exports.joinClub = function(data, res) {
-    Club.findOneAndUpdate({_id : data.club_id}, {$push : { joined_user: data.user_id }}, (err, club) => {
+    Club.findOneAndUpdate({ club_id : data.club_id}, {$push : { joined_user: data.user_id }}, (err, club) => {
         if(err) { return res.json({ success : false, message : err })
         } else {
             User.findOneAndUpdate({_id : data.user_id}, {$push : { joined_club : club._id}}, (err, user) => {
@@ -172,6 +172,7 @@ exports.rmUser = function (data, res) {
             })
         }
         console.log(user)
+        res.status(200).send({ success : true, message : user })
     })
 }
 exports.rmClub = function (data, res) {
@@ -179,7 +180,11 @@ exports.rmClub = function (data, res) {
         const temp_joined_user = club.joined_user
         for(let i of temp_joined_user) {
             User.findOneAndUpdate({_id : i}, {$pull : { joined_club : club._id}}, (err, user) => {
-                console.log(user)
+                if (err) {
+                    res.json({ success : false, message : err })
+                } else {
+                    console.log(user)
+                }
             })
         }
         console.log(club)

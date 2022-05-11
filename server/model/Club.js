@@ -49,6 +49,9 @@ const clubSchema = mongoose.Schema({
     club_bank_name: {
         type : String
     },
+    club_bank_holder: {
+        type : String
+    },
     image: String,
     joined_user: {
         type: [String]
