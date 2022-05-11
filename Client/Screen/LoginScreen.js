@@ -6,17 +6,12 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-
+import router from '../src/Router.json';
 export function LoginScreen() {
     const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    // const _ANDROID_AVD_API_HOST = 'http://3.39.196.91:3001/login'; //localhost 테스트용
-    // const _IOS_API_HOST = 'http://3.39.196.91:3001/login'; //localhost 테스트용
-
-    const _ANDROID_AVD_API_HOST = 'http://10.0.2.2:7000/login'; //localhost 테스트용
-    const _IOS_API_HOST = 'http://127.0.0.1:7000/login'; //localhost 테스트용
 
     async function onLogin() {
         if (!email || !password) { //비밀번호 확인이 제대로 되었나 탐지
@@ -24,7 +19,7 @@ export function LoginScreen() {
         }
         else {
             if (Platform.OS === 'ios') {
-                fetch(_IOS_API_HOST, {
+                fetch(router.aws + "/login", {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json'
@@ -42,7 +37,7 @@ export function LoginScreen() {
                     })
             }
             else if (Platform.OS === 'android') {
-                fetch(_ANDROID_AVD_API_HOST, {
+                fetch(router.aws + "/login", {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json'
