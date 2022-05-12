@@ -24,7 +24,34 @@ export function LoginScreen() {
         }
         else {
             if (Platform.OS === 'ios') {
-                fetch(router.aws + "/login", {
+                fetch(router.localhost.ios + "/login", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "email": email,
+                        "password": password,
+                    })
+                }).then(res => res.json())
+                    .then(res => {
+                        if (res.success) {
+                            setUser_id(res._id);
+                            setUser_name(res.name);
+
+                            setUser_email(res.email);
+                            setUser_address(res.address);
+                            navigation.reset({
+                                routes: [{
+                                    name: 'Main',
+                                    params: { user_id: user_id } // 보낼 데이터가 있다면
+                                }]
+                            })
+                        }
+                    })
+            }
+            else if (Platform.OS === 'android') {
+                fetch(router.localhost.android + "/login", {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json'
@@ -40,36 +67,12 @@ export function LoginScreen() {
                             setUser_name(res.name);
                             setUser_email(res.email);
                             setUser_address(res.address);
-                            console.log(user_id, user_name, user_email, user_address);
-                        }
-                    })
-                    .then(
-                        navigation.navigate('Main', {
-                            user_id: user_id,
-                            user_name: user_name,
-                            user_email: user_email,
-                            user_address: user_address,
-                        })
-                    )
-            }
-            else if (Platform.OS === 'android') {
-                fetch(router.aws + "/login", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        "email": email,
-                        "password": password,
-                    })
-                }).then(res => res.json())
-                    .then(res => {
-                        if (res.success) {
-                            setUser_id(res.userId);
-                            setUser_name(res.name);
-                            console.log(user_id, user_name);
-                            navigation.navigate("Main");
-                            navigation.navigate('Main', { user_id: user_id })
+                            navigation.navigate('Main', {
+                                user_id: user_id,
+                                // user_name: user_name,
+                                // user_email: user_email,
+                                // user_address: user_address,
+                            })
                         }
                     })
             }
