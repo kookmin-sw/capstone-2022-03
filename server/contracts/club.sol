@@ -10,7 +10,7 @@ contract club {
     User[] private members;
     User[] private users;
     Bank private bank;
-    string[] private receipts;
+    Receipt[] private receipts;
 
     struct User {
         address addr;
@@ -29,37 +29,13 @@ contract club {
         string name;
         uint user_size;
     }
-
-
-//    modifier onlyLeader() {
-//        require(msg.sender == leader.addr);
-//        _;
-//    }
-//
-//    modifier onlyMember() {
-//        bool is_member = false;
-//        for(uint i=0; i<members.length; i++){
-//            if (msg.sender == members[i].addr) {
-//                is_member = true;
-//                break;
-//            }
-//        }
-//        require(is_member == true);
-//        _;
-//    }
-//
-//    modifier onlyUser() {
-//        bool is_user = false;
-//        for(uint i=0; i<users.length; i++){
-//            if (msg.sender == users[i].addr) {
-//                is_user = true;
-//                break;
-//            }
-//        }
-//        require(is_user == true);
-//        _;
-//    }
-
+    struct Receipt {
+        string owner;
+        string place;
+        string date;
+        uint amount;
+        string[] detail;
+    }
 
     constructor
     (string memory _club_title,
@@ -89,6 +65,10 @@ contract club {
         temp.user_size = users.length;
 
         return temp;
+    }
+
+    function addReceipt(string memory owner, string memory place, string memory date, uint amount, string[] memory detail) public {
+        receipts.push(Receipt(owner, place, date, amount, detail));
     }
 
     function addUser(address addr, string memory id, string memory name, string memory department) public {

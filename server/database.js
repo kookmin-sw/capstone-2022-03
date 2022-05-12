@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const config = require("./config/dev")
 const {User} = require("./model/User.js")
 const {Club} = require("./model/Club.js")
+const blockchain = require('./blockchain')
 
 exports.connenct = function () {
     mongoose.connect(config.mongoURI)
@@ -42,12 +43,13 @@ exports.login = function (data, res) {
 
                 find_data().then(() => {
                     console.log(data)
+                    const temp = { user_id : user._id, user_name : user.name, user_email : user.email, user_address : user.address }
                     res.cookie("x_auth", user.token)
                         .status(200)
-                        .json({ success : true, message : user })
+                        .json({ success : true, message : temp })
                 })
             })
-            console.log(user._id, user.name, "님이 로그인 하였습니다.")
+            console.log(user.name, "님이 로그인 하였습니다.")
         })
     })
 }
@@ -64,144 +66,80 @@ exports.createClub = function(data, res) {
         if (err) {
             return res.json({ success : false, message : err })
         } else {
-            return res.status(200).json({ success : true, _id : user._id, name : user.name, email : user.email, address : user.address })
+            return res.status(200).json({ success : true })
         }
     })
 }
-
-exports.getUserContracts = async function(data) {
-    let joined_club = [];
-
-    await User.findOne({ _id : data.user_id}, (err, user) => {
-        joined_club = user.joined_club
-    }).clone()
-
-    let address_list = [];
-
-    const getInfo = async function(joined_club) {
-        for (let i of joined_club) {
-            await Club.findOne({ _id : i}).then(club =>{
-                address_list.push(club.address);
-            })
-        }
-        return address_list
-    }
-    return await getInfo(joined_club)
-}
-exports.createClubBC = function(data, abi, address, res) {
+exports.createBlockchainClub = function(data, address, res) {
     const club = new Club()
     club.club_id = String(club._id).slice(String(club._id).length-5, String(club._id).length);
     club.joined_user = data.user_id;
     club.joined_member = data.user_id;
     club.address = address;
-    club.abi = abi;
-    // console.log(club.contract)
+    club.flag = "BC";
 
     club.save()
     User.findOneAndUpdate({_id : data.user_id}, { $push: { joined_club : club._id }}, (err, user) => {
         if (err) {
             return res.json({ success : false, message : err })
         } else {
-            return res.status(200).json({ success : true, message : club.address })
+            return res.status(200).json({ success : true })
         }
     })
 }
+exports.userJoinedClub = async function (data) {
+    return await User.findOne({_id : data.user_id})
+        .then(user => { return user.joined_club })
+}
+exports.myClubs = async function (joined_club, res) {
+    let club_info_list = []
+    const get_all_club_info = async function() {
+        for(let club_id of joined_club) {
+            await Club.findOne({_id : club_id}).clone().then(async (club) => {
+                if (club.flag === 'BC') {
+                    await blockchain.clubInfo(club.address).then((club_info) => {
+                        club_info['club_id'] = club._id
+                        club_info_list.push(club_info)
+                    })
+                } else if (club.flag === 'DB') {
+                    let club_info = {
+                        club_id: club._id,
+                        title: club.club_title,
+                        balance: club.club_balance,
+                        leader: club.club_leader_name,
+                        users: club.joined_user.length
+                    }
+                    club_info_list.push(club_info)
+                }
+            })
+        }
+        return club_info_list
+    }
+    return await get_all_club_info().then(result => { res.send(result)} )
+}
+exports.clubInfo = async function(data, res) {
+    // 반환해줄 값
+    // 모임 이름, 모임 번호(5자리), 잔액, 영수증들
 
-
-
-
-
-
-
-
-
-
-
-
-exports.gotoClub = function(data, res) {
     Club.findOne({_id : data.club_id}, (err, club) => {
-        if (err) { return res.json({ success : false, message : err })
-        } else { return res.json({ success : true, message : club }) }
-    })
-}
-exports.myClubs = function(data, res) {
-    User.findOne({_id : data.user_id}, (err, user) => {
-        let list = [];
-        const temp = async function() {
-            for (let i of user.joined_club) {
-                await Club.findOne({_id : i})
-                    .clone()
-                    .then((club) => {
-                        list.push({ club_title : club.club_title, balance : club.club_balance, leader : user.name, users : club.joined_user.length})
-                    })
+        if (club.flag === 'BC') {
+            blockchain.clubInfo(club.address).then(result => {
+
+            })
+        }
+        else if(club.flag === 'DB') {
+            const temp = {
+                club_title : club.club_title,
+                club_id : club.club_id,
+                club_balance : club.club_balance,
+                club_receipts : club.receipts
             }
+            res.send(temp)
         }
-        temp().then(() => {
-            res.send(list)
-        })
-    })
-}
-exports.joinClub = function(data, res) {
-    Club.findOneAndUpdate({ club_id : data.club_id}, {$push : { joined_user: data.user_id }}, (err, club) => {
-        if(err) { return res.json({ success : false, message : err })
-        } else {
-            User.findOneAndUpdate({_id : data.user_id}, {$push : { joined_club : club._id}}, (err, user) => {
-                if(err) { return res.json({ success : false, message : err })
-                }
-            })
-            return res.status(200).json({ success : true, message : club })
-        }
-    })
-}
-exports.getUserInfo = function(user_id) {
-    User.findOne({_id : user_id}, (err, user) => {
-        return user;
-    })
-}
-exports.addMember = function(data, res) {
-    User.findOne({name : data.member_name, email : data.member_email}, (err, user) => {
-        if (err) {
-            return res.json({success : false, message : err})
-        } else {
-            Club.findOneAndUpdate({ _id : data.club_id}, {$push : { joined_member : user._id}}, (err, club) => {
-                if(err) {
-                    return res.json({success: false, message: err})
-                } else if (!club.joined_user.includes(user._id)){
-                    return res.json({
-                        success : false, message : '모임에 없는 사람입니다.'
-                    })
-                } else {
-                    return res.json({ success : true, message : club.joined_member })
-                }
-            })
-        }
-    })
-}
-exports.addFee = function(data, res) {
-    Club.findOneAndUpdate({ _id : data.club_id}, {$inc: { club_balance: data.fee }}, (err, club)=>{
-        res.send(club);
     })
 }
 
 
-exports.userAddress = function(data, res) {
-    User.findOne({ _id : data.user_id }, (err, user) => {
-        if (!user) {
-            console.log(err)
-            return res.json({ message : 'there is not user' })
-        } else {
-            return res.status(200).json({ user_address : user.address })
-        }
-    })
-}
-exports.addReceipt = function(data, res) {
-    Club.findOneAndUpdate({_id : data.club_id}, {$push : { receipt: data.receipt}}, (err, isPushed) => {
-        console.log(data.receipt);
-
-        if(!isPushed) { return res.json({ isPushed : false, message: "영수증 저장에 실패하였습니다." })}
-        else { return res.json({ isPushed : true, message: "영수증 저장에 성공하였습니다." })}
-    })
-}
 exports.allClub = function(res) {
     Club.find().then(result => res.send(result))
 }

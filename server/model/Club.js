@@ -30,7 +30,7 @@ const receiptSchema = new mongoose.Schema({
 
 const clubSchema = mongoose.Schema({
     flag : {
-        type : Boolean
+        type : String
     },
     club_title: {
         type: String
@@ -40,6 +40,9 @@ const clubSchema = mongoose.Schema({
     },
     club_leader_id: {
         type: String
+    },
+    club_leader_name: {
+        type : String
     },
     club_balance: {
         type: Number
@@ -62,9 +65,6 @@ const clubSchema = mongoose.Schema({
     },
     receipt: {
         type: [receiptSchema]
-    },
-    abi : {
-        type : Object
     },
     address : {
         type : String
