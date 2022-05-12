@@ -42,7 +42,6 @@ exports.clubInfo = async function(address) {
             return club_info
         })
 }
-
 exports.clubReceipt = async function(address) {
     const abi = compile.club()[0]
     let temp_contract = new web3.eth.Contract(abi, address);
@@ -60,4 +59,11 @@ exports.clubReceipt = async function(address) {
             }
             return receipt_info
         })
+}
+exports.addClubUser = async function(address, data) {
+    const abi = compile.club()[0]
+    let temp_contract = new web3.eth.Contract(abi, address);
+
+    await temp_contract.methods.addUser(data.user_address, data.user_id, data.user_name, 'no_depart')
+        .send({ from : caller, gas : 3000000 })
 }

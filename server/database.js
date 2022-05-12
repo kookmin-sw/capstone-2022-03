@@ -149,6 +149,20 @@ exports.gotoClub = async function(data, res) {
         }
     })
 }
+exports.joinClub = async function(data, res) {
+    Club.findOneAndUpdate({_id : data.club_id}, {$push : { joined_user : data.user_id}}, (err, club) => {
+        if (club.flag === 'BC') {
+            blockchain.addClubUser(club.address, data)
+                .then(async () => {
+                    await User.findOneAndUpdate({_id : data.user_id}, {$push : { joined_club : club._id}}).clone()
+                })
+        }
+        else if (club.flag === 'DB') {
+            User.findOneAndUpdate({_id : data.user_id}, {$push : { joined_club : club._id}})
+        }
+        res.send({ success : true })
+    })
+}
 
 
 exports.allClub = function(res) {
@@ -174,7 +188,7 @@ exports.rmUser = function (data, res) {
 }
 exports.rmClub = function (data, res) {
     Club.findOneAndDelete({ _id : data.club_id}, {}, (err, club) => {
-        if(err) { res.send(err)}
+        if(err) { res.send(err) }
         res.send({ success : true, message : club })
         console.log(club)
     })

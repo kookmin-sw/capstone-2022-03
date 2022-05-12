@@ -44,7 +44,9 @@ server.post('/my_clubs', (req, res) => {
 server.post('/goto_club', (req, res) => {
     db.gotoClub(req.body, res)
 })
-
+server.post('/join_club', (req, res) => {
+    db.joinClub(req.body, res)
+})
 
 
 server.post('/clubs', (req, res) => {
@@ -54,7 +56,7 @@ server.post('/users', (req, res) => {
     db.allUser(res);
 })
 server.post('/rmClub', (req, res) => {
-    db.rmClub(req.body)
+    db.rmClub(req.body, res)
 })
 server.post('/rmUser', (req, res) => {
     db.rmUser(req.body, res)
