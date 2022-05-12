@@ -27,23 +27,27 @@ server.post('/login', (req, res) => {
 })
 server.post('/create_club', (req, res) => {
     // 블록체인 사용
-    if (req.body.flag == 'BC'){
+    if (req.body.flag === 'BC'){
         blockchain.createClub(req.body)
             .then((contract) => {
-                db.createClubBC(req.body, contract, contract.options.address, res)
+                const abi = blockchain.abiClub()
+                db.createClubBC(req.body, abi, contract.options.address, res)
             })
     // 일반DB 사용
-    } else if (req.body.flag == 'DB') {
+    } else if (req.body.flag === 'DB') {
         db.createClub(req.body, res)
     }
 })
+
 server.post('/my_clubs', (req, res) => {
-    if(req.body.flag == 'BC'){
+    if(req.body.flag === "BC"){
         db.getUserContracts(req.body)
-            .then((contract_list) => {
-                blockchain.myClubs(contract_list, res)
+            .then((address_list) => {
+                // console.log('1 : ',address_list)
+                const abi = blockchain.abiClub();
+                blockchain.myClubs(address_list, abi, res)
             })
-    } else if(req.body.flag == 'DB') {
+    } else if(req.body.flag === 'DB') {
         db.myClubs(req.body, res);
     }
 })
@@ -53,7 +57,7 @@ server.post('/goto_club', (req, res) => {
 
 
 server.post('/add_member', (req, res) => {
-    if(req.body.flag == true){
+    if(req.body.flag === 'BC'){
         db.getUserInfo(req.body.member_name, req.body.member_email)
             .then(userInfo => {
                 blockchain.addClubMember(req.body, userInfo)

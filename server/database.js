@@ -70,29 +70,32 @@ exports.createClub = function(data, res) {
 }
 
 exports.getUserContracts = async function(data) {
-    var joined_club = [];
+    let joined_club = [];
 
     await User.findOne({ _id : data.user_id}, (err, user) => {
         joined_club = user.joined_club
     }).clone()
 
-    var contract_list = [];
+    let address_list = [];
 
     const getInfo = async function(joined_club) {
         for (let i of joined_club) {
             await Club.findOne({ _id : i}).then(club =>{
-                contract_list.push(club.contract)
+                address_list.push(club.address);
             })
         }
-        return contract_list
+        return address_list
     }
     return await getInfo(joined_club)
 }
-exports.createClubBC = function(data, contract, address, res) {
+exports.createClubBC = function(data, abi, address, res) {
     const club = new Club()
     club.club_id = String(club._id).slice(String(club._id).length-5, String(club._id).length);
-    club.contract = contract;
+    club.joined_user = data.user_id;
+    club.joined_member = data.user_id;
     club.address = address;
+    club.abi = abi;
+    // console.log(club.contract)
 
     club.save()
     User.findOneAndUpdate({_id : data.user_id}, { $push: { joined_club : club._id }}, (err, user) => {

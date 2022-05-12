@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const {Schema, SchemaTypes, Types} = require("mongoose");
 
 const itemSchema = new mongoose.Schema({
     item_name: {
@@ -62,8 +63,8 @@ const clubSchema = mongoose.Schema({
     receipt: {
         type: [receiptSchema]
     },
-    contract : {
-        type : [Object]
+    abi : {
+        type : Object
     },
     address : {
         type : String
