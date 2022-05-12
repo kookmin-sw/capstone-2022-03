@@ -67,6 +67,10 @@ contract club {
         return temp;
     }
 
+    function receiptInfo() public view returns (Receipt[] memory){
+        return receipts;
+    }
+
     function addReceipt(string memory owner, string memory place, string memory date, uint amount, string[] memory detail) public {
         receipts.push(Receipt(owner, place, date, amount, detail));
     }

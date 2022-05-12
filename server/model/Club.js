@@ -11,19 +11,19 @@ const itemSchema = new mongoose.Schema({
 })
 
 const receiptSchema = new mongoose.Schema({
-    user_id: {
+    owner: {
         type: String
     },
-    payment_place: {
+    place: {
         type: String
     },
-    payment_cost: {
+    cost: {
         type: Number
     },
-    payment_date: {
+    date: {
         type: Date, default: Date.now
     },
-    payment_item: {
+    detail: {
         type: [itemSchema]
     },
 });

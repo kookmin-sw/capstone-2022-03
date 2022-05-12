@@ -33,7 +33,12 @@ exports.clubInfo = async function(address) {
     return await temp_contract.methods.clubInfo()
         .call({ from : caller })
         .then(result => {
-            club_info = { title : result[0], balance : result[1], leader : result[2], users : result[3] }
+            club_info = {
+                club_title : result[0],
+                club_balance : result[1],
+                club_leader : result[2],
+                users : result[3]
+            }
             return club_info
         })
 }
@@ -41,5 +46,18 @@ exports.clubInfo = async function(address) {
 exports.clubReceipt = async function(address) {
     const abi = compile.club()[0]
     let temp_contract = new web3.eth.Contract(abi, address);
+    let receipt_info = {}
 
+    return await temp_contract.methods.receiptInfo()
+        .call({from : caller})
+        .then(result => {
+            receipt_info = {
+                owner : result[0],
+                place : result[1],
+                date : result[2],
+                amount : result[3],
+                detail : result[4]
+            }
+            return receipt_info
+        })
 }

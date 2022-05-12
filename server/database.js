@@ -58,6 +58,7 @@ exports.createClub = function(data, res) {
     club.club_id = String(club._id).slice(String(club._id).length-5, String(club._id).length);
     club.club_balance = 0;
     club.club_leader_id = data.user_id;
+    club.club_leader_name = data.user_name;
     club.joined_user.push(data.user_id);
     club.joined_member.push(data.user_id);
 
@@ -99,15 +100,17 @@ exports.myClubs = async function (joined_club, res) {
                 if (club.flag === 'BC') {
                     await blockchain.clubInfo(club.address).then((club_info) => {
                         club_info['club_id'] = club._id
+                        club_info['flag'] = "BC"
                         club_info_list.push(club_info)
                     })
                 } else if (club.flag === 'DB') {
                     let club_info = {
                         club_id: club._id,
-                        title: club.club_title,
-                        balance: club.club_balance,
-                        leader: club.club_leader_name,
-                        users: club.joined_user.length
+                        club_title: club.club_title,
+                        club_balance: club.club_balance,
+                        club_leader: club.club_leader_name,
+                        users: club.joined_user.length,
+                        flag : "DB"
                     }
                     club_info_list.push(club_info)
                 }
@@ -117,21 +120,29 @@ exports.myClubs = async function (joined_club, res) {
     }
     return await get_all_club_info().then(result => { res.send(result)} )
 }
-exports.clubInfo = async function(data, res) {
+exports.gotoClub = async function(data, res) {
     // 반환해줄 값
     // 모임 이름, 모임 번호(5자리), 잔액, 영수증들
 
     Club.findOne({_id : data.club_id}, (err, club) => {
         if (club.flag === 'BC') {
-            blockchain.clubInfo(club.address).then(result => {
-
-            })
+            blockchain.clubInfo(club.address).then(async (club_info) => {
+                await blockchain.clubReceipt(club.address).then(receipt_info => {
+                    if (receipt_info.length != null) {
+                        club_info['club_receipts'] = receipt_info
+                    }
+                })
+                club_info['club_id'] = club._id;
+                return club_info
+            }).then((result) => { res.send(result)})
         }
         else if(club.flag === 'DB') {
             const temp = {
-                club_title : club.club_title,
-                club_id : club.club_id,
-                club_balance : club.club_balance,
+                club_id: club._id,
+                club_title: club.club_title,
+                club_balance: club.club_balance,
+                club_leader: club.club_leader_name,
+                users: club.joined_user.length,
                 club_receipts : club.receipts
             }
             res.send(temp)
@@ -158,22 +169,13 @@ exports.rmUser = function (data, res) {
         //     })
         // }
         console.log(user)
-        res.status(200).send({ success : true, message : user })
+        res.send({ success : true, message : user })
     })
 }
 exports.rmClub = function (data, res) {
     Club.findOneAndDelete({ _id : data.club_id}, {}, (err, club) => {
-        // const temp_joined_user = club.joined_user
-        // for(let i of temp_joined_user) {
-        //     User.findOneAndUpdate({_id : i}, {$pull : { joined_club : club._id}}, (err, user) => {
-        //         if (err) {
-        //             res.json({ success : false, message : err })
-        //         } else {
-        //             console.log(user)
-        //         }
-        //     })
-        // }
-        res.status(200).send({ success : true, message : club })
+        if(err) { res.send(err)}
+        res.send({ success : true, message : club })
         console.log(club)
     })
 }
