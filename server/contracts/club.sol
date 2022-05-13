@@ -84,4 +84,8 @@ contract club {
     function addBalance(uint fee) public {
         club_balance = club_balance + fee;
     }
+
+    function getBalance() public view returns(uint) {
+        return club_balance;
+    }
 }

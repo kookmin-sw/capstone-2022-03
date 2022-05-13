@@ -1,6 +1,6 @@
 const express = require('express')
 const server = express()
-const server_port = 3001
+const server_port = 8080
 
 const blockchain = require('./blockchain')
 const db = require('./database')
@@ -33,6 +33,9 @@ server.post('/join_club', (req, res) => {
 })
 server.post('/add_member', (req, res) => {
     db.addClubMember(req.body, res)
+})
+server.post('/add_fee', (req, res) => {
+    db.addClubFee(req.body, res)
 })
 
 server.post('/clubs', (req, res) => {

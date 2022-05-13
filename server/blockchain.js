@@ -1,11 +1,11 @@
 const Web3 = require('web3');
-const blockchain_endpoint = 'http://172.31.8.46:8545';
+const blockchain_endpoint = 'http://127.0.0.1:8888';
 const web3 = new Web3(new Web3.providers.HttpProvider(blockchain_endpoint));
 const compile = require('./compile')
 
 let caller;
-exports.setCaller = async function () {
-    await web3.eth.getAccounts().then(async(result) => {
+exports.setCaller = function () {
+    web3.eth.getAccounts().then(async(result) => {
         caller = result[0]
         await web3.eth.personal.unlockAccount(result[0], "123", 0)
     })
@@ -61,7 +61,7 @@ exports.clubReceipt = async function(address) {
             return receipt_info
         })
 }
-exports.addClubUser = async function(address, data, department) {
+exports.addClubUser = async function(address, data) {
     const abi = compile.club()[0]
     let temp_contract = new web3.eth.Contract(abi, address);
 
@@ -74,4 +74,15 @@ exports.addClubMember = async function(address, data) {
 
     await temp_contract.methods.addMember(data.address, data._id, data.name, department)
         .send({ from : caller, gas : 3000000 })
+}
+exports.addClubFee = async function(address, fee) {
+    const abi = compile.club()[0]
+    let temp_contract = new web3.eth.Contract(abi, address);
+
+    return await temp_contract.methods.addBalance(fee)
+        .send({ from : caller, gas : 3000000 })
+        .then(() => {
+            return temp_contract.methods.getBalance(fee)
+                .call({ from : caller })
+        })
 }
