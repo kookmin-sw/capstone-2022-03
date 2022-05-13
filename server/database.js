@@ -340,8 +340,12 @@ exports.addClubReceipt = function(data, res) {
         else {
             // 블록체인 클럽
             if (club.flag === 'BC') {
-                blockchain.addClubReceipt(club.address, data.receipt).then(() => {
-                    res.send({ success : true })
+                blockchain.addClubReceipt(club.address, data.receipt)
+                    .then(async () => {
+                        await blockchain.clubReceipt(club.address)
+                            .then(() => {
+                                res.send({ success : true })
+                            })
                 })
             }
             // 일반 DB 클럽
