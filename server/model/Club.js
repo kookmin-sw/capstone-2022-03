@@ -1,6 +1,14 @@
 const mongoose = require('mongoose');
 const {Schema, SchemaTypes, Types} = require("mongoose");
 
+const roleSchema = new mongoose.Schema( {
+    user_id : {
+        type: String
+    },
+    department : {
+        type : String
+    }
+})
 const itemSchema = new mongoose.Schema({
     item_name: {
         type: String
@@ -35,7 +43,7 @@ const clubSchema = mongoose.Schema({
     club_title: {
         type: String
     },
-    club_id: {
+    club_number: {
         type: String
     },
     club_leader_id: {
@@ -61,7 +69,7 @@ const clubSchema = mongoose.Schema({
         type: [String]
     },
     joined_member: {
-        type: [String]
+        type: [roleSchema]
     },
     receipt: {
         type: [receiptSchema]
