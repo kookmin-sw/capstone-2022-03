@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image, Button, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {
@@ -7,6 +7,7 @@ import {
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import router from '../src/Router.json';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export function LoginScreen() {
     const navigation = useNavigation();
@@ -36,15 +37,10 @@ export function LoginScreen() {
                 }).then(res => res.json())
                     .then(res => {
                         if (res.success) {
-                            setUser_id(res._id);
-                            setUser_name(res.name);
-
-                            setUser_email(res.email);
-                            setUser_address(res.address);
+                            AsyncStorage.setItem('user_information', JSON.stringify(res)); //response로 받은 데이터 저장
                             navigation.reset({
                                 routes: [{
                                     name: 'Main',
-                                    params: { user_id: user_id } // 보낼 데이터가 있다면
                                 }]
                             })
                         }
@@ -63,15 +59,11 @@ export function LoginScreen() {
                 }).then(res => res.json())
                     .then(res => {
                         if (res.success) {
-                            setUser_id(res._id);
-                            setUser_name(res.name);
-                            setUser_email(res.email);
-                            setUser_address(res.address);
-                            navigation.navigate('Main', {
-                                user_id: user_id,
-                                // user_name: user_name,
-                                // user_email: user_email,
-                                // user_address: user_address,
+                            AsyncStorage.setItem('user_information', JSON.stringify(res)); //response로 받은 데이터 저장
+                            navigation.reset({
+                                routes: [{
+                                    name: 'Main',
+                                }]
                             })
                         }
                     })
@@ -87,10 +79,6 @@ export function LoginScreen() {
         <View style={styles.container}>
             <View style={styles.topArea}>
                 <View style={styles.titleArea}>
-                    {/* <Image
-                        source={require('../src/icon/logo.png')}
-                        style={{ width: 50, height: 50 }}
-                    /> */}
                     <Image
                         source={require('../src/icon/Login.png')}
                         style={{ width: wp(30), resizeMode: 'contain' }}
