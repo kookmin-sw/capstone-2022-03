@@ -343,8 +343,8 @@ exports.addClubReceipt = function(data, res) {
                 blockchain.addClubReceipt(club.address, data.receipt)
                     .then(async () => {
                         await blockchain.clubReceipt(club.address)
-                            .then(() => {
-                                res.send({ success : true })
+                            .then((receipt_info) => {
+                                res.send({ success : true , message : receipt_info})
                             })
                 })
             }
@@ -354,14 +354,27 @@ exports.addClubReceipt = function(data, res) {
                     if(err) { res.send(err) }
                     else if (!isPushed) { res.send({ success : false, message : "해당 클럽이 존재하지 않습니다."}) }
                     else {
-                        res.send({ success : true })
+                        res.send({ success : true , message : isPushed.receipt })
                     }
                 })
             }
         }
     })
 }
+exports.clubReceipts = function(data, res) {
+    Club.findOne({ _id : data.club_id}, (err, club) => {
+        if (err) { res.send(err) }
+        else if (!club) { res.send({ success : false, message : "해당 클럽이 존재하지 않습니다."}) }
+        else {
+            if (club.flag === 'BC'){
+                
+            }
+            else if (club.flag === 'DB'){
 
+            }
+        }
+    })
+}
 
 
 exports.allClub = function(res) {
