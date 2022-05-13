@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
     StyleSheet,
     View,
@@ -8,9 +8,6 @@ import {
     TouchableOpacity,
     TextInput,
     Alert,
-    Keyboard,
-    Modal,
-    ScrollView,
     Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -18,6 +15,7 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import router from '../src/Router.json';
 
 export function RegisterScreen() {
     const navigation = useNavigation();
@@ -27,12 +25,6 @@ export function RegisterScreen() {
     const [checkpassword, setCheckPassword] = useState('');
     const [validateEmail, setValidateEmail] = useState(false); //추후 Email 중복확인을 위하여 만든 코드
 
-    // const _ANDROID_AVD_API_HOST = 'http://3.39.196.91:3001/register'; //localhost 테스트용
-    // const _IOS_API_HOST = 'http://3.39.196.91:3001/register'; //localhost 테스트용
-
-    const _ANDROID_AVD_API_HOST = 'http://10.0.2.2:7000/register'; //localhost 테스트용
-    const _IOS_API_HOST = 'http://127.0.0.1:7000/register'; //localhost 테스트용
-
     async function onRegister() {
         if (password != checkpassword) { //비밀번호 확인이 제대로 되었나 탐지
             Alert.alert("비밀번호를 다시 입력해주십시오.")
@@ -41,7 +33,7 @@ export function RegisterScreen() {
         }
         else {
             if (Platform.OS === 'ios') {
-                fetch(_IOS_API_HOST, {
+                fetch(router.aws + '/register', {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json'
@@ -61,7 +53,7 @@ export function RegisterScreen() {
                     })
             }
             else if (Platform.OS === 'android') {
-                fetch(_ANDROID_AVD_API_HOST, {
+                fetch(router.aws + '/register', {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json'
