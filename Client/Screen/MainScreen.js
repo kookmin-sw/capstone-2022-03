@@ -9,6 +9,8 @@ import {
 import { useIsFocused } from '@react-navigation/native';
 import CustomButton from '../src/CustomButton';
 import router from '../src/Router.json';
+import AsyncStorage from '@react-native-community/async-storage';
+
 // StatusBar의 배경을 투명하게 만들고, 폰트를 검정색을 설정
 StatusBar.setBarStyle("dark-content");
 if (Platform.OS === 'android') {
@@ -22,10 +24,6 @@ const StatusBarHeight =
 
 function MainScreen({ navigation, route }) {
     const isFocused = useIsFocused();
-    const { user_id, user_name, user_email, user_address } = route.params;  //유저 정보
-
-    console.log(user_id, user_name, user_email, user_address);
-
     const sample_data = [
         {
             "club_title": "소융대 학생회",
@@ -118,29 +116,32 @@ function MainScreen({ navigation, route }) {
         );
     };
 
-    async function onMain() {
-        console.log("start");
-        fetch(router.aws + "/my_clubs", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                "user_id": user_id
-            })
-        }).then(res => res.json())
-            .then(res => {
-                if (res.success) {
-                    console.log(res);
-                }
-            })
-    }
+    // async function onMain() {
+    //     console.log("start");
+    //     fetch(router.aws + "/my_clubs", {
+    //         method: "POST",
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify({
+    //             "user_id": user_id
+    //         })
+    //     }).then(res => res.json())
+    //         .then(res => {
+    //             if (res.success) {
+    //                 console.log(res);
+    //             }
+    //         })
+    // }
 
 
     useEffect(() => {
-        console.log("모든 요소가 변경될때 마다 실행");
-        onMain();
-
+        AsyncStorage.getItem('user_information', (err, res) => {
+            const user = JSON.parse(res);
+            if (user.user_id != null) {
+                console.log(user.user_id)
+            }
+        })
     }, [isFocused]);
 
     return (
@@ -178,6 +179,16 @@ function MainScreen({ navigation, route }) {
                     buttonColor={'#4169e1'}
                     title="카메라 데모"
                     onPress={() => navigation.push('Camera')}
+                />
+                <CustomButton
+                    buttonColor={'#4169e1'}
+                    title="로그아웃"
+                    onPress={() => navigation.reset({
+                        routes: [{
+                            name: 'Login',
+                        }]
+                    })}
+
                 />
             </View>
         </View >
