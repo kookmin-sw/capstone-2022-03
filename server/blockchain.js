@@ -1,5 +1,5 @@
 const Web3 = require('web3');
-const blockchain_endpoint = 'http://127.0.0.1:8888';
+const blockchain_endpoint = 'http://172.30.1.25:8545';
 const web3 = new Web3(new Web3.providers.HttpProvider(blockchain_endpoint));
 const compile = require('./compile')
 
@@ -82,7 +82,7 @@ exports.addClubFee = async function(address, fee) {
     return await temp_contract.methods.addBalance(fee)
         .send({ from : caller, gas : 3000000 })
         .then(() => {
-            return temp_contract.methods.getBalance(fee)
+            return temp_contract.methods.getBalance()
                 .call({ from : caller })
         })
 }

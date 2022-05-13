@@ -315,7 +315,7 @@ exports.addClubFee = function(data, res) {
         else {
             // 블록체인 클럽
             if(club.flag === 'BC') {
-                blockchain.addClubFee(data.fee).then((new_balance) => {
+                blockchain.addClubFee(club.address, data.fee).then((new_balance) => {
                     res.send({ success : true, balance : new_balance})
                 })
             }
@@ -325,7 +325,7 @@ exports.addClubFee = function(data, res) {
                     if(err) { res.send(err) }
                     else if (!isIncreased) { res.send({ success : false, message : "해당 클럽이 존재하지 않습니다."}) }
                     else {
-                        let new_balance = isIncreased.club_balance
+                        let new_balance = isIncreased.club_balance + data.fee
                         res.send({ success : true, balance : new_balance })
                     }
                 })
