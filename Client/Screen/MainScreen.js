@@ -24,62 +24,8 @@ const StatusBarHeight =
 
 function MainScreen({ navigation, route }) {
     const isFocused = useIsFocused();
-    const sample_data = [
-        {
-            "club_title": "소융대 학생회",
-            "club_id": "1",
-            "account_number": "123-45-678",
-            "accountConstructor": "민태식",
-            "onwer_name": "안성열",
-            "club_balance": '300,000',
-            "joined_user": ["user_id1", "user_id3", "user_id2",],
-        },
-        {
-            "club_title": "캡스톤 3팀",
-            "club_id": "2",
-            "account_number": "123-45-678",
-            "accountConstructor": "민태식",
-            "onwer_name": "김상윤",
-            "club_balance": '300,000',
-            "joined_user": ["user_id1", "user_id3", "user_id2",],
-        },
-        {
-            "club_title": "농구 동아리",
-            "club_id": "3",
-            "account_number": "123-45-678",
-            "accountConstructor": "민태식",
-            "onwer_name": "민태식",
-            "club_balance": '300,000',
-            "joined_user": ["user_id1", "user_id3", "user_id2",],
-        },
-        {
-            "club_title": "총학 학생회",
-            "club_id": "4",
-            "account_number": "123-45-678",
-            "accountConstructor": "민태식",
-            "onwer_name": "안성열",
-            "club_balance": '300,000',
-            "joined_user": ["user_id1", "user_id3", "user_id2",],
-        },
-        {
-            "club_title": "축구 동아리",
-            "club_id": "5",
-            "account_number": "123-45-678",
-            "accountConstructor": "민태식",
-            "onwer_name": "김상윤",
-            "club_balance": '300,000',
-            "joined_user": ["user_id1", "user_id3", "user_id2",],
-        },
-        {
-            "club_title": "밴드 동아리",
-            "club_id": "6",
-            "account_number": "123-45-678",
-            "accountConstructor": "민태식",
-            "onwer_name": "민태식",
-            "club_balance": '300,000',
-            "joined_user": ["user_id1", "user_id3", "user_id2",],
-        }
-    ]
+    const [user_id, setUser_id] = useState('');
+    var sample_data = [];
     //데이터가 존재하는 경우
     _renderItem = ({ item, i }) => {
         return (
@@ -116,30 +62,26 @@ function MainScreen({ navigation, route }) {
         );
     };
 
-    // async function onMain() {
-    //     console.log("start");
-    //     fetch(router.aws + "/my_clubs", {
-    //         method: "POST",
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify({
-    //             "user_id": user_id
-    //         })
-    //     }).then(res => res.json())
-    //         .then(res => {
-    //             if (res.success) {
-    //                 console.log(res);
-    //             }
-    //         })
-    // }
-
-
     useEffect(() => {
-        AsyncStorage.getItem('user_information', (err, res) => {
+        AsyncStorage.getItem('user_information', async (err, res) => {
             const user = JSON.parse(res);
             if (user.user_id != null) {
-                console.log(user.user_id)
+                setUser_id(user.user_id);
+                console.log(user.user_id);
+                await fetch(router.aws + '/my_clubs', {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "user_id": user_id
+                    })
+                }).then(res => res.json())
+                    .then(res => {
+                        if (res) {
+                            console.log(res);
+                        }
+                    })
             }
         })
     }, [isFocused]);
