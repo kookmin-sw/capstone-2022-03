@@ -86,3 +86,17 @@ exports.addClubFee = async function(address, fee) {
                 .call({ from : caller })
         })
 }
+exports.addClubReceipt = async function(address, data) {
+    const abi = compile.club()[0]
+    let temp_contract = new web3.eth.Contract(abi, address);
+
+    // 블록체인에 넣기 위한 데이터 가공 과정
+    let item = []
+    for (let i of data.detail) {
+        item.push(i.item_name)
+        item.push(i.item_cost)
+    }
+
+    await temp_contract.methods.addReceipt(data.user_name, data.place, data.date, data.cost, item)
+        .send({ from : caller, gas : 3000000 })
+}

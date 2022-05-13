@@ -333,7 +333,30 @@ exports.addClubFee = function(data, res) {
         }
     })
 }
-
+exports.addClubReceipt = function(data, res) {
+    Club.findOne({ _id : data.club_id}, (err, club) => {
+        if (err) { res.send(err) }
+        else if (!club) { res.send({ success : false, message : "해당 클럽이 존재하지 않습니다."}) }
+        else {
+            // 블록체인 클럽
+            if (club.flag === 'BC') {
+                blockchain.addClubReceipt(club.address, data.receipt).then(() => {
+                    res.send({ success : true })
+                })
+            }
+            // 일반 DB 클럽
+            else if (club.flag === 'DB') {
+                club.findOneAndUpdate({ _id : data.club_id}, {$push : { receipt : data.receipt}}, (err, isPushed) => {
+                    if(err) { res.send(err) }
+                    else if (!isPushed) { res.send({ success : false, message : "해당 클럽이 존재하지 않습니다."}) }
+                    else {
+                        res.send({ success : true })
+                    }
+                })
+            }
+        }
+    })
+}
 
 
 

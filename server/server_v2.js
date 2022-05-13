@@ -37,6 +37,10 @@ server.post('/add_member', (req, res) => {
 server.post('/add_fee', (req, res) => {
     db.addClubFee(req.body, res)
 })
+server.post('/add_receipt', (req, res) => {
+    db.addClubReceipt(req.body, res)
+})
+
 
 server.post('/clubs', (req, res) => {
     db.allClub(res);
