@@ -279,7 +279,7 @@ exports.addClubMember = function(data, res) {
         else {
             // 블록체인 클럽
             if(club.flag === 'BC') {
-                User.findOne({ name : data.member_name , email : data.member_email})
+                User.findOne({ _id : data.member_id })
                     .then(async(user) => {
                         await blockchain.addClubMember(club.address, user)
                         console.log(club.club_title ," 에", user.name, "님이 추가되었습니다. ")
@@ -288,7 +288,7 @@ exports.addClubMember = function(data, res) {
             }
             // 일반DB 클럽
             else if (club.flag === 'DB') {
-                let temp = {user_id : data.member_name, department : data.department}
+                let temp = { user_id : data.member_id, department : data.department}
                 Club.findOneAndUpdate({_id : data.club_id}, {$push : { joined_member : temp}}, (err, isPushed) => {
                     if (err) { res.send(err) }
                     else if (!isPushed) {
