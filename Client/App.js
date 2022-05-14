@@ -10,6 +10,7 @@ import ClubScreen from './Screen /ClubScreen';
 import JoinClubScreen from './Screen /JoinClubScreen';
 import CreateClubScreen from './Screen /CreateClubScreen';
 import AddFeeScreen from './Screen /AddFeeScreen';
+import AddMemberScreen from './Screen /AddMemberScreen';
 const stack = createStackNavigator();
 
 function BackBtn() {
@@ -125,7 +126,17 @@ class App extends Component {
               headerBackImage: BackBtn,
             }}
           />
+          <stack.Screen
+            name="AddMember"
+            component={AddMemberScreen}
+            options={{
+              title: "총무추가",
+              headerBackTitleVisible: false,
+              headerBackImage: BackBtn,
+            }}
+          />
         </stack.Navigator>
+
       </NavigationContainer>
     )
   }
