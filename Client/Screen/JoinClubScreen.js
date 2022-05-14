@@ -25,13 +25,11 @@ function JoinClub({ navigation }) {
                 SetUser_Name(user.user_name);
                 SetUser_Email(user.user_email);
                 SetUser_Address(user.user_address);
-                console.log(user_id);
             }
         })
     }, [isFocused]);
 
     const _checkcode = (club_number) => {
-        console.log(user_id);
         fetch(router.aws + '/join_club', {
             method: "POST",
             headers: {
@@ -64,7 +62,6 @@ function JoinClub({ navigation }) {
                 모임 번호를 입력해주세요
             </Text>
             <SmoothPinCodeInput
-                // password mask="*"
                 codeLength={5}
                 cellSize={45}
                 cellStyle={{
