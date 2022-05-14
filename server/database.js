@@ -391,7 +391,32 @@ exports.clubReceipts = function(data, res) {
         }
     })
 }
+exports.getJoinedUser = function(data, res) {
+    Club.findOne({_id : data.club_id}, (err, club) => {
+        if (err) { res.send(err) }
+        else if (!club) { res.send({ success : false, message : "해당 클럽이 존재하지 않습니다."}) }
+        else {
+            if(club.flag === 'BC') {
+                blockchain.clubUsers(club.address).then(async(users) => {
+                    console.log(users)
+                })
+            }
+            else if (club.flag === 'DB') {
+                let user_info_list = []
 
+                const temp = async function() {
+                    for(let temp_id of club.joined_member) {
+                        User.findOne({_id : temp_id}).then(async (user) => {
+                            user_info_list.push({ user_name : user.name, user_id : user._id })
+                        }).clone()
+                    }
+                    return user_info_list
+                }
+                temp().then((result) => { res.send(result)} )
+            }
+        }
+    })
+}
 
 exports.allClub = function(res) {
     Club.find().then(result => res.send(result))

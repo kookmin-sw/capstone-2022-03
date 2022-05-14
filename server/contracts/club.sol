@@ -70,6 +70,9 @@ contract club {
     function receiptInfo() public view returns (Receipt[] memory){
         return receipts;
     }
+    function userInfo() public view returns (User[] memory) {
+        return users;
+    }
 
     function addReceipt(string memory owner, string memory place, string memory date, uint amount, string[] memory detail) public {
         require(club_balance >= amount);

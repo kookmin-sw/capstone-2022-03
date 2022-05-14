@@ -43,7 +43,9 @@ server.post('/add_receipt', (req, res) => {
 server.post('/club_receipt', (req, res) => {
     db.clubReceipts(req.body, res)
 })
-
+server.post('/joined_user', (req, res) => {
+    db.getJoinedUser(req.body, res);
+})
 
 
 

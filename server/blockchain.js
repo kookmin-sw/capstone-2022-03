@@ -114,3 +114,10 @@ exports.clubBalance = async function(address) {
     return await temp_contract.methods.getBalance()
         .call({ from : caller })
 }
+exports.clubUsers = async function(address) {
+    const abi = compile.club()[0]
+    let temp_contract = new web3.eth.Contract(abi, address);
+
+    return await temp_contract.methods.userInfo()
+        .call({ from : caller })
+}
