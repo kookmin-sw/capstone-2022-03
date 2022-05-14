@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import React, { useEffect, useState } from 'react';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { Image, View, Text, FlatList, StatusBar, StyleSheet, Platform, TouchableOpacity, Button } from 'react-native';
+import { Image, View, Text, FlatList, StatusBar, StyleSheet, Platform, TouchableOpacity, Button, Alert } from 'react-native';
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
@@ -24,24 +24,27 @@ const StatusBarHeight =
 
 function MainScreen({ navigation, route }) {
     const isFocused = useIsFocused();
-    const [user_id, setUser_id] = useState('');
-    var sample_data = [];
-    //데이터가 존재하는 경우
-    _renderItem = ({ item, i }) => {
+    const [data, setData] = useState([]);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
+    const _renderItem = ({ item, i }) => {
         return (
             <TouchableOpacity
                 onPress={() => {
-                    navigation.push('Club')
-                    navigation.navigate('Club', { club_title: item.club_title })
-                    navigation.navigate('Club', { club_title: item.club_id })
-                    navigation.navigate('Club', { club_title: item.club_balance })
+                    navigation.navigate('Club', {
+                        club_title: item.club_title,
+                        club_id: item.club_id,
+                        club_balance: item.club_balance
+                    })
+
                 }}
             >
                 <View style={styles.card} key={i}>
                     <View>
                         <Text style={styles.itemClubtitle}>{item.club_title}</Text>
-                        <Text>모임장: {item.accountConstructor}</Text>
-                        <Text>모임 인원: {item.joined_user.length}</Text>
+                        <Text>모임장: {item.club_leader}</Text>
+                        <Text>모임인원: {item.users}</Text>
+                        <Text>저장방식: {item.flag}</Text>
                     </View>
                     <View>
                         <Text style={styles.itemClubBalance}>{item.club_balance}</Text>
@@ -62,27 +65,47 @@ function MainScreen({ navigation, route }) {
         );
     };
 
+    function refreshItems() {
+        // setIsRefreshing(true);
+        AsyncStorage.getItem('user_information', async (err, res) => {
+            const user = JSON.parse(res);
+            fetch(router.aws + '/my_clubs', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "user_id": user.user_id
+                })
+            }).then(res => res.json())
+                .then(res => {
+                    if (res) {
+
+                        setIsRefreshing(false);
+                        setData(res);
+                        console.log('저장완료');
+                    }
+                })
+        })
+    }
+
     useEffect(() => {
         AsyncStorage.getItem('user_information', async (err, res) => {
             const user = JSON.parse(res);
-            if (user.user_id != null) {
-                setUser_id(user.user_id);
-                console.log(user.user_id);
-                await fetch(router.aws + '/my_clubs', {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        "user_id": user_id
-                    })
-                }).then(res => res.json())
-                    .then(res => {
-                        if (res) {
-                            console.log(res);
-                        }
-                    })
-            }
+            fetch(router.aws + '/my_clubs', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "user_id": user.user_id
+                })
+            }).then(res => res.json())
+                .then(res => {
+                    if (res) {
+                        setData(res);
+                    }
+                })
         })
     }, [isFocused]);
 
@@ -94,15 +117,28 @@ function MainScreen({ navigation, route }) {
                     source={require('../src/icon/textlogo.png')}
                     style={{ width: wp(30), resizeMode: 'contain' }}
                 />
+                <TouchableOpacity onPress={() => navigation.reset({
+                    routes: [{
+                        name: 'Login',
+                    }]
+                })}>
+                    <Image
+                        source={require('../src/icon/logout.png')}
+                        style={{ width: wp(40), resizeMode: 'contain' }}
+                    />
+
+                </TouchableOpacity>
             </View>
             <View style={styles.content}>
                 <Text style={{ fontSize: 25, fontWeight: '700', color: 'black', marginTop: 15, marginLeft: 15, marginBottom: 5 }}>모임 목록</Text>
                 <FlatList
                     showsVerticalScrollIndicator={false}
                     style={styles.list}
-                    data={sample_data}
+                    data={data}
                     renderItem={_renderItem}
                     ListEmptyComponent={EmptyListMessage}
+                    onRefresh={refreshItems}
+                    refreshing={isRefreshing}
                 />
                 <Text style={{ fontSize: 10, fontWeight: '700', color: 'white', marginLeft: 30, }}>emptyspace</Text>
             </View>
@@ -121,16 +157,6 @@ function MainScreen({ navigation, route }) {
                     buttonColor={'#4169e1'}
                     title="카메라 데모"
                     onPress={() => navigation.push('Camera')}
-                />
-                <CustomButton
-                    buttonColor={'#4169e1'}
-                    title="로그아웃"
-                    onPress={() => navigation.reset({
-                        routes: [{
-                            name: 'Login',
-                        }]
-                    })}
-
                 />
             </View>
         </View >
@@ -152,9 +178,9 @@ const styles = StyleSheet.create({
     title: {
         width: '100%',
         height: '10%',
-        // alignItems: 'center',
-        justifyContent: 'space-evenly',
-        // flexDirection: 'row'
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         marginTop: 10,
         marginBottom: 10,
         marginLeft: 30,
