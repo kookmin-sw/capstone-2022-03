@@ -168,7 +168,7 @@ exports.myClubs = function (data, res) {
                             }
                             else if (club.flag === "DB") {
                                 let club_info = {
-                                    club_id: club._id,
+                                    club_id: String(club._id),
                                     club_title: club.club_title,
                                     club_balance: club.club_balance,
                                     club_leader: club.club_leader_name,
@@ -253,14 +253,14 @@ exports.joinClub = function(data, res) {
                     }
                 })
                 User.findOneAndUpdate({_id : data.user_id}, {$push : { joined_club : club._id}}, (err, isPushed) => {
-                    if(err) { res.send(err) }
-                    else if (!isPushed) {
-                        res.send({ success : false, message : "유저 DB에 해당 클럽을 추가하지 못했습니다."})
-                    }
-                    else {
-                        console.log(data.user_name, "님이 ", club.club_title, "에 참가했습니다.")
-                        res.send({ success : true })
-                    }
+                    // if(err) { res.send(err) }
+                    // else if (!isPushed) {
+                    //     res.send({ success : false, message : "유저 DB에 해당 클럽을 추가하지 못했습니다."})
+                    // }
+                    // else {
+                    //     console.log(data.user_name, "님이 ", club.club_title, "에 참가했습니다.")
+                    //     res.send({ success : true })
+                    // }
 
                 })
             }
