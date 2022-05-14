@@ -1,17 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, } from 'react-native';
 import CustomButton from '../src/CustomButton';
 import styles from '../src/Styles';
 import { TextInput, RadioButton } from 'react-native-paper';
 import router from '../src/Router.json';
+import AsyncStorage from '@react-native-community/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 const theme = 'white'
 
 function CreateClub({ route, navigation }) {
 
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+        AsyncStorage.getItem('user_information', (err, res) => {
+            const user = JSON.parse(res);
+            if (user.user_id != null) {
+                setUser_Id(user.user_id);
+                setUser_Email(user.user_email);
+                setUser_Name(user.user_name);
+                setUser_Address(user.user_address);
+            }
+        })
+    }, [isFocused]);
+    const [user_id, setUser_Id] = useState('');
+    const [user_name, setUser_Name] = useState('');
+    const [user_email, setUser_Email] = useState('');
+    const [user_address, setUser_Address] = useState('');
     const [club_title, setClub_Title] = useState('');
-    const [club_leader_id, set_Club_Leader_Id] = useState('');
     const [club_bank_name, setClub_Bank_Name] = useState('');
     const [club_bank_account, setClub_Bank_Account] = useState('');
+    const [club_bank_holder, setClub_Bank_Holder] = useState('');
     const [checked, setChecked] = useState('DB'); //초기값은 DB에 저장하도록 한다.
 
     async function createClub() {
@@ -26,10 +45,16 @@ function CreateClub({ route, navigation }) {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
+                        "flag": checked,
+                        "user_id": user_id,
+                        "user_name": user_name,
+                        "user_email": user_email,
+                        "user_address": user_address,
                         "club_title": club_title,
                         "club_bank_name": club_bank_name,
                         "club_bank_account": club_bank_account,
-                        "flag": checked,
+                        "club_bank_holder": club_bank_holder,
+                        "department": "head",
                     })
                 }).then(res => res.json())
                     .then(res => {
@@ -47,10 +72,16 @@ function CreateClub({ route, navigation }) {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
+                        "flag": checked,
+                        "user_id": user_id,
+                        "user_name": user_name,
+                        "user_email": user_email,
+                        "user_address": user_address,
                         "club_title": club_title,
                         "club_bank_name": club_bank_name,
                         "club_bank_account": club_bank_account,
-                        "flag": checked,
+                        "club_bank_holder": club_bank_holder,
+                        "department": "head",
                     })
                 }).then(res => res.json())
                     .then(res => {
@@ -63,6 +94,7 @@ function CreateClub({ route, navigation }) {
             }
         }
     }
+
     return (
         <View style={styles.container}>
             <View style={styles.header}></View>
@@ -109,6 +141,7 @@ function CreateClub({ route, navigation }) {
                         selectionColor={styles.Color_Main2}
                         activeUnderlineColor={styles.Color_Main1}
                         backgroundColor={theme}
+                        onChangeText={newText => setClub_Bank_Holder(newText)}
                     />
                     <Text style={[styles.Font_Subtext1, { marginTop: 15 }]}>저장방식</Text>
                     <View >
@@ -123,9 +156,9 @@ function CreateClub({ route, navigation }) {
                     <View>
                         <RadioButton
                             color={styles.Color_Main2}
-                            value="BlockChain"
-                            status={checked === "BlockChain" ? 'checked' : 'unchecked'}
-                            onPress={() => setChecked('BlockChain')}
+                            value="BC"
+                            status={checked === "BC" ? 'checked' : 'unchecked'}
+                            onPress={() => setChecked('BC')}
                         />
                         <Text>블록체인에 저장</Text>
                     </View>

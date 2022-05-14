@@ -1,23 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import styles from '../src/Styles';
+import router from '../src/Router.json';
+import { useIsFocused } from '@react-navigation/native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const theme = styles.Color_Main2
 
 function JoinClub({ navigation }) {
+    const isFocused = useIsFocused();
 
-    const [club_id, SetClub_Id] = useState('');
+    const [club_number, SetClub_Number] = useState('');
+    const [user_id, SetUser_id] = useState('');
+    const [user_name, SetUser_Name] = useState('');
+    const [user_email, SetUser_Email] = useState('');
+    const [user_address, SetUser_Address] = useState('');
 
-    _checkcode = (club_id) => {
+    useEffect(() => {
+        AsyncStorage.getItem('user_information', (err, res) => {
+            const user = JSON.parse(res);
+            if (user.user_id != null) {
+                SetUser_id(user.user_id);
+                SetUser_Name(user.user_name);
+                SetUser_Email(user.user_email);
+                SetUser_Address(user.user_address);
+                console.log(user_id);
+            }
+        })
+    }, [isFocused]);
 
-        alert(`club_id : ${club_id}`);
-        /*
-            모임번호 4자리를 모두 입력하면 이 함수를 실행한다
-            위 함수에서 서버와 통신하도록 한다.
-            해당하는 모임의 번호가 있을 경우 유저를 해당 모임에 추가시키고
-            해당하는 모임의 번호가 없을 경우 없는 모임번호라는 toast알림을 띄워준다.
-        */
+    const _checkcode = (club_number) => {
+        console.log(user_id);
+        fetch(router.aws + '/join_club', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "user_id": user_id,
+                "user_name": user_name,
+                "user_email": user_email,
+                "user_address": user_address,
+                "club_number": club_number,
+            })
+        }).then(res => res.json())
+            .then(res => {
+                if (res.success) {
+                    alert(`모임에 참여 완료하였습니다!`);
+                    navigation.reset({
+                        routes: [{
+                            name: 'Main',
+                        }]
+                    })
+                }
+            })
+
     }
 
     return (
@@ -27,6 +65,7 @@ function JoinClub({ navigation }) {
             </Text>
             <SmoothPinCodeInput
                 // password mask="*"
+                codeLength={5}
                 cellSize={45}
                 cellStyle={{
                     borderBottomWidth: 2,
@@ -37,8 +76,8 @@ function JoinClub({ navigation }) {
                     borderColor: 'white',
                 }}
                 textStyle={[styles.Font_Title2, { color: 'white' }]}
-                value={club_id}
-                onTextChange={newText => SetClub_Id(newText)}
+                value={club_number}
+                onTextChange={newText => SetClub_Number(newText)}
                 onFulfill={_checkcode}
                 cellSpacing={5}
                 keyboardType='numeric'

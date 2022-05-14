@@ -13,11 +13,6 @@ export function LoginScreen() {
     const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [user_id, setUser_id] = useState('');
-    const [user_name, setUser_name] = useState('');
-    const [user_email, setUser_email] = useState('');
-    const [user_address, setUser_address] = useState('');
-
 
     async function onLogin() {
         if (!email || !password) { //비밀번호 확인이 제대로 되었나 탐지
@@ -25,7 +20,7 @@ export function LoginScreen() {
         }
         else {
             if (Platform.OS === 'ios') {
-                fetch(router.localhost.ios + "/login", {
+                fetch(router.aws + "/login", {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json'
@@ -47,7 +42,7 @@ export function LoginScreen() {
                     })
             }
             else if (Platform.OS === 'android') {
-                fetch(router.localhost.android + "/login", {
+                fetch(router.aws + "/login", {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json'
