@@ -44,6 +44,10 @@ server.post('/club_receipt', (req, res) => {
     db.clubReceipts(req.body, res)
 })
 
+
+
+
+
 server.post('/clubs', (req, res) => {
     db.allClub(res);
 })

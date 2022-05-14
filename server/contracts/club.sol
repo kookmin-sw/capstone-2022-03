@@ -33,7 +33,7 @@ contract club {
         string owner;
         string place;
         string date;
-        uint amount;
+        uint cost;
         string[] detail;
     }
 
@@ -72,7 +72,9 @@ contract club {
     }
 
     function addReceipt(string memory owner, string memory place, string memory date, uint amount, string[] memory detail) public {
+        require(club_balance >= amount);
         receipts.push(Receipt(owner, place, date, amount, detail));
+        club_balance = club_balance - amount;
     }
 
     function addUser(address addr, string memory id, string memory name, string memory department) public {
@@ -84,7 +86,6 @@ contract club {
     function addBalance(uint fee) public {
         club_balance = club_balance + fee;
     }
-
     function getBalance() public view returns(uint) {
         return club_balance;
     }

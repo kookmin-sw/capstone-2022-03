@@ -1,5 +1,6 @@
 const Web3 = require('web3');
-const blockchain_endpoint = 'http://172.30.1.25:8545';
+// const blockchain_endpoint = 'http://172.30.1.25:8545';
+const blockchain_endpoint = 'http://127.0.0.1:8888'
 const web3 = new Web3(new Web3.providers.HttpProvider(blockchain_endpoint));
 const compile = require('./compile')
 
@@ -46,19 +47,25 @@ exports.clubInfo = async function(address) {
 exports.clubReceipt = async function(address) {
     const abi = compile.club()[0]
     let temp_contract = new web3.eth.Contract(abi, address);
-    let receipt_info = {}
+    let receipt_info_list = []
 
     return await temp_contract.methods.receiptInfo()
         .call({from : caller})
         .then(result => {
-            receipt_info = {
-                owner : result[0],
-                place : result[1],
-                date : result[2],
-                amount : result[3],
-                detail : result[4]
+            for (let item of result) {
+                let details = []
+                for (let index =0; index < item[4].length; index = index+2) {
+                    details.push({item_name : item[4][index], item_cost : item[4][index+1]})
+                }
+                receipt_info_list.push({
+                    owner : item[0],
+                    place : item[1],
+                    cost : item[3],
+                    date : item[2],
+                    detail : details
+                })
             }
-            return receipt_info
+            return receipt_info_list
         })
 }
 exports.addClubUser = async function(address, data) {
@@ -94,9 +101,16 @@ exports.addClubReceipt = async function(address, data) {
     let item = []
     for (let i of data.detail) {
         item.push(i.item_name)
-        item.push(i.item_cost)
+        item.push(String(i.item_cost))
     }
 
-    await temp_contract.methods.addReceipt(data.user_name, data.place, data.date, data.cost, item)
+    await temp_contract.methods.addReceipt(data.owner, data.place, data.date, data.cost, item)
         .send({ from : caller, gas : 3000000 })
+}
+exports.clubBalance = async function(address) {
+    const abi = compile.club()[0]
+    let temp_contract = new web3.eth.Contract(abi, address);
+
+    return await temp_contract.methods.getBalance()
+        .call({ from : caller })
 }
