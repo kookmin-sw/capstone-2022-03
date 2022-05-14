@@ -48,7 +48,7 @@ All club members can browse the histories of payment.
 </br>
 
 ## 채굴 작업 (현재 참여 불가)
-[채굴 참여 방법](https://github.com/kookmin-sw/capstone-2022-03/blob/master/HowtoMine.md)
+[채굴 참여 방법](https://github.com/kookmin-sw/capstone-2022-03/blob/master/mineTutorial.md)
 
 </br>
 
