@@ -98,8 +98,7 @@ function Club({ route, navigation }) {
                 <CustomButton
                     buttonColor={'#4169e1'}
                     title="총무 추가"
-                    //onPress={() => navigation.push('CreateClub')}
-                    onPress={() => alert('총무 추가')}
+                    onPress={() => navigation.navigate('AddMember')}
                 />
                 <CustomButton
                     buttonColor={'#4169e1'}
