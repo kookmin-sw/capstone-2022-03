@@ -398,21 +398,25 @@ exports.getJoinedUser = function(data, res) {
         else {
             if(club.flag === 'BC') {
                 blockchain.clubUsers(club.address).then(async(users) => {
-                    console.log(users)
+                    let user_info_list = []
+                    for (let temp_user of users){
+                        user_info_list.push({user_name : temp_user.name, user_id : temp_user.id})
+                    }
+                    res.send(user_info_list)
                 })
             }
             else if (club.flag === 'DB') {
                 let user_info_list = []
 
                 const temp = async function() {
-                    for(let temp_id of club.joined_member) {
-                        User.findOne({_id : temp_id}).then(async (user) => {
+                    for(let temp_id of club.joined_user) {
+                        await User.findOne({_id : temp_id}).then(async (user) => {
                             user_info_list.push({ user_name : user.name, user_id : user._id })
-                        }).clone()
+                        })
                     }
                     return user_info_list
                 }
-                temp().then((result) => { res.send(result)} )
+                temp().then(() => { res.send(user_info_list)} )
             }
         }
     })
