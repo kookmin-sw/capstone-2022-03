@@ -67,7 +67,8 @@
 
 7. 메인 노드에 연동 및 확인
 > $ admin.addPeer("enode://c4a4aedd2b0ca49ba9b08ebced9c0b1e09f2fc9e1c4fa1d6e786f56860178a52b6f67d573defca468ef374720cebb26350302ae1390e488c8f43aca6cb6cae2b@14.39.137.164:30303?discport=0")
-> $ admin.peers
+
+> $ admin.peers -> 연결시 리스트 생성
 
 8. 채굴시작 및 종료
 > $ miner.start(<작업쓰레드개수>)
