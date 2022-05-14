@@ -47,8 +47,11 @@ export function RegisterScreen() {
                     .then(res => {
                         if (res.success) {
                             console.log("회원정보 저장 완료!");
-                            Alert.alert("회원가입이 왼료되었습니다!")
+                            Alert.alert("회원가입이 완료되었습니다!")
                             navigation.navigate("Login");
+                        }
+                        else {
+                            Alert.alert("회원가입에 실패하였습니다.");
                         }
                     })
             }
@@ -67,8 +70,11 @@ export function RegisterScreen() {
                     .then(res => {
                         if (res.success) {
                             console.log("회원정보 저장 완료!");
-                            Alert.alert("회원가입이 왼료되었습니다!")
+                            Alert.alert("회원가입이 완료되었습니다!")
                             navigation.navigate("Login");
+                        }
+                        else {
+                            Alert.alert("회원가입에 실패하였습니다.");
                         }
                     })
             }
