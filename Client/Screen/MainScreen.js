@@ -52,6 +52,7 @@ function MainScreen({ navigation, route }) {
                 </View>
             </TouchableOpacity>
         )
+
     }
     // 데이터가 없는 경우
     const EmptyListMessage = ({ item }) => {
@@ -66,7 +67,7 @@ function MainScreen({ navigation, route }) {
     };
 
     function refreshItems() {
-        // setIsRefreshing(true);
+        setIsRefreshing(true);
         AsyncStorage.getItem('user_information', async (err, res) => {
             const user = JSON.parse(res);
             fetch(router.aws + '/my_clubs', {
@@ -80,12 +81,10 @@ function MainScreen({ navigation, route }) {
             }).then(res => res.json())
                 .then(res => {
                     if (res) {
-
-                        setIsRefreshing(false);
                         setData(res);
                         console.log('저장완료');
                     }
-                })
+                }).finally(() => setIsRefreshing(false))
         })
     }
 
@@ -103,6 +102,7 @@ function MainScreen({ navigation, route }) {
             }).then(res => res.json())
                 .then(res => {
                     if (res) {
+                        console.log(res);
                         setData(res);
                     }
                 })
@@ -194,11 +194,6 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 20,
         borderBottomLeftRadius: 20,
         borderBottomRightRadius: 20,
-        // borderBottomLeftRadius: 30,
-        // borderBottomRightRadius: 30,
-        // borderWidth: 3,
-        // borderStyle: 'solid',
-        // borderColor: '#208cf7',
     },
     list: {
         paddingBottom: 10,
@@ -209,18 +204,26 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginTop: 12,
         marginHorizontal: 12,
-        paddingVertical: 20,
+
         paddingHorizontal: 15,
         height: 100,
-        shadowColor: '#d3d3d3',
-        shadowOffset: {
-            width: 1,
-            height: 1
-        },
-        shadowOpacity: 1,
-        shadowRadius: 1,
-        elevation: 1,
-        zIndex: 1,
+        ...Platform.select({
+            ios: {
+                paddingVertical: 15,
+                shadowColor: '#d3d3d3',
+                shadowOffset: {
+                    width: 1.5,
+                    height: 1.5
+                },
+                shadowOpacity: 1,
+                shadowRadius: 1,
+            },
+            android: {
+                paddingVertical: 8,
+                shadowColor: 'black',
+                elevation: 1,
+            }
+        }),
         backgroundColor: 'white',
         borderRadius: 12,
         borderColor: '#F2F3F4',
