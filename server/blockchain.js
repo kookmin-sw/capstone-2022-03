@@ -75,7 +75,7 @@ exports.addClubUser = async function(address, data) {
     await temp_contract.methods.addUser(data.user_address, data.user_id, data.user_name, 'no_depart')
         .send({ from : caller, gas : 3000000 })
 }
-exports.addClubMember = async function(address, data) {
+exports.addClubMember = async function(address, data, department) {
     const abi = compile.club()[0]
     let temp_contract = new web3.eth.Contract(abi, address);
 
@@ -119,5 +119,12 @@ exports.clubUsers = async function(address) {
     let temp_contract = new web3.eth.Contract(abi, address);
 
     return await temp_contract.methods.userInfo()
+        .call({ from : caller })
+}
+exports.clubMembers = async function(address) {
+    const abi = compile.club()[0]
+    let temp_contract = new web3.eth.Contract(abi, address);
+
+    return await temp_contract.methods.memberInfo()
         .call({ from : caller })
 }

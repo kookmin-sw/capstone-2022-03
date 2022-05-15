@@ -73,6 +73,9 @@ contract club {
     function userInfo() public view returns (User[] memory) {
         return users;
     }
+    function memberInfo() public view returns (User[] memory) {
+        return members;
+    }
 
     function addReceipt(string memory owner, string memory place,
         string memory date, uint amount, string[] memory detail)
