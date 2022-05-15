@@ -47,9 +47,8 @@ server.post('/joined_user', (req, res) => {
     db.getJoinedUser(req.body, res);
 })
 server.post('/joined_member', (req, res) => {
-    db.getJoinedMember(req.body, res)
+    db.getJoinedMember(req.body, res);
 })
-
 
 
 server.post('/clubs', (req, res) => {

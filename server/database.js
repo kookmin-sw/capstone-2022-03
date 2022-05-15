@@ -431,13 +431,12 @@ exports.getJoinedMember = function(data, res) {
         else if (!club) { res.send({ success : false, message : "해당 클럽이 존재하지 않습니다."}) }
         else {
             if(club.flag === 'BC') {
-                blockchain.clubMembers(club.address).then(async(users) => {
-                    let user_info_list = []
-                    console.log(users)
-                    // for (let temp_user of users){
-                    //     user_info_list.push({user_name : temp_user.name, user_id : temp_user.id})
-                    // }
-                    // res.send(user_info_list)
+                blockchain.clubMembers(club.address).then(async(members) => {
+                    let member_info_list = []
+                    for (let temp_member of members){
+                        member_info_list.push({user_name : temp_member.name, user_id : temp_member.id})
+                    }
+                    res.send(member_info_list)
                 })
             }
             else if (club.flag === 'DB') {
