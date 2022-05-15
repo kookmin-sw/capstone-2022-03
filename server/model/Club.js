@@ -46,9 +46,6 @@ const clubSchema = mongoose.Schema({
     club_number: {
         type: String
     },
-    club_leader_id: {
-        type: String
-    },
     club_leader_name: {
         type : String
     },
