@@ -196,31 +196,47 @@ exports.gotoClub = function(data, res) {
         else {
             // 블록체인 클럽
             if (club.flag === 'BC') {
-                blockchain.clubInfo(club.address).then(async (club_info) => {
-                    await blockchain.clubReceipt(club.address).then(receipt_info => {
+                blockchain.clubUsers(club.address).then(async(users) => {
+                    let temp_info = {'joined_user' : [], 'receipt' : []}
+                    let user_info_list = []
+
+                    for (let temp_user of users){
+                        user_info_list.push({user_name : temp_user.name, user_id : temp_user.id})
+                    }
+                    temp_info['joined_user'] = user_info_list;
+
+                    blockchain.clubReceipt(club.address).then(receipt_info => {
                         if (receipt_info.length != null) {
-                            club_info['club_receipts'] = receipt_info
+                            temp_info['receipt'] = receipt_info
+                        } else {
+                            temp_info['receipt'] = []
                         }
                     })
-                    club_info['club_id'] = club._id;
-                    return club_info
-                }).then((result) => { res.send(result)})
+                    return temp_info
+                }).then(async result => { res.send(result)})
             }
             // 일반 DB 클럽
             else if(club.flag === 'DB') {
-                const temp = {
-                    club_id: club._id,
-                    club_title: club.club_title,
-                    club_balance: club.club_balance,
-                    club_leader: club.club_leader_name,
-                    users: club.joined_user.length,
-                    club_receipts : club.receipt
+                let temp_info = {'joined_user' : [], 'receipt' : []}
+                temp_info['receipt'] = club.receipt
+
+                const temp2 = async function() {
+                    for (let temp_user of club.joined_user) {
+                        await User.findOne({_id : temp_user}, (err, user) => {
+                            temp_info['joined_user'].push({
+                                user_name : user.name,
+                                user_id : user._id
+                            })
+                        }).clone()
+                    }
+                    return temp_info
                 }
-                res.send(temp)
+                temp2().then(async result => { res.send(result)})
             }
         }
     })
 }
+
 exports.joinClub = function(data, res) {
     Club.findOne({ club_number : data.club_number}, (err, club) => {
         // DB 에러 발생
@@ -391,36 +407,6 @@ exports.clubReceipts = function(data, res) {
                     receipt_list.push(receipt)
                 }
                 res.send(receipt_list)
-            }
-        }
-    })
-}
-exports.getJoinedUser = function(data, res) {
-    Club.findOne({_id : data.club_id}, (err, club) => {
-        if (err) { res.send(err) }
-        else if (!club) { res.send({ success : false, message : "해당 클럽이 존재하지 않습니다."}) }
-        else {
-            if(club.flag === 'BC') {
-                blockchain.clubUsers(club.address).then(async(users) => {
-                    let user_info_list = []
-                    for (let temp_user of users){
-                        user_info_list.push({user_name : temp_user.name, user_id : temp_user.id})
-                    }
-                    res.send(user_info_list)
-                })
-            }
-            else if (club.flag === 'DB') {
-                let user_info_list = []
-
-                const temp = async function() {
-                    for(let temp_id of club.joined_user) {
-                        await User.findOne({_id : temp_id}).then(async (user) => {
-                            user_info_list.push({ user_name : user.name, user_id : user._id })
-                        })
-                    }
-                    return user_info_list
-                }
-                temp().then(() => { res.send(user_info_list)} )
             }
         }
     })
