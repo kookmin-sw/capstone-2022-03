@@ -74,16 +74,20 @@ contract club {
         return users;
     }
 
-    function addReceipt(string memory owner, string memory place, string memory date, uint amount, string[] memory detail) public {
+    function addReceipt(string memory owner, string memory place,
+        string memory date, uint amount, string[] memory detail)
+    public {
         require(club_balance >= amount);
         receipts.push(Receipt(owner, place, date, amount, detail));
         club_balance = club_balance - amount;
     }
 
-    function addUser(address addr, string memory id, string memory name, string memory department) public {
+    function addUser(address addr, string memory id, string memory name,
+        string memory department) public {
         users.push(User(addr, id, name, department));
     }
-    function addMember(address addr, string memory id, string memory name, string memory department) public {
+    function addMember(address addr, string memory id,
+        string memory name, string memory department) public {
         members.push(User(addr, id, name, department));
     }
     function addBalance(uint fee) public {
