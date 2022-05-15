@@ -187,21 +187,26 @@ exports.myClubs = function (data, res) {
     })
 }
 exports.gotoClub = function(data, res) {
-    Club.findOne({_id : data.club_id}, (err, club) => {
+    Club.findOne({_id : data.club_id},   async (err, club) => {
         // DB 에러
-        if (err) { res.send(err) }
+        if (err) {
+            res.send(err)
+        }
         // 존재하지 않는 클럽
-        else if (!club) { res.send({ success : false, message : "존재하지 않는 클럽입니다."}) }
+        else if (!club) {
+            res.send({success: false, message: "존재하지 않는 클럽입니다."})
+        }
         // 정상 경로
         else {
+
             // 블록체인 클럽
             if (club.flag === 'BC') {
-                blockchain.clubUsers(club.address).then(async(users) => {
-                    let temp_info = {'joined_user' : [], 'receipt' : []}
+                blockchain.clubUsers(club.address).then(async (users) => {
+                    let temp_info = {'joined_user': [], 'receipt': []}
                     let user_info_list = []
 
-                    for (let temp_user of users){
-                        user_info_list.push({user_name : temp_user.name, user_id : temp_user.id})
+                    for (let temp_user of users) {
+                        user_info_list.push({user_name: temp_user.name, user_id: temp_user.id})
                     }
                     temp_info['joined_user'] = user_info_list;
 
@@ -213,25 +218,25 @@ exports.gotoClub = function(data, res) {
                         }
                     })
                     return temp_info
-                }).then(async result => { res.send(result)})
+                }).then(async result => {
+                    res.send(result)
+                })
             }
             // 일반 DB 클럽
-            else if(club.flag === 'DB') {
-                let temp_info = {'joined_user' : [], 'receipt' : []}
+            else if (club.flag === 'DB') {
+                let temp_info = {'joined_user': [], 'receipt': []}
                 temp_info['receipt'] = club.receipt
 
-                const temp2 = async function() {
-                    for (let temp_user of club.joined_user) {
-                        await User.findOne({_id : temp_user}, (err, user) => {
-                            temp_info['joined_user'].push({
-                                user_name : user.name,
-                                user_id : user._id
-                            })
-                        }).clone()
-                    }
-                    return temp_info
+                for await (let temp_user of club.joined_user) {
+                    await User.findOne({ _id : temp_user}).then((user) => {
+                        temp_info['joined_user'].push({
+                            user_name : user.name,
+                            user_id : user._id
+                        })
+                    })
                 }
-                temp2().then(async result => { res.send(result)})
+
+                res.send(temp_info)
             }
         }
     })
@@ -318,7 +323,7 @@ exports.addClubMember = function(data, res) {
                         }
                     })
                 }
-                res.send({ success : true , message : data.members.length })
+                res.send({ success : true , message : data.members.length + "명 추가 되었습니다."})
             }
         }
     })
