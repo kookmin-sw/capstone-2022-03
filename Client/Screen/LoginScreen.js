@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, Button, TextInput } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Image, Alert, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {
     widthPercentageToDP as wp,
@@ -13,6 +13,7 @@ export function LoginScreen() {
     const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errtext, setErrText] = useState('');
 
     async function onLogin() {
         if (!email || !password) { //비밀번호 확인이 제대로 되었나 탐지
@@ -60,6 +61,8 @@ export function LoginScreen() {
                                     name: 'Main',
                                 }]
                             })
+                        } else {
+                            setErrText('아이디와 비밀번호를 다시 확인해주세요')
                         }
                     })
             }
@@ -97,8 +100,11 @@ export function LoginScreen() {
                     placeholder={'비밀번호'}
                     autoCapitalize='none'
                     onChangeText={(text) => { setPassword(text); }}
+                    secureTextEntry={true} //텍스트 숨김처리
                 />
-                <Text style={styles.TextValidation}>유효하지 않은 ID입니다.</Text>
+                {errtext != '' ? (
+                    <Text style={styles.TextValidation}> {errtext}</Text>
+                ) : null}
             </View>
             <View style={{ flex: 0.5 }}>
                 <View style={styles.btnArea}>
@@ -167,13 +173,21 @@ const styles = StyleSheet.create({
         height: hp(6),
         paddingLeft: 10,
         paddingRight: 10,
-        shadowColor: '#d3d3d3',
-        shadowOffset: {
-            width: 1,
-            height: 1
-        },
-        shadowOpacity: 1,
-        shadowRadius: 1,
+        ...Platform.select({
+            ios: {
+                shadowColor: '#d3d3d3',
+                shadowOffset: {
+                    width: 1.5,
+                    height: 1.5
+                },
+                shadowOpacity: 1,
+                shadowRadius: 1,
+            },
+            android: {
+                shadowColor: 'black',
+                elevation: 4,
+            }
+        }),
     },
     textFormBottom: {
         marginTop: 10,
@@ -186,13 +200,21 @@ const styles = StyleSheet.create({
         height: hp(6),
         paddingLeft: 10,
         paddingRight: 10,
-        shadowColor: '#d3d3d3',
-        shadowOffset: {
-            width: 1,
-            height: 1
-        },
-        shadowOpacity: 1,
-        shadowRadius: 1,
+        ...Platform.select({
+            ios: {
+                shadowColor: '#d3d3d3',
+                shadowOffset: {
+                    width: 1.5,
+                    height: 1.5
+                },
+                shadowOpacity: 1,
+                shadowRadius: 1,
+            },
+            android: {
+                shadowColor: 'black',
+                elevation: 4,
+            }
+        }),
     },
     btnArea: {
         height: hp(8),

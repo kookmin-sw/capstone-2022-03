@@ -1,0 +1,12 @@
+{
+    "localhost": {
+        "android": "http://10.0.2.2:7000",
+        "ios": "http://127.0.0.1:7000"
+    },
+    "aws": "http://3.39.196.91:3001",
+    "googleCloud": {
+        "api": "https://vision.googleapis.com/v1/images:annotate?key=",
+        "apiKey": "AIzaSyDYKfJtaZgYO1R6BYy5hBf0BD__ElhiAwA",
+        "destination": "https://vision.googleapis.com/v1/images:annotate"
+    }
+}

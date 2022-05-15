@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import CustomButton from '../src/CustomButton';
 import 'react-native-gesture-handler';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { View, Text, FlatList, StatusBar, StyleSheet, Platform, TouchableOpacity } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
+import router from '../src/Router.json';
 
 // StatusBar의 배경을 투명하게 만들고, 폰트를 검정색을 설정
 StatusBar.setBarStyle("dark-content");
@@ -15,65 +17,28 @@ const StatusBarHeight =
 
 
 function Club({ route, navigation }) {
+    const isFocused = useIsFocused();
+    const [data, setData] = useState([]);
+    const { club_title, club_id, club_balance } = route.params;
 
-    const { club_title } = route.params;
-    const { club_id } = route.params;
-    const { club_balance } = route.params;
-
-    console.log(club_balance, club_id, club_title);
-    const sample_data =
-    {
-        "club_title": "소융대 학생회",
-        "club_id": 1,
-        "account_number": "123-45-678",
-        "onwer_name": "안성열",
-        "club_balance": '300,000',
-        "joined_user": ["user_id1", "user_id3", "user_id2",],
-        "receipts": [
-            {
-                "payment_place": "주경야돈",
-                "payment_cost": 100000,
-                "payment_date": "2022-04-01",
-                "payment_item": [
-                    {
-                        "item_name": "소주",
-                        "item_cost": 3000
-                    },
-                    {
-                        "item_name": "맥주",
-                        "item_cost": 4000
-                    }]
+    useEffect(() => {
+        console.log("refresh");
+        fetch(router.aws + '/goto_club', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
             },
-            {
-                "payment_place": "스터디카페",
-                "payment_cost": 50000,
-                "payment_date": "2022-04-02",
-                "payment_item": [
-                    {
-                        "item_name": "자리값",
-                        "item_cost": 3000
-                    },
-                    {
-                        "item_name": "커피값",
-                        "item_cost": 4000
-                    }]
-            },
-            {
-                "payment_place": "스터디카페",
-                "payment_cost": 50000,
-                "payment_date": "2022-04-02",
-                "payment_item": [
-                    {
-                        "item_name": "자리값",
-                        "item_cost": 3000
-                    },
-                    {
-                        "item_name": "커피값",
-                        "item_cost": 4000
-                    }]
-            }
-        ]
-    }
+            body: JSON.stringify({
+                "club_id": club_id
+            })
+        }).then(res => res.json())
+            .then(res => {
+                if (res) {
+                    console.log(res.club_receipts);
+                    setData(res.club_receipts);
+                }
+            })
+    }, [isFocused]);
 
     _renderItem = ({ item, i }) => {
         return (
@@ -86,13 +51,13 @@ function Club({ route, navigation }) {
             >
                 <View style={styles.card} key={i}>
                     <View>
-                        <Text style={styles.itemPlacetitle}>{item.payment_place}</Text>
+                        <Text style={styles.itemPlacetitle}>{item.place}</Text>
                         <Text style={{ marginTop: 20 }}>결제일</Text>
-                        <Text>{item.payment_date}</Text>
+                        <Text>{item.date}</Text>
                     </View>
                     <View>
                         <Text style={{ textAlign: 'right', marginTop: 35 }}>사용금액</Text>
-                        <Text style={styles.itemPaymentCost}>{item.payment_cost}</Text>
+                        <Text style={styles.itemPaymentCost}>{item.cost}</Text>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -113,7 +78,7 @@ function Club({ route, navigation }) {
         <View style={styles.container}>
             <View style={styles.header}></View>
             <View style={styles.title}>
-                <Text style={{ fontSize: 25, color: 'black', fontWeight: '700' }}>{club_title}{'\t'} 모임번호:{club_id} </Text>
+                <Text style={{ fontSize: 25, color: 'black', fontWeight: '700' }}>{club_title}{'\t'} {String(club_id).slice(-5)} </Text>
             </View>
             <View style={styles.content}>
                 <View style={{ alignItems: 'center' }}>
@@ -122,7 +87,7 @@ function Club({ route, navigation }) {
                 </View>
                 <FlatList
                     style={styles.list}
-                    data={sample_data.receipts}
+                    data={data}
                     renderItem={_renderItem}
                     ListEmptyComponent={EmptyListMessage}
                     contentContainerStyle={{ flexGrow: 1 }}
@@ -133,13 +98,16 @@ function Club({ route, navigation }) {
                 <CustomButton
                     buttonColor={'#4169e1'}
                     title="총무 추가"
-                    //onPress={() => navigation.push('CreateClub')}
-                    onPress={() => alert('총무 추가')}
+                    onPress={() => navigation.navigate('AddMember')}
                 />
                 <CustomButton
                     buttonColor={'#4169e1'}
                     title="회비 입금"
-                    onPress={() => alert('회비 입금')}
+                    onPress={() => navigation.navigate('AddFee', {
+                        club_title: club_title,
+                        club_id: club_id,
+                        club_balance: club_balance
+                    })}
                 />
                 <CustomButton
                     buttonColor={'#4169e1'}
@@ -162,20 +130,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    // logo: {
-    //     width: '100%',
-    //     height: '5%',
-    //     justifyContent: 'space-evenly',
-    //     paddingTop: 10,
-    //     marginLeft: 15,
-    // },
-
     title: {
         width: '100%',
         height: '5%',
         alignItems: 'center',
         justifyContent: 'space-evenly',
-        // flexDirection: 'row'
     },
     content: {
         flex: 1,
@@ -186,11 +145,6 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 20,
         borderBottomLeftRadius: 20,
         borderBottomRightRadius: 20,
-        // borderBottomLeftRadius: 30,
-        // borderBottomRightRadius: 30,
-        // borderWidth: 3,
-        // borderStyle: 'solid',
-        // borderColor: '#208cf7',
     },
     list: {
         paddingBottom: 10,

@@ -9,6 +9,8 @@ import CameraScreen from './Screen /CameraScreen';
 import ClubScreen from './Screen /ClubScreen';
 import JoinClubScreen from './Screen /JoinClubScreen';
 import CreateClubScreen from './Screen /CreateClubScreen';
+import AddFeeScreen from './Screen /AddFeeScreen';
+import AddMemberScreen from './Screen /AddMemberScreen';
 const stack = createStackNavigator();
 
 function BackBtn() {
@@ -49,7 +51,7 @@ class App extends Component {
                 color: "#707070"
               },
               headerBackTitleVisible: false,
-              // headerBackImage: BackBtn,
+              headerBackImage: BackBtn,
             }}
           />
           <stack.Screen
@@ -76,6 +78,7 @@ class App extends Component {
                 color: "#707070"
               },
               headerBackTitleVisible: false,
+              headerBackImage: BackBtn,
             }}
           />
           <stack.Screen
@@ -90,6 +93,7 @@ class App extends Component {
               },
               headerBackTitleVisible: false,
               headerTransparent: true,
+              headerBackImage: BackBtn,
             }}
           />
           <stack.Screen
@@ -112,7 +116,27 @@ class App extends Component {
               headerBackImage: BackBtn,
             }}
           />
+          <stack.Screen
+            name="AddFee"
+            component={AddFeeScreen}
+            options={{
+              title: "",
+              headerBackTitleVisible: false,
+              headerTransparent: true,
+              headerBackImage: BackBtn,
+            }}
+          />
+          <stack.Screen
+            name="AddMember"
+            component={AddMemberScreen}
+            options={{
+              title: "총무추가",
+              headerBackTitleVisible: false,
+              headerBackImage: BackBtn,
+            }}
+          />
         </stack.Navigator>
+
       </NavigationContainer>
     )
   }
