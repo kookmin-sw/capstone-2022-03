@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
 import styles from '../src/Styles';
 import router from '../src/Router.json';
-import { useIsFocused } from '@react-navigation/native';
-import AsyncStorage from '@react-native-community/async-storage';
 import CustomButton from '../src/CustomButton';
 import 'react-native-gesture-handler';
 

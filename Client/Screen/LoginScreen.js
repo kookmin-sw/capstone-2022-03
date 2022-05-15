@@ -39,6 +39,8 @@ export function LoginScreen() {
                                     name: 'Main',
                                 }]
                             })
+                        } else {
+                            Alert.alert("이메일 또는 비밀번호를 확인해주세요");
                         }
                     })
             }
@@ -62,7 +64,7 @@ export function LoginScreen() {
                                 }]
                             })
                         } else {
-                            setErrText('아이디와 비밀번호를 다시 확인해주세요')
+                            Alert.alert("이메일 또는 비밀번호를 확인해주세요");
                         }
                     })
             }

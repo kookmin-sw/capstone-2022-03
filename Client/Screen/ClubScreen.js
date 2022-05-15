@@ -19,6 +19,7 @@ const StatusBarHeight =
 function Club({ route, navigation }) {
     const isFocused = useIsFocused();
     const [data, setData] = useState([]);
+    const [joined_user, setJoined_User] = useState([]);
     const { club_title, club_id, club_balance } = route.params;
 
     useEffect(() => {
@@ -34,8 +35,9 @@ function Club({ route, navigation }) {
         }).then(res => res.json())
             .then(res => {
                 if (res) {
-                    console.log(res.club_receipts);
+                    setJoined_User(res.joined_user);
                     setData(res.club_receipts);
+                    console.log(res);
                 }
             })
     }, [isFocused]);
@@ -74,6 +76,8 @@ function Club({ route, navigation }) {
         );
     };
 
+    //총무 추가
+
     return (
         <View style={styles.container}>
             <View style={styles.header}></View>
@@ -98,7 +102,10 @@ function Club({ route, navigation }) {
                 <CustomButton
                     buttonColor={'#4169e1'}
                     title="총무 추가"
-                    onPress={() => navigation.navigate('AddMember')}
+                    onPress={() => navigation.navigate('AddMember', {
+                        club_id: club_id,
+                        joined_user: joined_user,
+                    })}
                 />
                 <CustomButton
                     buttonColor={'#4169e1'}
