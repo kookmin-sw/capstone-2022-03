@@ -1,15 +1,11 @@
 import 'react-native-gesture-handler';
 import React, { useEffect, useState } from 'react';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { Image, View, Text, FlatList, StatusBar, StyleSheet, Platform } from 'react-native';
-import {
-    widthPercentageToDP as wp,
-    heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-import { useIsFocused } from '@react-navigation/native';
+import { Image, View, Text, FlatList, StatusBar, StyleSheet, Platform, Alert } from 'react-native';
 import CustomButton from '../src/CustomButton';
-import router from '../src/Router.json';
 import CheckBox from '@react-native-community/checkbox';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+import router from '../src/Router.json';
 
 StatusBar.setBarStyle("dark-content");
 if (Platform.OS === 'android') {
@@ -21,35 +17,59 @@ const StatusBarHeight =
     Platform.OS === 'ios' ? getStatusBarHeight(true) : StatusBar.currentHeight;
 
 function AddMember({ navigation, route }) {
+    const { club_id, joined_user } = route.params;
+    const [data, setData] = useState(joined_user);
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const sample_data = [
-        {
-            name: "김상윤",
-            email: "skwx50000@gmail.com"
-        },
-        {
-            name: "안성열",
-            email: "zxcv123594@gmail.com"
-        },
-        {
-            name: "민태식",
-            email: "test@gmail.com"
-        },
-    ]
+
+    const onChangeValue = (itemSelected, index) => {
+        console.log(itemSelected)
+        console.log(itemSelected.user_id)
+        const newData = data.map(item => {
+            if (item.user_id == itemSelected.user_id) {
+                return {
+                    ...item,
+                    department: !item.department
+                }
+            }
+            return {
+                ...item,
+                department: item.department
+            }
+        })
+        setData(newData)
+    }
+
+    const IsChecked = (e) => {
+        console.log(e);
+    }
     const _renderItem = ({ item, index }) => {
-        return (
-            <View style={styles.card}>
-                <CheckBox
-                    style={styles.checkBox}
-                    disabled={false}
-                    onAnimationType='fill'
-                    offAnimationType='fade'
-                    boxType='square'
-                    onValueChange={() => on}
-                />
-                <Text style={styles.item}>{item.name} {item.email}</Text>
-            </View>
-        )
+        if (Platform.OS == 'ios') {
+            return (
+                <View style={styles.card}>
+                    <CheckBox
+                        style={styles.checkBox}
+                        disabled={false}
+                        onAnimationType='fill'
+                        offAnimationType='fade'
+                        boxType='circle'
+                        onValueChange={() => onChangeValue(item, index)}
+                    />
+                    <Text style={styles.item}>{item.user_name}</Text>
+                </View>
+            )
+        } else {
+            return (
+                <View style={styles.card}>
+                    <BouncyCheckbox
+                        size={20}
+                        fillColor="#4880EE"
+                        unfillColor="#FFFFFF"
+                        onPress={() => onChangeValue(item, index)}
+                    />
+                    <Text style={styles.item}>{item.user_name}</Text>
+                </View>
+            )
+        }
     }
     const EmptyListMessage = ({ item }) => {
         return (
@@ -62,22 +82,37 @@ function AddMember({ navigation, route }) {
         );
     };
 
+    const onShowItemSelected = () => {
+        const listSelected = data.filter(item => item.department == true);
+        console.log(listSelected)
+        fetch(router.aws + '/add_member', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "club_id": club_id,
+                "members": data
+            })
+        }).then(res => res.json())
+            .then(res => {
+                if (res.success) {
+                    console.log(res)
+                    navigation.goBack()
+                }
+            })
+    }
     return (
         <View style={styles.container}>
             <Text style={{ fontSize: 10, fontWeight: '700', color: 'white', marginLeft: 30, }}> </Text>
             <View style={styles.content}>
-                {/* <SelectableFlatlist>
-                    data={sample_data}
-                    state={STATE.EDIT}
-                    multiSelect={false}
-                    items
-                </SelectableFlatlist> */}
                 <FlatList
                     showsVerticalScrollIndicator={true}
                     style={styles.list}
-                    data={sample_data}
+                    data={joined_user}
                     renderItem={_renderItem}
                     ListEmptyComponent={EmptyListMessage}
+                    // keyExtractor={item => `key-${item.id}`}
                     // onRefresh={refreshItems}
                     refreshing={isRefreshing}
                 />
@@ -86,8 +121,8 @@ function AddMember({ navigation, route }) {
             <View style={styles.footer}>
                 <CustomButton
                     buttonColor={'#4169e1'}
-                    title="총무 추가"
-                    onPress={() => navigation.navigation('Main')}
+                    title="확인"
+                    onPress={onShowItemSelected}
                 />
             </View>
         </View >
@@ -130,6 +165,8 @@ const styles = StyleSheet.create({
     },
     item: {
         marginLeft: 30,
+        fontSize: 15,
+        fontWeight: 'bold'
     },
     checkBox: {
         width: 20,
@@ -139,20 +176,27 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        marginTop: 8,
+        marginTop: 4,
+        marginBottom: 4,
         marginHorizontal: 12,
         paddingVertical: 20,
         paddingHorizontal: 15,
         height: 60,
-        shadowColor: '#d3d3d3',
-        shadowOffset: {
-            width: 1,
-            height: 1
-        },
-        shadowOpacity: 1,
-        shadowRadius: 1,
-        elevation: 1,
-        zIndex: 1,
+        ...Platform.select({
+            ios: {
+                shadowColor: '#d3d3d3',
+                shadowOffset: {
+                    width: 1.5,
+                    height: 1.5
+                },
+                shadowOpacity: 1,
+                shadowRadius: 1,
+            },
+            android: {
+                shadowColor: 'black',
+                elevation: 1,
+            }
+        }),
         backgroundColor: 'white',
         borderRadius: 12,
         borderColor: '#F2F3F4',
