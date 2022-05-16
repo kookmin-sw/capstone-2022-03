@@ -59,7 +59,6 @@ exports.createClub = function (data, res) {
 
     let new_club = new Club()
     const new_club_id_size = String(new_club._id).length
-    new_club.club_number = String(new_club._id).slice(new_club_id_size-5, new_club_id_size)
 
     if(data.flag === "DB") {
         new_club = new Club(data)
@@ -67,6 +66,7 @@ exports.createClub = function (data, res) {
         new_club.club_leader_name = data.user_name;
         new_club.joined_user = [data.user_id]
         new_club.joined_member = [{user_id : data.user_id, department : "leader"}]
+        new_club.club_number = String(new_club._id).slice(new_club_id_size-5, new_club_id_size)
 
         message = "DB 클럽 생성"
     }
@@ -74,6 +74,7 @@ exports.createClub = function (data, res) {
         blockchain.createClub(data).then((address) => {
             new_club.address = address
             new_club.flag = "BC"
+            new_club.club_number = String(new_club._id).slice(new_club_id_size-5, new_club_id_size)
         })
         message = "BC 클럽 생성"
     }
@@ -166,11 +167,6 @@ exports.addClubMember = function(data, res) {
         }
     })
 }
-
-
-
-
-
 exports.gotoClub = function(data, res) {
     Club.findOne({_id : data.club_id},   async (err, club) => {
         if (err) { res.send(err) }
@@ -209,7 +205,7 @@ exports.gotoClub = function(data, res) {
                         User.findOne({ _id : element}).then((user) => {
                             temp_info['joined_user'].push({
                                 user_name : user.name,
-                                user_id : user._id``
+                                user_id : user._id
                         })
                     }))
                 })
@@ -220,7 +216,6 @@ exports.gotoClub = function(data, res) {
         }
     })
 }
-
 exports.addClubFee = function(data, res) {
     Club.findOne({ _id : data.club_id}, (err, club) => {
         if (err) { res.send(err) }
