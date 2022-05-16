@@ -173,21 +173,12 @@ exports.addClubMember = function(data, res) {
 
 exports.gotoClub = function(data, res) {
     Club.findOne({_id : data.club_id},   async (err, club) => {
-        // DB 에러
-        if (err) {
-            res.send(err)
-        }
-        // 존재하지 않는 클럽
-        else if (!club) {
-            res.send({success: false, message: "존재하지 않는 클럽입니다."})
-        }
-        // 정상 경로
+        if (err) { res.send(err) }
+        else if (!club) { res.send({success: false, message: "존재하지 않는 클럽입니다."}) }
         else {
-
-            // 블록체인 클럽
             if (club.flag === 'BC') {
-                blockchain.clubUsers(club.address).then(async (users) => {
-                    let temp_info = {'joined_user': [], 'receipt': []}
+                let temp_info = {'joined_user': [], 'receipt': []}
+                blockchain.clubUsers(club.address).then((users) => {
                     let user_info_list = []
 
                     for (let temp_user of users) {
@@ -207,21 +198,24 @@ exports.gotoClub = function(data, res) {
                     res.send(result)
                 })
             }
-            // 일반 DB 클럽
             else if (club.flag === 'DB') {
                 let temp_info = {'joined_user': [], 'receipt': []}
                 temp_info['receipt'] = club.receipt
 
-                for await (let temp_user of club.joined_user) {
-                    await User.findOne({ _id : temp_user}).then((user) => {
-                        temp_info['joined_user'].push({
-                            user_name : user.name,
-                            user_id : user._id
+                let promise_list = []
+                club.joined_user.forEach((element) => {
+                    promise_list.push(
+                        // promise function
+                        User.findOne({ _id : element}).then((user) => {
+                            temp_info['joined_user'].push({
+                                user_name : user.name,
+                                user_id : user._id``
                         })
-                    })
-                }
-
-                res.send(temp_info)
+                    }))
+                })
+                Promise.all(promise_list).then(() => {
+                    res.send(temp_info)
+                })
             }
         }
     })
