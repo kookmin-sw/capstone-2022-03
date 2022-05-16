@@ -67,7 +67,7 @@ contract club {
         return temp;
     }
 
-    function receiptList() public view returns (Receipt[] memory){
+    function receiptInfo() public view returns (Receipt[] memory){
         return receipts;
     }
     function userInfo() public view returns (User[] memory) {

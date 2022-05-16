@@ -55,14 +55,6 @@ exports.clubReceipt = async function(address) {
     let target_contract = new web3.eth.Contract(ABI_code, address);
     let receipt_info_list = []
 
-    target_contract.methods.receiptList()
-        .call({ from : caller })
-        .then((receipt_list) => {
-            for (let receipt of receipt_list) {
-
-            }
-        })
-
     return await target_contract.methods.receiptInfo()
         .call({from : caller})
         .then(result => {
