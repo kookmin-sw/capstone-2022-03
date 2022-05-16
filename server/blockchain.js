@@ -86,7 +86,7 @@ exports.addClubFee = async function(address, fee) {
     return await target_contract.methods.addBalance(fee)
         .send({ from : caller, gas : 3000000 })
         .then(() => {
-            return target_contract.methods.getBalance()
+            return target_contract.methods.balanceInfo()
                 .call({ from : caller })
         })
 }
@@ -106,7 +106,7 @@ exports.addClubReceipt = async function(address, data) {
 exports.clubBalance = async function(address) {
     let target_contract = new web3.eth.Contract(ABI_code, address);
 
-    return await target_contract.methods.getBalance()
+    return await target_contract.methods.balanceInfo()
         .call({ from : caller })
 }
 exports.clubUsers = async function(address) {

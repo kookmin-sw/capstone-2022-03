@@ -76,6 +76,9 @@ contract club {
     function memberInfo() public view returns (User[] memory) {
         return members;
     }
+    function balanceInfo() public view returns(uint) {
+        return club_balance;
+    }
 
     function addReceipt(string memory owner, string memory place,
         string memory date, uint amount, string[] memory detail)
@@ -96,7 +99,5 @@ contract club {
     function addBalance(uint fee) public {
         club_balance = club_balance + fee;
     }
-    function getBalance() public view returns(uint) {
-        return club_balance;
-    }
+
 }
