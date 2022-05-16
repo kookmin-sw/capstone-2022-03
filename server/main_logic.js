@@ -19,14 +19,13 @@ exports.register = function (data, res) {
 
             blockchain.makeAccount(data.name).then((address) => {
                 new_user.address = address;
-            })
-
-            new_user.save((err, user) => {
-                if (err) { res.send({ success : false, message : 'DB 오류'}) }
-                else {
-                    console.log(data.name, "회원가입 완료")
-                    res.send({ success : true, message : '회원가입 완료'})
-                }
+                new_user.save((err, user) => {
+                    if (err) { res.send({ success : false, message : 'DB 오류'}) }
+                    else {
+                        console.log(data.name, "회원가입 완료")
+                        res.send({ success : true, message : '회원가입 완료'})
+                    }
+                })
             })
         }
     })
@@ -69,25 +68,32 @@ exports.createClub = function (data, res) {
         new_club.club_number = String(new_club._id).slice(new_club_id_size-5, new_club_id_size)
 
         message = "DB 클럽 생성"
+
+        new_club.save().then(function() {
+            User.findOneAndUpdate({ _id : data.user_id}, {$push : { joined_club : new_club._id}}, (err, isUpdated) => {
+                if (err) { success = false }
+                else if(!isUpdated) { success = false; message = '유저의 클럽 목록이 업데이트 되지 않았습니다.'}
+            })
+            res.send({ success : success, message : message })
+        })
     }
     else if (data.flag === 'BC') {
         blockchain.createClub(data).then((address) => {
             new_club.address = address
             new_club.flag = "BC"
             new_club.club_number = String(new_club._id).slice(new_club_id_size-5, new_club_id_size)
+            message = "BC 클럽 생성"
+
+            new_club.save().then(function() {
+                User.findOneAndUpdate({ _id : data.user_id}, {$push : { joined_club : new_club._id}}, (err, isUpdated) => {
+                    if (err) { success = false }
+                    else if(!isUpdated) { success = false; message = '유저의 클럽 목록이 업데이트 되지 않았습니다.'}
+                })
+                res.send({ success : success, message : message })
+            })
         })
-        message = "BC 클럽 생성"
     }
     else {}
-
-    new_club.save().then(function() {
-        User.findOneAndUpdate({ _id : data.user_id}, {$push : { joined_club : new_club._id}}, (err, isUpdated) => {
-            if (err) { success = false }
-            else if(!isUpdated) { success = false; message = '유저의 클럽 목록이 업데이트 되지 않았습니다.'}
-        })
-        res.send({ success : success, message : message })
-    })
-
 }
 exports.userClubInfo = function (data, res) {
     User.findOne({_id : data.user_id}, async (err, user) => {
@@ -100,9 +106,9 @@ exports.userClubInfo = function (data, res) {
             user.joined_club.forEach((element) => {
                 promise_list.push(
                     // promise function
-                    Club.findOne({_id: element}).then((club) => {
+                    Club.findOne({_id: element}).then(async (club) => {
                         if (club.flag === "BC") {
-                            blockchain.clubInfo(club.address).then((club_info) => {
+                            await blockchain.clubInfo(club.address).then((club_info) => {
                                 club_info['club_id'] = club._id;
                                 club_info['flag'] = "BC"
                                 club_info_result.push(club_info)
@@ -133,12 +139,15 @@ exports.joinClub = function(data, res) {
         else {
             if (club.flag === "BC") {
                 blockchain.addClubUser(club.address, data)
-                User.findOneAndUpdate({_id: data.user_id}, {$push: {joined_club: club._id}})
-                res.send({ success: true })
+                User.findOneAndUpdate({_id: data.user_id}, {$push: {joined_club: club._id}}).then(() => {
+                    res.send({ success: true })
+                })
             } else if (club.flag === "DB") {
-                Club.findOneAndUpdate({club_number: data.club_number}, {$push: {joined_user: data.user_id}})
-                User.findOneAndUpdate({_id: data.user_id}, {$push: {joined_club: club._id}})
-                res.send({ success: true })
+                Club.findOneAndUpdate({club_number: data.club_number}, {$push: {joined_user: data.user_id}}).then(() => {
+                    User.findOneAndUpdate({_id: data.user_id}, {$push: {joined_club: club._id}}).then(() => {
+                        res.send({ success: true })
+                    })
+                })
             } else {}
         }
     })
@@ -206,8 +215,8 @@ exports.gotoClub = function(data, res) {
                             temp_info['joined_user'].push({
                                 user_name : user.name,
                                 user_id : user._id
-                        })
-                    }))
+                            })
+                        }))
                 })
                 Promise.all(promise_list).then(() => {
                     res.send(temp_info)
@@ -254,7 +263,7 @@ exports.addClubReceipt = function(data, res) {
                                 console.log(data.user_name, "님이 영수증을 추가했습니다.")
                                 res.send({ success : true, message : balance })
                             })
-                })
+                    })
             }
             // 일반 DB 클럽
             else if (club.flag === 'DB') {
