@@ -216,7 +216,7 @@ exports.gotoClub = function(data, res) {
                 Promise.all(promise_list).then(() => {
                     res.send(temp_info)
                 })
-            }
+            } else {}
         }
     })
 }
@@ -241,7 +241,7 @@ exports.addClubFee = function(data, res) {
                         res.send({ success : true, balance : new_balance })
                     }
                 })
-            }
+            } else {}
         }
     })
 }
@@ -275,7 +275,7 @@ exports.addClubReceipt = function(data, res) {
                         })
                     }
                 })
-            }
+            } else {}
         }
     })
 }
@@ -299,7 +299,7 @@ exports.clubReceipts = function(data, res) {
                     receipt_list.push(receipt)
                 }
                 res.send(receipt_list)
-            }
+            } else {}
         }
     })
 }
@@ -327,7 +327,7 @@ exports.getJoinedMember = function(data, res) {
                     })
                 ))
                 Promise.all(promise_list).then(() => { res.send(promise_list)})
-            }
+            } else {}
         }
     })
 }
