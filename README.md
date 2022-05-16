@@ -27,7 +27,8 @@ All club members can browse the histories of payment.
 </br>
 
 ## 시스템 조직도
-<img src="https://user-images.githubusercontent.com/24891555/165308828-3154dd8d-f176-4b36-a80b-51e6fda0e5be.PNG" width=800 >
+<img src="https://user-images.githubusercontent.com/24891555/168531064-df515b6c-813e-4606-9769-42dca069dc2e.jpg" width=800 >
+
 
 
 </br>
@@ -47,7 +48,7 @@ All club members can browse the histories of payment.
 
 </br>
 
-## 채굴 작업 (현재 참여 불가)
+## 채굴 작업
 [채굴 참여 방법](https://github.com/kookmin-sw/capstone-2022-03/blob/master/mineTutorial.md)
 
 </br>

@@ -12,7 +12,7 @@
 
 ### 👀 회비내역을 모두가 확인하세요!
 
-### 🔒 사용한 회비 내역은 모두 블록체인에 안전하게 저장됩니다. 잃어버려도 괜찮아요!
+### 🔒 사용한 회비 내역을 블록체인에 저장할 수 있습니다. 잃어버려도 괜찮아요!
 
 ### Abstract
 
@@ -27,7 +27,8 @@ All club members can browse the histories of payment.
 </br>
 
 ## 시스템 조직도
-<img src="https://user-images.githubusercontent.com/24891555/165308828-3154dd8d-f176-4b36-a80b-51e6fda0e5be.PNG" width=800 >
+<img src="https://user-images.githubusercontent.com/24891555/168531064-df515b6c-813e-4606-9769-42dca069dc2e.jpg" width=800 >
+
 
 
 </br>
@@ -43,12 +44,12 @@ All club members can browse the histories of payment.
 
 |<img src="https://ifh.cc/g/J9csdn.jpg" width="250" height="250">|<img src="https://user-images.githubusercontent.com/24891555/160340738-9ab2ce92-001f-44a6-a4cf-e6c6597be2b4.jpeg" width="250">|<img src="https://user-images.githubusercontent.com/24891555/160343995-d313df3f-b252-4271-800e-4ff67111336f.jpg" width="250">|
 |:--|:--|:--|
-|이름: 김상윤 </br> 학번: ****3092 </br> Email: skwk50000@gmail.com </br> 역할 : 이미지처리, 서버, DB|이름: 민태식 </br> 학번: ****3106 </br> Email: rth2443@kookmin.ac.kr </br> 역할 : 앱, UX, UI|이름: 안성열 </br> 학번: ****3121 </br> Email: zxcv123594@gmail.com </br> 역할 : 블록체인 API, 서버|
+|이름: 김상윤 </br> 학번: ****3092 </br> Email: skwk50000@gmail.com </br> 역할 : 풀스택, 프론트기능 구현, 서버 구축, DB구축|이름: 민태식 </br> 학번: ****3106 </br> Email: rth2443@kookmin.ac.kr </br> 역할 : 프론트 UI 구성|이름: 안성열 </br> 학번: ****3121 </br> Email: zxcv123594@gmail.com </br> 역할 : 블록체인, 서버, AWS|
 
 </br>
 
-## 채굴 작업 (현재 참여 불가)
-[채굴 참여 방법](https://github.com/kookmin-sw/capstone-2022-03/blob/master/HowtoMine.md)
+## 채굴 작업
+[채굴 참여 방법](https://github.com/kookmin-sw/capstone-2022-03/blob/master/mineTutorial.md)
 
 </br>
 

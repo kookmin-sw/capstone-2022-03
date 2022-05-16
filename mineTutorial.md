@@ -27,7 +27,7 @@
 > $ personal.newAccount(“<패스워드>”)
 
 7. 메인 노드에 연동 및 확인
-> $ admin.addPeer("enode://c4a4aedd2b0ca49ba9b08ebced9c0b1e09f2fc9e1c4fa1d6e786f56860178a52b6f67d573defca468ef374720cebb26350302ae1390e488c8f43aca6cb6cae2b@14.39.137.164:30303?discport=0")
+> $ admin.addPeer("enode://4055f124a7396b5646f43fb3dbaedfeff3cca082aadc5bca61a43f8aa1fcad25edf7febd291e9fd0fdd79154645a1b2ec63bb75fdfc16a20f43a773a075ddff0@222.110.152.194:30303?discport=0")
 
 > $ admin.peers -> 연결시 리스트 생성
 
@@ -66,7 +66,7 @@
 > $ personal.newAccount(“<패스워드>”)
 
 7. 메인 노드에 연동 및 확인
-> $ admin.addPeer("enode://c4a4aedd2b0ca49ba9b08ebced9c0b1e09f2fc9e1c4fa1d6e786f56860178a52b6f67d573defca468ef374720cebb26350302ae1390e488c8f43aca6cb6cae2b@14.39.137.164:30303?discport=0")
+> $ admin.addPeer("enode://4055f124a7396b5646f43fb3dbaedfeff3cca082aadc5bca61a43f8aa1fcad25edf7febd291e9fd0fdd79154645a1b2ec63bb75fdfc16a20f43a773a075ddff0@222.110.152.194:30303?discport=0")
 
 > $ admin.peers -> 연결시 리스트 생성
 
