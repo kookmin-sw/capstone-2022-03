@@ -2,7 +2,7 @@ const express = require('express')
 const server = express()
 const server_port = 8080
 
-const main = require('./main_logic')
+const main = require('./main_logic_refact')
 
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
