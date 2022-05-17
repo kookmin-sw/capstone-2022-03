@@ -1,6 +1,7 @@
 const Web3 = require('web3');
-const blockchain_endpoint = 'http://172.31.8.46:8545';
+// const blockchain_endpoint = 'http://172.31.8.46:8545';
 // const blockchain_endpoint = 'http://127.0.0.1:8888'
+const blockchain_endpoint = 'http://10.30.36.136:8545'
 const web3 = new Web3(new Web3.providers.HttpProvider(blockchain_endpoint));
 const compile = require('./compile')
 let caller;
@@ -80,14 +81,14 @@ exports.addClubMember = function(address, data, department) {
     target_contract.methods.addMember(data.address, data._id, data.name, department)
         .send({ from : caller, gas : 3000000 })
 }
-exports.addClubFee = async function(address, fee) {
+exports.addClubFee = async function(address, setter, fee) {
     let target_contract = new web3.eth.Contract(ABI_code, address);
 
     return await target_contract.methods.addBalance(fee)
-        .send({ from : caller, gas : 3000000 })
+        .send({ from : setter, gas : 3000000 })
         .then(() => {
             return target_contract.methods.balanceInfo()
-                .call({ from : caller })
+                .call({ from : setter })
         })
 }
 exports.addClubReceipt = async function(address, data) {
