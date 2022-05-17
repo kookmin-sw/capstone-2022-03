@@ -22,7 +22,7 @@ exports.unlockAccount = function(address, pw) {
 exports.createClub = async function (body) {
     return new web3.eth.Contract(ABI_code)
         .deploy({ data: byte_code, arguments: [body.club_title, body.club_bank_name, body.club_bank_account, body.club_bank_holder, body.user_address, body.user_id, body.user_name]})
-        .send({ from: body.address, gas: 0 })
+        .send({ from: body.user_address, gas: 0 })
         .then((contract) => { return contract.options.address })
 }
 //
@@ -44,7 +44,7 @@ exports.addClubUser = function(address, data) {
     let target_contract = new web3.eth.Contract(ABI_code, address);
 
     target_contract.methods.addUser(data.user_address, data.user_id, data.user_name, 'none')
-        .send({ from : data.address, gas : 0 })
+        .send({ from : data.user_address, gas : 0 })
 }
 
 
@@ -74,7 +74,7 @@ exports.clubReceipt = async function(address, caller) {
 exports.addClubMember = function(address, caller, data, department) {
     let target_contract = new web3.eth.Contract(ABI_code, address);
 
-    target_contract.methods.addMember(data.address, data._id, data.name, department)
+    target_contract.methods.addMember(data.user_address, data._id, data.name, department)
         .send({ from : caller, gas : 0 })
 }
 exports.addClubFee = async function(address, caller, fee) {
