@@ -79,7 +79,7 @@ contract club {
         bank.account = bank_account;
         bank.holder = bank_holder;
 
-        leader.addr = leader_address;
+        leader.addr = msg.sender;
         leader.id = leader_id;
         leader.department = "head";
         leader.name = leader_name;
@@ -101,7 +101,7 @@ contract club {
     function receiptInfo() public onlyUser view returns (Receipt[] memory){
         return receipts;
     }
-    function userInfo() public onlyLeader view returns (User[] memory) {
+    function userInfo() public onlyUser view returns (User[] memory) {
         return users;
     }
     function memberInfo() public onlyUser view returns (User[] memory) {
@@ -127,7 +127,7 @@ contract club {
         string memory name, string memory department) public onlyLeader{
         members.push(User(addr, id, name, department));
     }
-    function addBalance(uint fee) public onlyLeader {
+    function addBalance(uint fee) public onlyMember {
         club_balance = club_balance + fee;
     }
 

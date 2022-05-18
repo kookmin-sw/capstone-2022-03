@@ -339,14 +339,8 @@ exports.allUser = function(res) {
     User.find().then(result => res.send(result))
 }
 exports.rmUser = function (body, res) {
-    // 수정한 부분 : 유저가 삭제된 경우, 유저가 속한 클럽들을 조회하고, 해당 클럽들에서 user._id를 삭제한다.
-    // 수정해야 하는 부분 : 이때, 유저가 모임의 리더인 경우 어떻게 처리할지..?
-    // 해당 모임도 삭제 해버린다. or 모임을 먼저 삭제해야 한다.
-    User.findOneAndDelete({ id : body.user_id}, {},(err, isDeleted) => {
-        if (err) { res.send(err) }
-        else if (!isDeleted) {
-            res.send({ success : false, message : "해당 id의 유저가 없습니다. "})
-        }
+    User.findOneAndDelete({ id : body.user_id}, {},(err, user) => {
+        if (!user) { res.send({ success : false, message : "해당 id의 유저가 없습니다. "}) }
         else {
             res.send({ success : true })
         }
