@@ -41,7 +41,6 @@ exports.login = function (data, res) {
                 else {
                     blockchain.unlockAccount(user.address, user.name);
                     console.log(user.name, "님이 로그인 했습니다.")
-                    console.log(user.address)
                     res.send({
                         success : true,
                         user_id : user._id,
@@ -231,7 +230,6 @@ exports.addClubFee = function(data, res) {
                     else if (!isIncreased) { res.send({ success : false, message : "해당 클럽이 존재하지 않습니다."}) }
                     else {
                         let new_balance = isIncreased.club_balance + data.fee
-                        console.log(new_balance)
                         res.send({ success : true, balance : new_balance })
                     }
                 })
@@ -374,6 +372,5 @@ exports.rmClub = function (data, res) {
     Club.findOneAndDelete({ _id : data.club_id}, {}, (err, club) => {
         if(err) { res.send(err) }
         res.send({ success : true, message : club })
-        console.log(club)
     })
 }
