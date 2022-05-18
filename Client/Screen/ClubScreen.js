@@ -36,13 +36,13 @@ function Club({ route, navigation }) {
             .then(res => {
                 if (res) {
                     setJoined_User(res.joined_user);
-                    setData(res.club_receipts);
+                    setData(res.receipt);
                     console.log(res);
                 }
             })
     }, [isFocused]);
 
-    _renderItem = ({ item, i }) => {
+    const _renderItem = ({ item, i }) => {
         return (
             <TouchableOpacity
                 onPress={() => {
@@ -119,7 +119,11 @@ function Club({ route, navigation }) {
                 <CustomButton
                     buttonColor={'#4169e1'}
                     title="회비 출금"
-                    onPress={() => alert('회비 출금')}
+                    onPress={() => navigation.navigate("WithDraw",
+                        {
+                            club_id: club_id
+                        },
+                    )}
                 />
             </View>
         </View >

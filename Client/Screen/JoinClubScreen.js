@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text} from 'react-native';
+import { View, Text } from 'react-native';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import styles from '../src/Styles';
 import router from '../src/Router.json';

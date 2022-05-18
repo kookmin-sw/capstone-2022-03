@@ -36,7 +36,6 @@ function MainScreen({ navigation, route }) {
                         club_id: item.club_id,
                         club_balance: item.club_balance
                     })
-
                 }}
             >
                 <View style={styles.card} key={i}>
@@ -52,7 +51,6 @@ function MainScreen({ navigation, route }) {
                 </View>
             </TouchableOpacity>
         )
-
     }
     // 데이터가 없는 경우
     const EmptyListMessage = ({ item }) => {
@@ -84,7 +82,7 @@ function MainScreen({ navigation, route }) {
                         setData(res);
                         console.log('저장완료');
                     }
-                }).finally(() => setIsRefreshing(false))
+                }).finally(() => setIsRefreshing(false)) //에러 처리 필요!
         })
     }
 
@@ -155,8 +153,8 @@ function MainScreen({ navigation, route }) {
                 />
                 <CustomButton
                     buttonColor={'#4169e1'}
-                    title="카메라 데모"
-                    onPress={() => navigation.push('Camera')}
+                    title="회비 출금"
+                    onPress={() => navigation.push("WithDraw")}
                 />
             </View>
         </View >
