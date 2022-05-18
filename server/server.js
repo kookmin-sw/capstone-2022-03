@@ -1,6 +1,6 @@
 const express = require('express')
 const server = express()
-const server_port = 8080
+const server_port = 3001
 
 const main = require('./main_logic_refact')
 
@@ -51,10 +51,10 @@ server.post('/add_receipt', (req, res) => {
 server.post('/club_receipt', (req, res) => {
     main.clubReceipts(req.body, res)
 })
-// 현재 총무 확인
-server.post('/joined_member', (req, res) => {
-    main.getJoinedMember(req.body, res);
-})
+// // 현재 총무 확인
+// server.post('/joined_member', (req, res) => {
+//     main.getJoinedMember(req.body, res);
+// })
 
 
 server.post('/clubs', (req, res) => {

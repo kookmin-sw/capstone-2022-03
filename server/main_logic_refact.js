@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const config = require("./config/dev")
 const {User} = require("./model/User.js")
 const {Club} = require("./model/Club.js")
-const blockchain = require('./blockchain_refact')
+const blockchain = require('./blockchain')
 
 
 exports.connenct = function () {
@@ -41,6 +41,7 @@ exports.login = function (data, res) {
                 else {
                     blockchain.unlockAccount(user.address, user.name);
                     console.log(user.name, "님이 로그인 했습니다.")
+                    console.log(user.address)
                     res.send({
                         success : true,
                         user_id : user._id,
@@ -161,27 +162,38 @@ exports.gotoClub = function(data, res) {
             if (club.flag === 'BC') {
                 let temp_info = {'joined_user': [], 'receipt': []}
                 blockchain.clubUsers(club.address, data.user_address).then((users) => {
-                    let user_info_list = []
-
-                    for (let temp_user of users) {
-                        user_info_list.push({user_name: temp_user.name, user_id: temp_user.id})
-                    }
-                    temp_info['joined_user'] = user_info_list;
-
-                    blockchain.clubReceipt(club.address, data.user_address).then(receipt_info => {
-                        if (receipt_info.length != null) {
-                            temp_info['receipt'] = receipt_info
-                        } else {
-                            temp_info['receipt'] = []
+                    blockchain.clubMembers(club.address, data.user_address).then((members) => {
+                        let user_list = users
+                        for (let index=0; users.length; index++) {
+                            for (let temp_member of members) {
+                                if(users[index] === temp_member) {
+                                    user_list.splice(index, temp_member)
+                                }
+                            }
                         }
+                        let user_info_list = []
+
+                        for (let temp_user of user_list) {
+                            user_info_list.push({user_name: temp_user.name, user_id: temp_user.id})
+                        }
+                        temp_info['joined_user'] = user_info_list;
+
+                        blockchain.clubReceipt(club.address, data.user_address).then(receipt_info => {
+                            if (receipt_info.length != null) {
+                                temp_info['receipt'] = receipt_info
+                            } else {
+                                temp_info['receipt'] = []
+                            }
+                        })
+                        return temp_info
                     })
-                    return temp_info
                 }).then(async result => {
                     res.send(result)
                 })
             }
             else if (club.flag === 'DB') {
                 let temp_info = {'joined_user': [], 'receipt': []}
+
                 temp_info['receipt'] = club.receipt
 
                 let promise_list = []
@@ -219,6 +231,7 @@ exports.addClubFee = function(data, res) {
                     else if (!isIncreased) { res.send({ success : false, message : "해당 클럽이 존재하지 않습니다."}) }
                     else {
                         let new_balance = isIncreased.club_balance + data.fee
+                        console.log(new_balance)
                         res.send({ success : true, balance : new_balance })
                     }
                 })
