@@ -247,6 +247,7 @@ exports.addClubFee = function(data, res) {
     })
 }
 exports.addClubReceipt = function(data, res) {
+    console.log(data)
     Club.findOne({ _id : data.club_id}, (err, club) => {
         if (err) { res.send(err) }
         else if (!club) { res.send({ success : false, message : "해당 클럽이 존재하지 않습니다."}) }
