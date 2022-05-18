@@ -1,229 +1,256 @@
 import 'react-native-gesture-handler';
-import React, { useState } from 'react';
-import {
-    StyleSheet,
-    View,
-    Text,
-    Image,
-    TouchableOpacity,
-    TextInput,
-    Alert,
-    Platform,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { Image, View, Text, FlatList, StatusBar, StyleSheet, Platform, TouchableOpacity, Button, Alert } from 'react-native';
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import { useIsFocused } from '@react-navigation/native';
+import CustomButton from '../src/CustomButton';
 import router from '../src/Router.json';
+import AsyncStorage from '@react-native-community/async-storage';
 
-export function RegisterScreen() {
-    const navigation = useNavigation();
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [checkpassword, setCheckPassword] = useState('');
-    const [validateEmail, setValidateEmail] = useState(false); //추후 Email 중복확인을 위하여 만든 코드
+// StatusBar의 배경을 투명하게 만들고, 폰트를 검정색을 설정
+StatusBar.setBarStyle("dark-content");
+if (Platform.OS === 'android') {
+    StatusBar.setTranslucent(true);
+    StatusBar.setBackgroundColor('transparent');
+}
 
-    async function onRegister() {
-        if (password != checkpassword) { //비밀번호 확인이 제대로 되었나 탐지
-            Alert.alert("비밀번호를 다시 입력해주십시오.")
-        } else if (!name || !email || !password || !checkpassword) {
-            Alert.alert('정보를 모두 입력해주세요.')
-        }
-        else {
-            if (Platform.OS === 'ios') {
-                fetch(router.aws + '/register', {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        "name": name,
-                        "email": email,
-                        "password": password,
+// os 마다 다른 statusbar의 높이를 구함
+const StatusBarHeight =
+    Platform.OS === 'ios' ? getStatusBarHeight(true) : StatusBar.currentHeight;
+
+function MainScreen({ navigation, route }) {
+    const isFocused = useIsFocused();
+    const [data, setData] = useState([]);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
+    const _renderItem = ({ item, i }) => {
+        return (
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate('Club', {
+                        club_title: item.club_title,
+                        club_id: item.club_id,
+                        club_balance: item.club_balance
                     })
-                }).then(res => res.json())
-                    .then(res => {
-                        if (res.success) {
-                            console.log("회원정보 저장 완료!");
-                            Alert.alert("회원가입이 완료되었습니다!")
-                            navigation.navigate("Login");
-                        }
-                        else {
-                            Alert.alert("회원가입에 실패하였습니다.");
-                        }
-                    })
-            }
-            else if (Platform.OS === 'android') {
-                fetch(router.aws + '/register', {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        "name": name,
-                        "email": email,
-                        "password": password,
-                    })
-                }).then(res => res.json())
-                    .then(res => {
-                        if (res.success) {
-                            console.log("회원정보 저장 완료!");
-                            Alert.alert("회원가입이 완료되었습니다!")
-                            navigation.navigate("Login");
-                        }
-                        else {
-                            Alert.alert("회원가입에 실패하였습니다.");
-                        }
-                    })
-            }
-        }
+                }}
+            >
+                <View style={styles.card} key={i}>
+                    <View>
+                        <Text style={styles.itemClubtitle}>{item.club_title}</Text>
+                        <Text>모임장: {item.club_leader}</Text>
+                        <Text>모임인원: {item.users}</Text>
+                        <Text>저장방식: {item.flag}</Text>
+                    </View>
+                    <View>
+                        <Text style={styles.itemClubBalance}>{item.club_balance}</Text>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        )
     }
+    // 데이터가 없는 경우
+    const EmptyListMessage = ({ item }) => {
+        return (
+            <View style={{ flex: 1, alignItems: 'center', marginVertical: '65%' }}>
+                <Text style={{ fontSize: 18, fontWeight: '500', color: 'gray', textAlign: 'center' }}>
+                    참가한 모임이 없습니다 {'\n'}
+                    모임을 찾거나 만들어보세요
+                </Text>
+            </View>
+        );
+    };
+
+    function refreshItems() {
+        setIsRefreshing(true);
+        AsyncStorage.getItem('user_information', async (err, res) => {
+            const user = JSON.parse(res);
+            fetch(router.aws + '/my_clubs', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "user_id": user.user_id
+                })
+            }).then(res => res.json())
+                .then(res => {
+                    if (res) {
+                        setData(res);
+                        console.log('저장완료');
+                    }
+                }).finally(() => setIsRefreshing(false)) //에러 처리 필요!
+        })
+    }
+
+    useEffect(() => {
+        AsyncStorage.getItem('user_information', async (err, res) => {
+            const user = JSON.parse(res);
+            fetch(router.aws + '/my_clubs', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "user_id": user.user_id
+                })
+            }).then(res => res.json())
+                .then(res => {
+                    if (res) {
+                        console.log(res);
+                        setData(res);
+                    }
+                })
+        })
+    }, [isFocused]);
 
     return (
         <View style={styles.container}>
-            <View style={styles.topArea}>
-                <View style={styles.titleArea}>
+            <View style={styles.header}></View>
+            <View style={styles.title}>
+                <Image
+                    source={require('../src/icon/textlogo.png')}
+                    style={{ width: wp(30), resizeMode: 'contain' }}
+                />
+                <TouchableOpacity onPress={() => navigation.reset({
+                    routes: [{
+                        name: 'Login',
+                    }]
+                })}>
                     <Image
-                        source={require('../src/icon/Register.png')}
-                        style={{ width: wp(30), resizeMode: 'contain' }}
+                        source={require('../src/icon/logout.png')}
+                        style={{ width: wp(40), resizeMode: 'contain' }}
                     />
-                </View>
-                <View style={styles.TextArea}>
-                    <Text style={styles.Text}>간편한 회원가입으로</Text>
-                    <Text style={styles.Text}>'여기모영'의 일원이 되어보세요!</Text>
-                </View>
+
+                </TouchableOpacity>
             </View>
-            <View style={styles.blankArea}></View>
-            <View style={styles.formArea}>
-                <TextInput
-                    style={styles.textFormTop}
-                    placeholder={'이름'}
-                    autoCapitalize='none'
-                    onChangeText={(text) => { setName(text); }}
+            <View style={styles.content}>
+                <Text style={{ fontSize: 25, fontWeight: '700', color: 'black', marginTop: 15, marginLeft: 15, marginBottom: 5 }}>모임 목록</Text>
+                <FlatList
+                    showsVerticalScrollIndicator={false}
+                    style={styles.list}
+                    data={data}
+                    renderItem={_renderItem}
+                    ListEmptyComponent={EmptyListMessage}
+                    onRefresh={refreshItems}
+                    refreshing={isRefreshing}
                 />
-                <TextInput
-                    style={styles.textFormBottom}
-                    placeholder={'이메일'}
-                    autoCapitalize='none'
-                    onChangeText={(text) => { setEmail(text); }}
+                <Text style={{ fontSize: 10, fontWeight: '700', color: 'white', marginLeft: 30, }}>emptyspace</Text>
+            </View>
+            <View style={styles.footer}>
+                <CustomButton
+                    buttonColor={'#4169e1'}
+                    title="모임 생성"
+                    onPress={() => navigation.push('CreateClub')}
                 />
-                <TextInput
-                    style={styles.textFormTop}
-                    placeholder={'비밀번호 (8자 이상, 특수문자 필수기입)'}
-                    autoCapitalize='none'
-                    onChangeText={(text) => { setPassword(text); }}
-                    secureTextEntry={true} //텍스트 숨김처리
+                <CustomButton
+                    buttonColor={'#4169e1'}
+                    title="모임 참가"
+                    onPress={() => navigation.push('JoinClub')}
                 />
-                <TextInput
-                    style={styles.textFormBottom}
-                    placeholder={'비밀번호 확인'}
-                    autoCapitalize='none'
-                    onChangeText={(text) => { setCheckPassword(text); }}
-                    secureTextEntry={true} //텍스트 숨김처리
+                <CustomButton
+                    buttonColor={'#4169e1'}
+                    title="회비 출금"
+                    onPress={() => navigation.push("WithDraw")}
                 />
             </View>
-            <View style={styles.blankArea}></View>
-            <View style={{ flex: 0.6 }}>
-                <View style={styles.btnArea}>
-                    <TouchableOpacity style={styles.btn_register}
-                        onPress={() => onRegister()}>
-                        <Text style={(styles.Text, { color: 'white' })}>회원가입</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-            <View style={{ flex: 2 }} />
-        </View>
+        </View >
     );
 }
 
+
 const styles = StyleSheet.create({
     container: {
-        flex: 1, //전체의 공간을 차지한다는 의미
-        flexDirection: 'column',
-        backgroundColor: '#f2f2f2',
-        paddingLeft: wp(7),
-        paddingRight: wp(7),
-    },
-    blankArea: {
-        marginTop: 15,
-        marginBottom: 15,
-    },
-    topArea: {
         flex: 1,
-        marginTop: 50,
-        paddingTop: wp(3),
-    },
-    titleArea: {
-        flex: 0.7,
-        justifyContent: 'center',
-        paddingTop: wp(3),
-    },
-    TextArea: {
-        flex: 0.3,
-        justifyContent: 'center',
         backgroundColor: '#f2f2f2',
     },
-    Text: {
-        fontSize: wp('4%'),
-    },
-    TextValidation: {
-        fontSize: wp('4%'),
-        color: 'red',
-        paddingTop: wp(2),
-    },
-
-    formArea: {
-        justifyContent: 'center',
-        flex: 1.5,
-    },
-    textFormTop: {
-        borderWidth: 2,
-        borderBottomWidth: 1,
-        borderColor: '#208cf7',
-        borderTopLeftRadius: 7,
-        borderTopRightRadius: 7,
+    header: {
         width: '100%',
-        height: hp(6),
-        paddingLeft: 10,
-        paddingRight: 10,
-        backgroundColor: 'white'
-    },
-    textFormBottom: {
-        borderWidth: 2,
-        borderTopWidth: 1,
-        borderColor: '#208cf7',
-        borderBottomRightRadius: 7,
-        borderBottomLeftRadius: 7,
-        width: '100%',
-        height: hp(6),
-        paddingLeft: 10,
-        paddingRight: 10,
-        backgroundColor: 'white'
-    },
-    btnArea: {
-        height: hp(8),
+        height: StatusBarHeight,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingBottom: hp(1.5),
     },
-    btn: {
+    title: {
+        width: '100%',
+        height: '10%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginTop: 10,
+        marginBottom: 10,
+        marginLeft: 30,
+    },
+    content: {
         flex: 1,
-        width: '100%',
-        borderRadius: 7,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#208cf7',
+        marginLeft: 15,
+        marginRight: 15,
+        backgroundColor: 'white',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
     },
-    btn_register: {
-        flex: 1,
-        width: '100%',
-        borderRadius: 7,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#215180',
+    list: {
+        paddingBottom: 10,
     },
-});
+    card: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 12,
+        marginHorizontal: 12,
 
-export default RegisterScreen
+        paddingHorizontal: 15,
+        height: 100,
+        ...Platform.select({
+            ios: {
+                paddingVertical: 15,
+                shadowColor: '#d3d3d3',
+                shadowOffset: {
+                    width: 1.5,
+                    height: 1.5
+                },
+                shadowOpacity: 1,
+                shadowRadius: 1,
+            },
+            android: {
+                paddingVertical: 8,
+                shadowColor: 'black',
+                elevation: 1,
+            }
+        }),
+        backgroundColor: 'white',
+        borderRadius: 12,
+        borderColor: '#F2F3F4',
+        borderWidth: 1,
+    },
+    footer: {
+        width: '100%',
+        height: '10%',
+        backgroundColor: '#f2f2f2',
+        justifyContent: 'center',
+        flexDirection: "row",
+        paddingBottom: 15
+    },
+    itemClubtitle: {
+        fontSize: 20,
+    },
+    itemClubBalance: {
+        marginTop: 13,
+        textAlign: 'right',
+        fontSize: 28,
+        fontWeight: '700',
+    },
+    itemPercentText: {
+        paddingTop: 6,
+        textAlign: 'right',
+        fontSize: 15,
+        color: '#2090F8',
+        fontWeight: '500',
+    },
+})
+
+export default MainScreen;
