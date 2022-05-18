@@ -159,7 +159,7 @@ exports.gotoClub = function(body, res) {
             if (club.flag === 'BC') {
                 let temp_info = {'joined_user': [], 'receipt': []}
 
-                blockchain.clubUsers(club.address, body.user_address).then((users) => {
+                blockchain.clubUsers(club.address, body.user_address).then(async (users) => {
                     let user_info_list = []
 
                     for (let temp_user of users) {
@@ -167,7 +167,7 @@ exports.gotoClub = function(body, res) {
                     }
                     temp_info['joined_user'] = user_info_list;
 
-                    blockchain.clubReceipt(club.address, body.user_address).then(receipt_info => {
+                    await blockchain.clubReceipt(club.address, body.user_address).then(receipt_info => {
                         if (receipt_info.length != null) {
                             temp_info['receipt'] = receipt_info
                         } else {
