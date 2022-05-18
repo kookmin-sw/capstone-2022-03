@@ -1,36 +1,32 @@
 const Web3 = require('web3');
-// const blockchain_endpoint = 'http://172.31.8.46:8545';
+const blockchain_endpoint = 'http://172.31.8.46:8545';
 // const blockchain_endpoint = 'http://127.0.0.1:8888'
-const blockchain_endpoint = 'http://10.30.36.136:8545'
+// const blockchain_endpoint = 'http://10.30.36.136:8545'
 const web3 = new Web3(new Web3.providers.HttpProvider(blockchain_endpoint));
 const compile = require('./compile')
-let caller;
-let ABI_code;
-let byte_code;
 
-const blockchain_initialize = function() {
-    web3.eth.getAccounts().then((accounts) => {
-        caller = accounts[0]
-        web3.eth.personal.unlockAccount(accounts[0], "123", 0)
-    })
-
-    ABI_code = compile.club()[0];
-    byte_code = compile.club()[1];
-}
+let ABI_code = compile.club()[0];
+let byte_code = compile.club()[1]
 
 // 회원가입
 exports.makeAccount = async function (id) {
     return await web3.eth.personal.newAccount(id);
 }
+
+// 로그인
+exports.unlockAccount = function(address, pw) {
+    web3.eth.personal.unlockAccount(address, pw, 0);
+}
+
 // 블록체인 모임 생성
 exports.createClub = async function (body) {
     return new web3.eth.Contract(ABI_code)
         .deploy({ data: byte_code, arguments: [body.club_title, body.club_bank_name, body.club_bank_account, body.club_bank_holder, body.user_address, body.user_id, body.user_name]})
-        .send({ from: caller, gas: 3000000 })
+        .send({ from: body.user_address, gas: 0 })
         .then((contract) => { return contract.options.address })
 }
 //
-exports.clubInfo = async function(contract_address) {
+exports.clubInfo = async function(contract_address, caller) {
     let target_contract = new web3.eth.Contract(ABI_code, contract_address);
 
     return await target_contract.methods.clubInfo()
@@ -48,11 +44,11 @@ exports.addClubUser = function(address, data) {
     let target_contract = new web3.eth.Contract(ABI_code, address);
 
     target_contract.methods.addUser(data.user_address, data.user_id, data.user_name, 'none')
-        .send({ from : caller, gas : 3000000 })
+        .send({ from : data.user_address, gas : 0 })
 }
 
 
-exports.clubReceipt = async function(address) {
+exports.clubReceipt = async function(address, caller) {
     let target_contract = new web3.eth.Contract(ABI_code, address);
     let receipt_info_list = []
 
@@ -75,23 +71,23 @@ exports.clubReceipt = async function(address) {
             return receipt_info_list
         })
 }
-exports.addClubMember = function(address, data, department) {
+exports.addClubMember = function(address, caller, data, department) {
     let target_contract = new web3.eth.Contract(ABI_code, address);
 
-    target_contract.methods.addMember(data.address, data._id, data.name, department)
-        .send({ from : caller, gas : 3000000 })
+    target_contract.methods.addMember(data.user_address, data._id, data.name, department)
+        .send({ from : caller, gas : 0 })
 }
-exports.addClubFee = async function(address, setter, fee) {
+exports.addClubFee = async function(address, caller, fee) {
     let target_contract = new web3.eth.Contract(ABI_code, address);
 
     return await target_contract.methods.addBalance(fee)
-        .send({ from : setter, gas : 3000000 })
+        .send({ from : caller, gas : 0 })
         .then(() => {
             return target_contract.methods.balanceInfo()
-                .call({ from : setter })
+                .call({ from : caller })
         })
 }
-exports.addClubReceipt = async function(address, data) {
+exports.addClubReceipt = async function(address, caller, data) {
     let target_contract = new web3.eth.Contract(ABI_code, address);
 
     // 블록체인에 넣기 위한 데이터 가공 과정
@@ -102,25 +98,23 @@ exports.addClubReceipt = async function(address, data) {
     }
 
     await target_contract.methods.addReceipt(data.owner, data.place, data.date, data.cost, item)
-        .send({ from : caller, gas : 3000000 })
+        .send({ from : caller, gas : 0 })
 }
-exports.clubBalance = async function(address) {
+exports.clubBalance = async function(address, caller) {
     let target_contract = new web3.eth.Contract(ABI_code, address);
 
     return await target_contract.methods.balanceInfo()
         .call({ from : caller })
 }
-exports.clubUsers = async function(address) {
+exports.clubUsers = async function(address, caller) {
     let target_contract = new web3.eth.Contract(ABI_code, address);
 
     return await target_contract.methods.userInfo()
         .call({ from : caller })
 }
-exports.clubMembers = async function(address) {
+exports.clubMembers = async function(address, caller) {
     let target_contract = new web3.eth.Contract(ABI_code, address);
 
     return await target_contract.methods.memberInfo()
         .call({ from : caller })
 }
-
-blockchain_initialize()
