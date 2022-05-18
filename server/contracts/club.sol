@@ -37,6 +37,37 @@ contract club {
         string[] detail;
     }
 
+    modifier onlyLeader() {
+        require(leader.addr == msg.sender);
+        _;
+    }
+    modifier onlyMember() {
+        bool flag = false;
+
+        for(uint i=0; i < members.length; i ++) {
+            if (members[i].addr == msg.sender) {
+                flag = true;
+                break;
+            }
+        }
+
+        require(flag == true);
+        _;
+    }
+    modifier onlyUser() {
+        bool flag = false;
+
+        for(uint i=0; i < users.length; i ++) {
+            if (users[i].addr == msg.sender) {
+                flag = true;
+                break;
+            }
+        }
+
+        require(flag == true);
+        _;
+    }
+
     constructor
     (string memory _club_title,
         string memory bank_name, string memory bank_account, string memory bank_holder,

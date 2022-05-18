@@ -4,7 +4,6 @@ const {User} = require("./model/User.js")
 const {Club} = require("./model/Club.js")
 const blockchain = require('./blockchain')
 
-
 exports.connenct = function () {
     mongoose.connect(config.mongoURI)
         .then(() => console.log('DB connected...'))
