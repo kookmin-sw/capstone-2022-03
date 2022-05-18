@@ -165,7 +165,7 @@ exports.gotoClub = function(data, res) {
                         let user_list = users
                         for (let index=0; users.length; index++) {
                             for (let temp_member of members) {
-                                if(users[index] === temp_member) {
+                                if(user_list[index] === temp_member) {
                                     user_list.splice(index, temp_member)
                                 }
                             }
@@ -195,8 +195,17 @@ exports.gotoClub = function(data, res) {
 
                 temp_info['receipt'] = club.receipt
 
+                let user_list = club.joined_user
+                for (let index=0; club.joined_user.length; index++) {
+                    for (let temp_member of club.joined_member) {
+                        if(user_list[index] === temp_member) {
+                            user_list.splice(index, temp_member)
+                        }
+                    }
+                }
+
                 let promise_list = []
-                club.joined_user.forEach((element) => {
+                user_list.forEach((element) => {
                     promise_list.push(
                         // promise function
                         User.findOne({ _id : element}).then((user) => {
