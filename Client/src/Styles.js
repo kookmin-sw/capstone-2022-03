@@ -156,6 +156,11 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'black'
     },
+    Font_Title3: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'white'
+    },
     Font_Subtext1: {
         fontSize: 16,
         fontWeight: 'bold',
