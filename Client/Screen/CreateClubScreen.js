@@ -67,6 +67,7 @@ function CreateClub({ route, navigation }) {
                     })
             }
             else if (Platform.OS === 'android') {
+                console.log(checked)
                 fetch(router.aws + "/create_club", {
                     method: "POST",
                     headers: {
