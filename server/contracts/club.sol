@@ -5,6 +5,7 @@ pragma solidity ^0.8.13;
 contract club {
     string private club_title;
     uint private club_balance;
+    uint timestamp;
 
     User private leader;
     User[] private members;
@@ -28,6 +29,7 @@ contract club {
         uint balance;
         string name;
         uint user_size;
+        uint deployed_time;
     }
     struct Receipt {
         string owner;
@@ -74,6 +76,7 @@ contract club {
         address leader_address, string memory leader_id, string memory leader_name) {
         club_title = _club_title;
         club_balance = 0;
+        timestamp = block.timestamp;
 
         bank.name = bank_name;
         bank.account = bank_account;
@@ -94,6 +97,7 @@ contract club {
         temp.balance = club_balance;
         temp.name = leader.name;
         temp.user_size = users.length;
+        temp.deployed_time = timestamp;
 
         return temp;
     }
