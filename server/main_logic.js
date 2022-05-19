@@ -172,10 +172,9 @@ exports.gotoClub = function(body, res) {
 
                     let user_info_list = []
                     for (let temp_user of users) {
-                        if (temp_user.id in member_id_list) {
-                            continue
-                        }
-                        user_info_list.push({user_name: temp_user.name, user_id: temp_user.id})
+                        if(member_id_list.includes(temp_user.id))
+                        { continue }
+                        user_info_list.push({ user_name: temp_user.name, user_id: temp_user.id })
                     }
                     temp_info['joined_user'] = user_info_list;
 
