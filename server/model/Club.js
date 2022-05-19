@@ -73,6 +73,9 @@ const clubSchema = mongoose.Schema({
     },
     address : {
         type : String
+    },
+    deployed_time : {
+        type : Number
     }
 });
 

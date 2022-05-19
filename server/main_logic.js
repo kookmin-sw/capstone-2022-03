@@ -63,6 +63,7 @@ exports.createClub = function (body, res) {
         new_club.joined_user = [body.user_id]
         new_club.joined_member = [{user_id : body.user_id, department : "leader"}]
         new_club.club_number = String(new_club._id).slice(new_club_id_size-5, new_club_id_size)
+        new_club.deployed_time = Math.round(Date.now()/1000)
 
         message = "DB 클럽 생성"
 
@@ -119,6 +120,7 @@ exports.userClubInfo = function (body, res) {
                                 club_balance: club.club_balance,
                                 club_leader: club.club_leader_name,
                                 users: club.joined_user.length,
+                                time : club.deployed_time,
                                 flag: "DB"
                             })
                         } else {}

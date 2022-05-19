@@ -44,7 +44,8 @@ exports.clubInfo = async function(contract_address, caller) {
                 club_title : club_info['title'],
                 club_balance : club_info['balance'],
                 club_leader : club_info['name'],
-                users : club_info['user_size']
+                users : club_info['user_size'],
+                time : club_info['deployed_time']
             }
         })
 }
