@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import React, { useEffect, useState } from 'react';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { Image, View, Text, FlatList, StatusBar, StyleSheet, Platform, TouchableOpacity, Button, Alert } from 'react-native';
+import { Image, View, Text, FlatList, StatusBar, StyleSheet, Platform, TouchableOpacity } from 'react-native';
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
@@ -28,29 +28,65 @@ function MainScreen({ navigation, route }) {
     const [isRefreshing, setIsRefreshing] = useState(false);
 
     const _renderItem = ({ item, i }) => {
-        return (
-            <TouchableOpacity
-                onPress={() => {
-                    navigation.navigate('Club', {
-                        club_title: item.club_title,
-                        club_id: item.club_id,
-                        club_balance: item.club_balance
-                    })
-                }}
-            >
-                <View style={styles.card} key={i}>
-                    <View>
-                        <Text style={styles.itemClubtitle}>{item.club_title}</Text>
-                        <Text>모임장: {item.club_leader}</Text>
-                        <Text>모임인원: {item.users}</Text>
-                        <Text>저장방식: {item.flag}</Text>
+        if (item.flag == "BC") {
+            return (
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate('Club', {
+                            club_title: item.club_title,
+                            club_id: item.club_id,
+                            club_balance: item.club_balance,
+                            club_leader_id: item.club_leader_id,
+                        })
+                    }}
+                >
+                    <View style={styles.card} key={i}>
+                        <View>
+                            <Text style={styles.itemClubtitle}>{item.club_title}</Text>
+                            <Text>모임장: {item.club_leader}</Text>
+                            <Text>모임인원: {item.users}</Text>
+                            <Text>저장방식: {item.flag}</Text>
+                        </View>
+                        <View>
+                            <Image
+                                source={require('../src/icon/BC.png')}
+                                style={{ width: 20, height: 20, resizeMode: 'contain' }}
+                            />
+                            <Text style={styles.itemClubBalance}>{item.club_balance}</Text>
+                        </View>
                     </View>
-                    <View>
-                        <Text style={styles.itemClubBalance}>{item.club_balance}</Text>
+                </TouchableOpacity>
+            )
+        } else if (item.flag == 'DB') {
+            return (
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate('Club', {
+                            club_title: item.club_title,
+                            club_id: item.club_id,
+                            club_balance: item.club_balance,
+                            club_leader_id: item.club_leader_id,
+                        })
+                    }}
+                >
+                    <View style={styles.card} key={i}>
+                        <View>
+                            <Text style={styles.itemClubtitle}>{item.club_title}</Text>
+                            <Text>모임장: {item.club_leader}</Text>
+                            <Text>모임인원: {item.users}</Text>
+                            <Text>저장방식: {item.flag}</Text>
+                        </View>
+                        <View>
+                            <Image
+                                source={require('../src/icon/DB.png')}
+                                style={{ width: 20, height: 20, resizeMode: 'contain' }}
+                            />
+                            <Text style={styles.itemClubBalance}>{item.club_balance}</Text>
+                        </View>
                     </View>
-                </View>
-            </TouchableOpacity>
-        )
+                </TouchableOpacity>
+            )
+        }
     }
     // 데이터가 없는 경우
     const EmptyListMessage = ({ item }) => {
@@ -74,13 +110,16 @@ function MainScreen({ navigation, route }) {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    "user_id": user.user_id
+                    "user_id": user.user_id,
+                    "user_address": user.user_address
                 })
             }).then(res => res.json())
                 .then(res => {
                     if (res) {
                         setData(res);
-                        console.log('저장완료');
+                        data.sort(function (a, b) {
+                            return parseFloat(a.time) - parseFloat(b.time);
+                        })
                     }
                 }).finally(() => setIsRefreshing(false)) //에러 처리 필요!
         })
@@ -95,13 +134,17 @@ function MainScreen({ navigation, route }) {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    "user_id": user.user_id
+                    "user_id": user.user_id,
+                    "user_address": user.user_address
                 })
             }).then(res => res.json())
                 .then(res => {
                     if (res) {
-                        console.log(res);
                         setData(res);
+                        data.sort(function (a, b) {
+                            return parseFloat(a.time) - parseFloat(b.time);
+                        })
+                        console.log(res);
                     }
                 })
         })
@@ -150,11 +193,6 @@ function MainScreen({ navigation, route }) {
                     buttonColor={'#4169e1'}
                     title="모임 참가"
                     onPress={() => navigation.push('JoinClub')}
-                />
-                <CustomButton
-                    buttonColor={'#4169e1'}
-                    title="회비 출금"
-                    onPress={() => navigation.push("WithDraw")}
                 />
             </View>
         </View >
