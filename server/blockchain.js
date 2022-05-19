@@ -66,11 +66,10 @@ exports.clubReceipt = async function(address, caller) {
         .then(result => {
             for (let item of result) {
                 let details = []
-                for (let index =0; index < item[4].length; index = index+2) {
+                for (let index =0; index < item[5].length; index = index+2) {
                     details.push({
-                        item_name : item[4][index],
-                        item_cost : parseInt(item[4][index+1]),
-                        image : item[4][index+2]
+                        item_name : item[5][index],
+                        item_cost : parseInt(item[5][index+1]),
                     })
                 }
                 receipt_info_list.push({
@@ -78,6 +77,7 @@ exports.clubReceipt = async function(address, caller) {
                     place : item[1],
                     cost : item[3],
                     date : item[2],
+                    image : item[4],
                     detail : details
                 })
             }
@@ -108,10 +108,9 @@ exports.addClubReceipt = async function(address, caller, data) {
     for (let i of data.detail) {
         item.push(i.item_name)
         item.push(String(i.item_cost))
-        item.push(i.image)
     }
 
-    await target_contract.methods.addReceipt(data.owner, data.place, data.date, data.cost, item)
+    await target_contract.methods.addReceipt(data.owner, data.place, data.date, data.cost, data.image, item)
         .send({ from : caller, gas : 3000000 })
 }
 exports.clubBalance = async function(address, caller) {
