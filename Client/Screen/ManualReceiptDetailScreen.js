@@ -29,7 +29,7 @@ function CreateClub({ route, navigation }) {
     const _renderItem = ({ item, i }) => {
         return (
             <View style={extra.card} key={i}>
-                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
+                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <View style={{ paddingBottom: 10, marginLeft: 10, }}>
                         <Text style={extra.itemClubtitle}>상품명: {item.item_name}</Text>
                         <Text style={{ marginTop: 3 }}>금액: {item.item_cost}</Text>
@@ -204,8 +204,6 @@ const extra = StyleSheet.create({
     },
     card: {
         display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
         marginTop: 10,
         width: '100%',
         height: 60,
@@ -243,12 +241,12 @@ const extra = StyleSheet.create({
     minusbutton: {
         ...Platform.select({
             ios: {
-                marginLeft: 'auto',
                 marginTop: 3,
+                marginRight: 5,
             },
             android: {
-                marginLeft: 140,
                 marginTop: 5,
+                marginRight: 5,
             }
         })
 
