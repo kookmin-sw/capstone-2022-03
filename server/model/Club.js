@@ -16,6 +16,9 @@ const itemSchema = new mongoose.Schema({
     item_cost: {
         type: Number
     },
+    image : {
+        type : String
+    }
 })
 
 const receiptSchema = new mongoose.Schema({
@@ -61,7 +64,6 @@ const clubSchema = mongoose.Schema({
     club_bank_holder: {
         type : String
     },
-    image: String,
     joined_user: {
         type: [String]
     },
