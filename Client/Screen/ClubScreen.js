@@ -5,6 +5,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { View, Text, FlatList, StatusBar, StyleSheet, Platform, TouchableOpacity } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import router from '../src/Router.json';
+import AsyncStorage from '@react-native-community/async-storage';
 
 // StatusBar의 배경을 투명하게 만들고, 폰트를 검정색을 설정
 StatusBar.setBarStyle("dark-content");
@@ -18,46 +19,55 @@ const StatusBarHeight =
 
 function Club({ route, navigation }) {
     const isFocused = useIsFocused();
+    const [userdata, setUserData] = useState("");
     const [data, setData] = useState([]);
     const [joined_user, setJoined_User] = useState([]);
-    const { club_title, club_id, club_balance } = route.params;
+    const { club_title, club_id, club_balance, club_leader_id } = route.params;
 
     useEffect(() => {
-        console.log("refresh");
-        fetch(router.aws + '/goto_club', {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                "club_id": club_id
-            })
-        }).then(res => res.json())
-            .then(res => {
-                if (res) {
-                    setJoined_User(res.joined_user);
-                    setData(res.receipt);
-                    console.log(res);
-                }
-            })
+        AsyncStorage.getItem('user_information', async (err, res) => {
+            const user = JSON.parse(res);
+            setUserData(user.user_id);
+            fetch(router.aws + '/goto_club', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "club_id": club_id,
+                    "user_id": user.user_id,
+                    "user_address": user.user_address,
+                })
+            }).then(res => res.json())
+                .then(res => {
+                    if (res) {
+                        setJoined_User(res.joined_user);
+                        setData(res.receipt);
+                        console.log(res);
+                    }
+                })
+        })
     }, [isFocused]);
 
     const _renderItem = ({ item, i }) => {
         return (
             <TouchableOpacity
                 onPress={() => {
-                    navigation.push('Receipts')
-                    navigation.navigate('Receipts', { club_title: item.club_title })
-                    navigation.navigate('Receipts', { club_id: item.club_id })
+                    navigation.navigate('ReceiptInfo', {
+                        place: item.place,
+                        date: item.date,
+                        cost: item.cost,
+                        detail: item.detail,
+                    })
                 }}
             >
                 <View style={styles.card} key={i}>
                     <View>
                         <Text style={styles.itemPlacetitle}>{item.place}</Text>
-                        <Text style={{ marginTop: 20 }}>결제일</Text>
+                        <Text style={styles.itemdate}>결제일</Text>
                         <Text>{item.date}</Text>
                     </View>
-                    <View>
+                    <View style={styles.itemcost}>
                         <Text style={{ textAlign: 'right', marginTop: 35 }}>사용금액</Text>
                         <Text style={styles.itemPaymentCost}>{item.cost}</Text>
                     </View>
@@ -78,56 +88,99 @@ function Club({ route, navigation }) {
 
     //총무 추가
 
-    return (
-        <View style={styles.container}>
-            <View style={styles.header}></View>
-            <View style={styles.title}>
-                <Text style={{ fontSize: 25, color: 'black', fontWeight: '700' }}>{club_title}{'\t'} {String(club_id).slice(-5)} </Text>
-            </View>
-            <View style={styles.content}>
-                <View style={{ alignItems: 'center' }}>
-                    <Text style={{ fontSize: 25, fontWeight: '700', color: 'black', marginTop: 15, marginLeft: 15 }}>잔액 : {club_balance}</Text>
-                    <Text style={{ fontSize: 15, fontWeight: '500', color: 'black', marginTop: 10, marginLeft: 15, marginBottom: 5 }}>회비 사용내역</Text>
+    if (userdata != club_leader_id) {
+        return (
+            <View style={styles.container}>
+                <View style={styles.header}></View>
+                <View style={styles.title}>
+                    <Text style={{ fontSize: 25, color: 'black', fontWeight: '700' }}>{club_title}{'\t'} {String(club_id).slice(-5)} </Text>
                 </View>
-                <FlatList
-                    style={styles.list}
-                    data={data}
-                    renderItem={_renderItem}
-                    ListEmptyComponent={EmptyListMessage}
-                    contentContainerStyle={{ flexGrow: 1 }}
-                />
-                <Text style={{ fontSize: 10, fontWeight: '700', color: 'white', marginLeft: 30, }}>emptyspace</Text>
-            </View>
-            <View style={styles.footer}>
-                <CustomButton
-                    buttonColor={'#4169e1'}
-                    title="총무 추가"
-                    onPress={() => navigation.navigate('AddMember', {
-                        club_id: club_id,
-                        joined_user: joined_user,
-                    })}
-                />
-                <CustomButton
-                    buttonColor={'#4169e1'}
-                    title="회비 입금"
-                    onPress={() => navigation.navigate('AddFee', {
-                        club_title: club_title,
-                        club_id: club_id,
-                        club_balance: club_balance
-                    })}
-                />
-                <CustomButton
-                    buttonColor={'#4169e1'}
-                    title="회비 출금"
-                    onPress={() => navigation.navigate("WithDraw",
-                        {
-                            club_id: club_id
-                        },
-                    )}
-                />
-            </View>
-        </View >
-    );
+                <View style={styles.content}>
+                    <View style={{ alignItems: 'center' }}>
+                        <Text style={{ fontSize: 25, fontWeight: '700', color: 'black', marginTop: 15, marginLeft: 15 }}>잔액 : {club_balance}</Text>
+                        <Text style={{ fontSize: 15, fontWeight: '500', color: 'black', marginTop: 10, marginLeft: 15, marginBottom: 5 }}>회비 사용내역</Text>
+                    </View>
+                    <FlatList
+                        style={styles.list}
+                        data={data}
+                        renderItem={_renderItem}
+                        ListEmptyComponent={EmptyListMessage}
+                        contentContainerStyle={{ flexGrow: 1 }}
+                    />
+                    <Text style={{ fontSize: 10, fontWeight: '700', color: 'white', marginLeft: 30, }}>emptyspace</Text>
+                </View>
+                <View style={styles.footer}>
+                    <CustomButton
+                        buttonColor={'#4169e1'}
+                        title="회비 입금"
+                        onPress={() => navigation.navigate('AddFee', {
+                            club_title: club_title,
+                            club_id: club_id,
+                        })}
+                    />
+                    <CustomButton
+                        buttonColor={'#4169e1'}
+                        title="회비 출금"
+                        onPress={() => navigation.navigate("WithDraw",
+                            {
+                                club_id: club_id
+                            },
+                        )}
+                    />
+                </View>
+            </View >
+        );
+    } else {
+        return (
+            <View style={styles.container}>
+                <View style={styles.header}></View>
+                <View style={styles.title}>
+                    <Text style={{ fontSize: 25, color: 'black', fontWeight: '700' }}>{club_title}{'\t'} {String(club_id).slice(-5)} </Text>
+                </View>
+                <View style={styles.content}>
+                    <View style={{ alignItems: 'center' }}>
+                        <Text style={{ fontSize: 25, fontWeight: '700', color: 'black', marginTop: 15, marginLeft: 15 }}>잔액 : {club_balance}</Text>
+                        <Text style={{ fontSize: 15, fontWeight: '500', color: 'black', marginTop: 10, marginLeft: 15, marginBottom: 5 }}>회비 사용내역</Text>
+                    </View>
+                    <FlatList
+                        style={styles.list}
+                        data={data}
+                        renderItem={_renderItem}
+                        ListEmptyComponent={EmptyListMessage}
+                        contentContainerStyle={{ flexGrow: 1 }}
+                    />
+                    <Text style={{ fontSize: 10, fontWeight: '700', color: 'white', marginLeft: 30, }}>emptyspace</Text>
+                </View>
+                <View style={styles.footer}>
+                    <CustomButton
+                        buttonColor={'#4169e1'}
+                        title="총무 추가"
+                        onPress={() => navigation.navigate('AddMember', {
+                            club_id: club_id,
+                            joined_user: joined_user,
+                        })}
+                    />
+                    <CustomButton
+                        buttonColor={'#4169e1'}
+                        title="회비 입금"
+                        onPress={() => navigation.navigate('AddFee', {
+                            club_title: club_title,
+                            club_id: club_id,
+                        })}
+                    />
+                    <CustomButton
+                        buttonColor={'#4169e1'}
+                        title="회비 출금"
+                        onPress={() => navigation.navigate("WithDraw",
+                            {
+                                club_id: club_id
+                            },
+                        )}
+                    />
+                </View>
+            </View >
+        );
+    }
 }
 
 const styles = StyleSheet.create({
@@ -181,8 +234,9 @@ const styles = StyleSheet.create({
                 shadowRadius: 1,
             },
             android: {
+                paddingVertical: 10,
                 shadowColor: 'black',
-                elevation: 4,
+                elevation: 1,
             }
         }),
         zIndex: 1,
@@ -217,8 +271,8 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     itemPlacetitle: {
-        fontSize: 25,
-        fontWeight: '600',
+        fontSize: 24,
+        fontWeight: '700',
         color: 'black'
     },
     itemPaymentCost: {
@@ -226,13 +280,31 @@ const styles = StyleSheet.create({
         fontSize: 26,
         fontWeight: '700',
         color: 'black',
+        ...Platform.select({
+            android: {
+                marginBottom: 10,
+            }
+        })
     },
-    itemPercentText: {
-        paddingTop: 6,
-        textAlign: 'right',
-        fontSize: 15,
-        color: '#2090F8',
-        fontWeight: '500',
+    itemdate: {
+        ...Platform.select({
+            ios: {
+                marginTop: 20,
+            },
+            android: {
+                marginTop: 10,
+            }
+        })
+    },
+    itemcost: {
+        ...Platform.select({
+            ios: {
+                marginBottom: 5,
+            },
+            android: {
+                marginBottom: 20,
+            }
+        })
     },
 })
 export default Club;
