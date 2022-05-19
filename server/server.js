@@ -51,6 +51,11 @@ server.post('/add_receipt', (req, res) => {
 server.post('/club_receipt', (req, res) => {
     main.clubReceipts(req.body, res)
 })
+// 모임 삭제
+server.post("/remove_club", (req, res) => {
+    main.removeClub(req.body, res)
+})
+
 
 server.post('/clubs', (req, res) => {
     main.allClub(res);

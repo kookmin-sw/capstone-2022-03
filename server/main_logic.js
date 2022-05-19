@@ -331,6 +331,14 @@ exports.addClubMember = function(body, res) {
         }
     })
 }
+exports.removeClub = function(body, res) {
+    User.findOneAndUpdate({ _id : body.user_id}, {$pop : { joined_club : body.club_id}}, (err, isPoped) => {
+        if (err) { res.send({ success : false, message : err}) }
+        else {
+            res.send({ success : true })
+        }
+    })
+}
 
 exports.allClub = function(res) {
     Club.find().then(result => res.send(result))
