@@ -5,7 +5,6 @@ import styles from '../src/Styles';
 import { TextInput } from 'react-native-paper';
 import {
     widthPercentageToDP as wp,
-    heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import router from "../src/Router.json";
 import AsyncStorage from '@react-native-community/async-storage';
@@ -30,9 +29,17 @@ function CreateClub({ route, navigation }) {
     const _renderItem = ({ item, i }) => {
         return (
             <View style={extra.card} key={i}>
-                <View style={{ paddingBottom: 10, marginLeft: 10, }}>
-                    <Text style={extra.itemClubtitle}>상품명: {item.item_name}</Text>
-                    <Text style={{ marginTop: 3 }}>금액: {item.item_cost}</Text>
+                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
+                    <View style={{ paddingBottom: 10, marginLeft: 10, }}>
+                        <Text style={extra.itemClubtitle}>상품명: {item.item_name}</Text>
+                        <Text style={{ marginTop: 3 }}>금액: {item.item_cost}</Text>
+                    </View>
+                    <TouchableOpacity onPress={() => deleteData(item.id)}>
+                        <Image
+                            source={require('../src/icon/minus.png')}
+                            style={[extra.minusbutton, { width: wp(8), resizeMode: 'contain' }]}
+                        />
+                    </TouchableOpacity>
                 </View>
             </View>
         );
@@ -43,6 +50,7 @@ function CreateClub({ route, navigation }) {
             Alert.alert("소비한 품명을 제대로 입력해주세요")
         } else {
             const tmp = {
+                id: Math.random().toString(),
                 item_name: itemname,
                 item_cost: itemcost
             }
@@ -50,9 +58,16 @@ function CreateClub({ route, navigation }) {
         }
     }
 
+    async function deleteData(item) {
+        setData(prevData => {
+            return prevData.filter(data => data.id != item);
+        })
+    }
+
     function addReceipt() {
         AsyncStorage.getItem('user_information', async (err, res) => {
             const user = JSON.parse(res);
+            console.log(data);
             fetch(router.aws + '/add_receipt', {
                 method: "POST",
                 headers: {
@@ -196,7 +211,7 @@ const extra = StyleSheet.create({
         height: 60,
         ...Platform.select({
             ios: {
-                paddingVertical: 15,
+                paddingVertical: 10,
                 shadowColor: '#d3d3d3',
                 shadowOffset: {
                     width: 1.5,
@@ -225,6 +240,19 @@ const extra = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
+    minusbutton: {
+        ...Platform.select({
+            ios: {
+                marginLeft: 'auto',
+                marginTop: 3,
+            },
+            android: {
+                marginLeft: 140,
+                marginTop: 5,
+            }
+        })
+
+    }
 })
 
 export default CreateClub;
