@@ -15,9 +15,6 @@ const itemSchema = new mongoose.Schema({
     },
     item_cost: {
         type: Number
-    },
-    image : {
-        type : String
     }
 })
 
@@ -37,6 +34,9 @@ const receiptSchema = new mongoose.Schema({
     detail: {
         type: [itemSchema]
     },
+    imag : {
+        type : String
+    }
 });
 
 const clubSchema = mongoose.Schema({
