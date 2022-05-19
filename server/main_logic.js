@@ -108,7 +108,8 @@ exports.userClubInfo = function (body, res) {
                     // promise function
                     Club.findOne({_id: element}).then(async (club) => {
                         if (club.flag === "BC") {
-                            await blockchain.clubInfo(club.address, user.address).then((club_info) => {
+                            let member_id_list = []
+                            await blockchain.clubInfo(club.address, user.address).then(async (club_info) => {
                                 club_info['club_id'] = club._id;
                                 club_info['flag'] = "BC"
                                 club_info_result.push(club_info)
@@ -162,9 +163,18 @@ exports.gotoClub = function(body, res) {
                 let temp_info = {'joined_user': [], 'receipt': []}
 
                 blockchain.clubUsers(club.address, body.user_address).then(async (users) => {
-                    let user_info_list = []
+                    let member_id_list = [];
+                    await blockchain.clubMembers(club.address, body.user_address).then(async (members) => {
+                        for (let member of members) {
+                            member_id_list.push(member.id)
+                        }
+                    })
 
+                    let user_info_list = []
                     for (let temp_user of users) {
+                        if (temp_user.id in member_id_list) {
+                            continue
+                        }
                         user_info_list.push({user_name: temp_user.name, user_id: temp_user.id})
                     }
                     temp_info['joined_user'] = user_info_list;
@@ -183,6 +193,11 @@ exports.gotoClub = function(body, res) {
             }
             else if (club.flag === 'DB') {
                 let temp_info = {'joined_user': [], 'receipt': []}
+                let member_id_list = []
+
+                for (let member of club.joined_member) {
+                    member_id_list.push(member.user_id)
+                }
 
                 temp_info['receipt'] = club.receipt
 
@@ -191,11 +206,15 @@ exports.gotoClub = function(body, res) {
                     promise_list.push(
                         // promise function
                         User.findOne({ _id : element}).then((user) => {
-                            temp_info['joined_user'].push({
-                                user_name : user.name,
-                                user_id : user._id
-                            })
-                        }))
+                            let member_id_list = []
+                            if (!(user._id in member_id_list)) {
+                                temp_info['joined_user'].push({
+                                    user_name : user.name,
+                                    user_id : user._id
+                                })
+                            }
+                        })
+                    )
                 })
                 Promise.all(promise_list).then(() => {
                     res.send(temp_info)
