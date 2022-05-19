@@ -67,7 +67,11 @@ exports.clubReceipt = async function(address, caller) {
             for (let item of result) {
                 let details = []
                 for (let index =0; index < item[4].length; index = index+2) {
-                    details.push({item_name : item[4][index], item_cost : item[4][index+1]})
+                    details.push({
+                        item_name : item[4][index],
+                        item_cost : parseInt(item[4][index+1]),
+                        image : item[4][index+2]
+                    })
                 }
                 receipt_info_list.push({
                     owner : item[0],
@@ -104,6 +108,7 @@ exports.addClubReceipt = async function(address, caller, data) {
     for (let i of data.detail) {
         item.push(i.item_name)
         item.push(String(i.item_cost))
+        item.push(i.image)
     }
 
     await target_contract.methods.addReceipt(data.owner, data.place, data.date, data.cost, item)
