@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import styles from '../src/Styles';
 import router from '../src/Router.json';
 import CustomButton from '../src/CustomButton';
 import 'react-native-gesture-handler';
-import { TextInputMask } from 'react-native-masked-text';
+import MaskInput, { createNumberMask } from 'react-native-mask-input'; { }
+import AsyncStorage from '@react-native-community/async-storage';
 
 const theme = styles.Color_Main2
+const dollarMask = createNumberMask({
+    delimiter: ',',
+    separator: ' ',
+    precision: 0,
+})
 
 function AddFee({ route, navigation }) {
-    const { club_title, club_id, club_balance } = route.params;
+    const { club_title, club_id } = route.params;
     const [fee, setFee] = useState('');
     let set_fee = fee.replace(/[ ,원]/gi, "");
 
@@ -19,48 +25,52 @@ function AddFee({ route, navigation }) {
             Alert.alert('금액을 입력해주새요!')
         }
         else {
-            fetch(router.aws + '/add_fee', {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    "club_id": club_id,
-                    "fee": parseInt(set_fee)
-                })
-            }).then(res => res.json())
-                .then(res => {
-                    if (res.success) {
-                        console.log(res);
-                        navigation.navigate('Club', {
-                            club_title: club_title,
-                            club_id: club_id,
-                            club_balance: res.balance
-                        })
-                    }
-                })
+            AsyncStorage.getItem('user_information', async (err, res) => {
+                const user = JSON.parse(res);
+                fetch(router.aws + '/add_fee', {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "club_id": club_id,
+                        "user_address": user.user_address,
+                        "fee": parseInt(set_fee)
+                    })
+                }).then(res => res.json())
+                    .then(res => {
+                        if (res.success) {
+                            console.log(res);
+                            navigation.navigate('Club', {
+                                club_title: club_title,
+                                club_id: club_id,
+                                club_balance: res.balance
+                            })
+                        }
+                    })
+            })
         }
     }
+
     return (
         <View style={[styles.Center_Container, { backgroundColor: theme }]}>
             <View style={[styles.title, { alignItems: 'center', backgroundColor: theme }]}>
                 <Text style={[styles.Font_Title2, { color: 'white' }]}>
                     입금한 금액을 입력하세요
                 </Text>
-                <TextInputMask
-                    type={'money'}
-                    options={{
-                        precision: 0,
-                        separator: ' ',
-                        delimiter: ',',
-                        unit: '',
-                        suffixUnit: '원'
-                    }}
-                    value={fee}
-                    onChangeText={newText => setFee(newText)}
-                    autoFocus={true}
-                    style={[styles.Font_Title2, { backgroundColor: styles.Color_Main2, color: 'white' }]}
-                />
+                <View style={[styles.PayMoneyInput, {}]}>
+                    <MaskInput
+                        value={fee}
+                        mask={dollarMask}
+                        onChangeText={(masked, unmasked) => {
+                            setFee(unmasked); // you can use the masked value as well
+                        }}
+                        autoFocus={true}
+                        style={[styles.Font_Title2, { backgroundColor: styles.Color_Main2, color: 'white' }]}
+                        keyboardType='number-pad'
+                    />
+                    <Text style={[styles.Font_Title2, { color: 'white' }]}> 원</Text>
+                </View>
                 <View style={[{ marginTop: 50, width: '90%', height: 55, backgroundColor: 'theme' }]}>
                     <CustomButton
                         title='등록'
