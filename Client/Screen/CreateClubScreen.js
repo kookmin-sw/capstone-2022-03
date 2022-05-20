@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Platform, } from 'react-native';
+import { View, Text, Platform, Alert } from 'react-native';
 import CustomButton from '../src/CustomButton';
 import styles from '../src/Styles';
 import { TextInput, RadioButton } from 'react-native-paper';
@@ -7,11 +7,33 @@ import router from '../src/Router.json';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import CheckBox from '@react-native-community/checkbox';
+import RadioGroup from 'react-native-radio-buttons-group';
 const theme = 'white'
+
+const radioButtonsData = [{
+    id: '1',
+    label: '일반 데이터베이스에 저장',
+    value: 'DB'
+}, {
+    id: '2',
+    label: '블록체인에 저장',
+    value: 'BC'
+}]
 
 function CreateClub({ route, navigation }) {
 
     const isFocused = useIsFocused();
+    const [user_id, setUser_Id] = useState('');
+    const [user_name, setUser_Name] = useState('');
+    const [user_email, setUser_Email] = useState('');
+    const [user_address, setUser_Address] = useState('');
+    const [club_title, setClub_Title] = useState('');
+    const [club_bank_name, setClub_Bank_Name] = useState('');
+    const [club_bank_account, setClub_Bank_Account] = useState('');
+    const [club_bank_holder, setClub_Bank_Holder] = useState('');
+    const [checked, setChecked] = useState('DB'); //초기값은 DB에 저장하도록 한다.
+
+    const [radioButtons, setRadioButtons] = useState(radioButtonsData)
 
     useEffect(() => {
         AsyncStorage.getItem('user_information', (err, res) => {
@@ -24,15 +46,6 @@ function CreateClub({ route, navigation }) {
             }
         })
     }, [isFocused]);
-    const [user_id, setUser_Id] = useState('');
-    const [user_name, setUser_Name] = useState('');
-    const [user_email, setUser_Email] = useState('');
-    const [user_address, setUser_Address] = useState('');
-    const [club_title, setClub_Title] = useState('');
-    const [club_bank_name, setClub_Bank_Name] = useState('');
-    const [club_bank_account, setClub_Bank_Account] = useState('');
-    const [club_bank_holder, setClub_Bank_Holder] = useState('');
-    const [checked, setChecked] = useState('DB'); //초기값은 DB에 저장하도록 한다.
 
     async function createClub() {
         if (!club_title || !club_bank_name || !club_bank_account) { //비밀번호 확인이 제대로 되었나 탐지
@@ -40,6 +53,7 @@ function CreateClub({ route, navigation }) {
         }
         else {
             if (Platform.OS === 'ios') {
+                console.log(checked);
                 fetch(router.aws + "/create_club", {
                     method: "POST",
                     headers: {
@@ -67,7 +81,7 @@ function CreateClub({ route, navigation }) {
                     })
             }
             else if (Platform.OS === 'android') {
-                console.log(checked)
+                console.log(user_address)
                 fetch(router.aws + "/create_club", {
                     method: "POST",
                     headers: {
@@ -97,7 +111,15 @@ function CreateClub({ route, navigation }) {
         }
     }
 
-    if (Platform.os == 'ios') {
+    function onPressRadioButton(radioButtonsArray) {
+        radioButtonsArray.filter(function (e) {
+            if (e.selected == true) {
+                setChecked(e.value)
+            }
+        })
+    }
+
+    if (Platform.OS === 'ios') {
         return (
             <View style={styles.container}>
                 <View style={styles.header}></View>
@@ -147,10 +169,10 @@ function CreateClub({ route, navigation }) {
                             onChangeText={newText => setClub_Bank_Holder(newText)}
                         />
                         <Text style={[styles.Font_Subtext1, { marginTop: 15 }]}>저장방식</Text>
-                        <View >
+                        {/* <View >
                             <CheckBox
                                 disabled={false}
-                                status={checked === "DB" ? 'checked' : 'unchecked'}
+                                value={checked === "DB" ? true : false}
                                 onPress={() => setChecked('DB')}
                             />
                             <Text>DB에 저장</Text>
@@ -158,10 +180,17 @@ function CreateClub({ route, navigation }) {
                         <View>
                             <CheckBox
                                 disabled={false}
-                                status={checked === "BC" ? 'checked' : 'unchecked'}
+                                value={checked === "BC" ? true : false}
                                 onPress={() => setChecked('BC')}
                             />
                             <Text>블록체인에 저장</Text>
+                        </View> */}
+                        <View style={{ justifyContent: 'flex-start' }}>
+                            <RadioGroup
+                                layout='row'
+                                radioButtons={radioButtons}
+                                onPress={onPressRadioButton}
+                            />
                         </View>
                     </View>
                 </View>
@@ -174,7 +203,7 @@ function CreateClub({ route, navigation }) {
                 </View>
             </View>
         );
-    } else {
+    } else if (Platform.OS === 'android') {
         return (
             <View style={styles.container}>
                 <View style={styles.header}></View>
@@ -247,7 +276,7 @@ function CreateClub({ route, navigation }) {
                 <View style={[styles.footer, { height: '8%', marginBottom: 20 }]}>
                     <CustomButton
                         buttonColor={styles.Color_Main2}
-                        title="모임 참가"
+                        title="모임 생성"
                         onPress={() => createClub()}
                     />
                 </View>
