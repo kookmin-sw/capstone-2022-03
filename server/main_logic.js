@@ -149,14 +149,15 @@ exports.userClubInfo = function (body, res) {
     })
 }
 exports.joinClub = function(body, res) {
-    Club.findOne({ club_number : body.club_number}, (err, club) => {
+    Club.findOne({ club_number : body.club_number},  (err, club) => {
         if (err) { res.send({ success : false, message : err}) }
         else if (!club) { res.send({ success : false, message : "해당 클럽이 존재하지 않습니다."}) }
         else {
             if (club.flag === "BC") {
-                blockchain.addClubUser(club.address, body.user_address, body)
-                User.findOneAndUpdate({_id: body.user_id}, {$push: {joined_club: club._id}}).then(() => {
-                    res.send({ success: true })
+                blockchain.addClubUser(club.address, body.user_address, body).then(() => {
+                    User.findOneAndUpdate({_id: body.user_id}, {$push: {joined_club: club._id}}).then(() => {
+                        res.send({ success: true })
+                    })
                 })
             } else if (club.flag === "DB") {
                 Club.findOneAndUpdate({club_number: body.club_number}, {$push: {joined_user: body.user_id}}).then(() => {
@@ -278,6 +279,7 @@ exports.addClubReceipt = function(body, res) {
         else {
             // 블록체인 클럽
             if (club.flag === 'BC') {
+                let temp_receipt = { image : body.receipt.image, mime : body.receipt.mime }
                 blockchain.addClubReceipt(club.address, body.user_address, body.receipt)
                     .then(async () => {
                         await blockchain.clubBalance(club.address, body.user_address)
