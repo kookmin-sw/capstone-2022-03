@@ -34,7 +34,10 @@ const receiptSchema = new mongoose.Schema({
     detail: {
         type: [itemSchema]
     },
-    imag : {
+    image : {
+        type : String
+    },
+    mime : {
         type : String
     }
 });

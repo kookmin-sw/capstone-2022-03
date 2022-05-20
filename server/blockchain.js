@@ -110,7 +110,7 @@ exports.addClubReceipt = async function(address, caller, data) {
         item.push(String(i.item_cost))
     }
 
-    await target_contract.methods.addReceipt(data.owner, data.place, data.date, data.cost, data.image, item)
+    await target_contract.methods.addReceipt(data.owner, data.place, data.date, data.cost, data.image, data.mime, item)
         .send({ from : caller, gas : 3000000 })
 }
 exports.clubBalance = async function(address, caller) {

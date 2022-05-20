@@ -37,6 +37,7 @@ contract club {
         string date;
         uint cost;
         string image;
+        string mime;
         string[] detail;
     }
 
@@ -117,10 +118,10 @@ contract club {
     }
 
     function addReceipt(string memory owner, string memory place,
-        string memory date, uint amount, string memory image, string[] memory detail)
+        string memory date, uint amount, string memory image, string memory mime, string[] memory detail)
     public onlyMember {
         require(club_balance >= amount);
-        receipts.push(Receipt(owner, place, date, amount, image, detail));
+        receipts.push(Receipt(owner, place, date, amount, image, mime, detail));
         club_balance = club_balance - amount;
     }
 
