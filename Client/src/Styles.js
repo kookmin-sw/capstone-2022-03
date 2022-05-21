@@ -116,6 +116,11 @@ export const styles = StyleSheet.create({
         height: 25,
         marginTop: 10
     },
+    PayMoneyInput: {
+        flexDirection: 'row',
+        flexGrow: 1,
+        alignItems: 'center'
+    },
 
 
     //colors
