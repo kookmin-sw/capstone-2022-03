@@ -112,7 +112,7 @@ export function LoginScreen() {
                 <View style={styles.btnArea}>
                     <TouchableOpacity style={styles.btn}
                         onPress={() => onLogin()}>
-                        <Text style={(styles.Text, { color: 'white' })}>로그인</Text>
+                        <Text style={(styles.Text, { color: 'white', fontSize: 20 })}>로그인</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -120,7 +120,7 @@ export function LoginScreen() {
                 <View style={styles.btnArea}>
                     <TouchableOpacity style={styles.btn_register}
                         onPress={() => goToRegister()}>
-                        <Text style={(styles.Text, { color: 'white' })}>회원가입</Text>
+                        <Text style={(styles.Text, { color: 'white', fontSize: 20 })}>회원가입</Text>
                     </TouchableOpacity>
                 </View>
             </View>
