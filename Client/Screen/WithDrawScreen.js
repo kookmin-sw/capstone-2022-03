@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, Alert } from 'react-native';
 import styles from '../src/Styles';
-import router from '../src/Router.json';
 import CustomButton from '../src/CustomButton';
 import 'react-native-gesture-handler';
 
@@ -22,14 +21,6 @@ function WithDraw({ route, navigation }) {
                         buttonColor='white'
                         titleColor='#3a527a'
                         onPress={() => navigation.navigate("ManualReceipt", {
-                            club_id: club_id
-                        })}
-                    />
-                    <CustomButton
-                        title='카메라 인식'
-                        buttonColor='white'
-                        titleColor='#3a527a'
-                        onPress={() => navigation.navigate('Camera', {
                             club_id: club_id
                         })}
                     />
