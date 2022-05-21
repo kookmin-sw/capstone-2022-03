@@ -4,7 +4,6 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { Image, View, Text, FlatList, StatusBar, StyleSheet, Platform, TouchableOpacity } from 'react-native';
 import {
     widthPercentageToDP as wp,
-    heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import { useIsFocused } from '@react-navigation/native';
 import CustomButton from '../src/CustomButton';
@@ -33,10 +32,12 @@ function MainScreen({ navigation, route }) {
                 <TouchableOpacity
                     onPress={() => {
                         navigation.navigate('Club', {
+                            user_id: item.user_id,
                             club_title: item.club_title,
                             club_id: item.club_id,
                             club_balance: item.club_balance,
                             club_leader_id: item.club_leader_id,
+                            members: item.members,
                         })
                     }}
                 >
@@ -45,13 +46,14 @@ function MainScreen({ navigation, route }) {
                             <Text style={styles.itemClubtitle}>{item.club_title}</Text>
                             <Text>모임장: {item.club_leader}</Text>
                             <Text>모임인원: {item.users}</Text>
-                            <Text>저장방식: {item.flag}</Text>
                         </View>
                         <View>
-                            <Image
-                                source={require('../src/icon/BC.png')}
-                                style={{ width: 20, height: 20, resizeMode: 'contain' }}
-                            />
+                            <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+                                <Image
+                                    source={require('../src/icon/BC.png')}
+                                    style={{ width: 30, height: 30, resizeMode: 'contain' }}
+                                />
+                            </View>
                             <Text style={styles.itemClubBalance}>{item.club_balance}</Text>
                         </View>
                     </View>
@@ -62,10 +64,12 @@ function MainScreen({ navigation, route }) {
                 <TouchableOpacity
                     onPress={() => {
                         navigation.navigate('Club', {
+                            user_id: item.user_id,
                             club_title: item.club_title,
                             club_id: item.club_id,
                             club_balance: item.club_balance,
                             club_leader_id: item.club_leader_id,
+                            members: item.members,
                         })
                     }}
                 >
@@ -74,13 +78,14 @@ function MainScreen({ navigation, route }) {
                             <Text style={styles.itemClubtitle}>{item.club_title}</Text>
                             <Text>모임장: {item.club_leader}</Text>
                             <Text>모임인원: {item.users}</Text>
-                            <Text>저장방식: {item.flag}</Text>
                         </View>
                         <View>
-                            <Image
-                                source={require('../src/icon/DB.png')}
-                                style={{ width: 20, height: 20, resizeMode: 'contain' }}
-                            />
+                            <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+                                <Image
+                                    source={require('../src/icon/DB.png')}
+                                    style={{ width: 20, height: 20, resizeMode: 'contain' }}
+                                />
+                            </View>
                             <Text style={styles.itemClubBalance}>{item.club_balance}</Text>
                         </View>
                     </View>
@@ -144,7 +149,6 @@ function MainScreen({ navigation, route }) {
                         data.sort(function (a, b) {
                             return parseFloat(a.time) - parseFloat(b.time);
                         })
-                        console.log(res);
                     }
                 })
         })
@@ -240,7 +244,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginTop: 12,
         marginHorizontal: 12,
-
         paddingHorizontal: 15,
         height: 100,
         ...Platform.select({
@@ -255,7 +258,7 @@ const styles = StyleSheet.create({
                 shadowRadius: 1,
             },
             android: {
-                paddingVertical: 8,
+                paddingVertical: 10,
                 shadowColor: 'black',
                 elevation: 1,
             }
