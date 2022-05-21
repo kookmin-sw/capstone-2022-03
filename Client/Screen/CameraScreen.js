@@ -4,13 +4,14 @@ import { StyleSheet, View, Text, TouchableOpacity, Image, Button } from 'react-n
 import { useNavigation } from '@react-navigation/native';
 import ImagePicker from 'react-native-image-crop-picker';
 import Plus from '../src/icon/plus.png';
-import storage from '@react-native-firebase/storage';
+import AsyncStorage from '@react-native-community/async-storage';
 import CustomButton from '../src/CustomButton';
 import styles from '../src/Styles';
+import router from '../src/Router.json';
 
 
-export function CameraScreen() {
-    const navigation = useNavigation();
+function CameraScreen({ navigation, route }) {
+    const { owner, place, date, cost, detail, club_id } = route.params;
     const [receipt, captured_receipt] = useState({});
 
     runCamera = async () => {
@@ -20,7 +21,6 @@ export function CameraScreen() {
             cropping: true,
             includeBase64: true,
         }).then(image => {
-            console.log(image);
             captured_receipt({
                 uri: image.path,
                 width: image.width,
@@ -35,8 +35,6 @@ export function CameraScreen() {
 
     const renderImage = (flag) => {
         if (receipt.uri != undefined && flag == 1) {
-            console.log("ok");
-            console.log(receipt.uri);
             return <Image
                 source={{ uri: receipt.uri }}
                 style={extra.images}
@@ -51,6 +49,41 @@ export function CameraScreen() {
         }
     }
 
+    function addReceipt() {
+        AsyncStorage.getItem('user_information', async (err, res) => {
+            const user = JSON.parse(res);
+            fetch(router.aws + '/add_receipt', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    club_id: club_id,
+                    user_name: owner,
+                    user_address: user.user_address,
+                    receipt: {
+                        owner: owner,
+                        place: place,
+                        date: date,
+                        cost: cost,
+                        detail: detail,
+                        image: receipt.data,
+                        mime: receipt.mime,
+                    },
+                })
+            }).then(res => res.json())
+                .then(res => {
+                    if (res.success) {
+                        console.log(res);
+                        navigation.navigate("Club", {
+                            club_id: club_id,
+                            club_title: res.club_title,
+                            club_balance: res.balance,
+                        })
+                    }
+                })
+        })
+    }
     return (
         <View style={[styles.container, { backgroundColor: styles.Color_Main2, alignItems: 'center', justifyContent: 'center' }]}>
             <View style={{ marginTop: 150 }}></View>
@@ -64,13 +97,7 @@ export function CameraScreen() {
                 <CustomButton
                     buttonColor={'#4169e1'}
                     title="등록"
-                    onPress={() => {
-                        navigation.navigate("ReceiptImage", {
-                            mime: receipt.mime,
-                            base64: receipt.data,
-                            path: receipt.uri,
-                        })
-                    }}
+                    onPress={() => { addReceipt() }}
                 />
             </View>
         </View>
