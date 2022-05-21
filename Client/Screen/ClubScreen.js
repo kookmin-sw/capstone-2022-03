@@ -22,7 +22,7 @@ function Club({ route, navigation }) {
     const [userdata, setUserData] = useState("");
     const [data, setData] = useState([]);
     const [joined_user, setJoined_User] = useState([]);
-    const { club_title, club_id, club_balance, club_leader_id } = route.params;
+    const { user_id, club_title, club_id, club_balance, club_leader_id, members } = route.params;
 
     useEffect(() => {
         AsyncStorage.getItem('user_information', async (err, res) => {
@@ -43,7 +43,6 @@ function Club({ route, navigation }) {
                     if (res) {
                         setJoined_User(res.joined_user);
                         setData(res.receipt);
-                        console.log(res);
                     }
                 })
         })
@@ -58,6 +57,8 @@ function Club({ route, navigation }) {
                         date: item.date,
                         cost: item.cost,
                         detail: item.detail,
+                        mime: item.mime,
+                        image: item.image,
                     })
                 }}
             >
@@ -86,71 +87,11 @@ function Club({ route, navigation }) {
         );
     };
 
-    //총무 추가
-
-    if (userdata != club_leader_id) {
-        return (
-            <View style={styles.container}>
-                <View style={styles.header}></View>
-                <View style={styles.title}>
-                    <Text style={{ fontSize: 25, color: 'black', fontWeight: '700' }}>{club_title}{'\t'} {String(club_id).slice(-5)} </Text>
-                </View>
-                <View style={styles.content}>
-                    <View style={{ alignItems: 'center' }}>
-                        <Text style={{ fontSize: 25, fontWeight: '700', color: 'black', marginTop: 15, marginLeft: 15 }}>잔액 : {club_balance}</Text>
-                        <Text style={{ fontSize: 15, fontWeight: '500', color: 'black', marginTop: 10, marginLeft: 15, marginBottom: 5 }}>회비 사용내역</Text>
-                    </View>
-                    <FlatList
-                        style={styles.list}
-                        data={data}
-                        renderItem={_renderItem}
-                        ListEmptyComponent={EmptyListMessage}
-                        contentContainerStyle={{ flexGrow: 1 }}
-                    />
-                    <Text style={{ fontSize: 10, fontWeight: '700', color: 'white', marginLeft: 30, }}>emptyspace</Text>
-                </View>
-                <View style={styles.footer}>
-                    <CustomButton
-                        buttonColor={'#4169e1'}
-                        title="회비 입금"
-                        onPress={() => navigation.navigate('AddFee', {
-                            club_title: club_title,
-                            club_id: club_id,
-                        })}
-                    />
-                    <CustomButton
-                        buttonColor={'#4169e1'}
-                        title="회비 출금"
-                        onPress={() => navigation.navigate("WithDraw",
-                            {
-                                club_id: club_id
-                            },
-                        )}
-                    />
-                </View>
-            </View >
-        );
-    } else {
-        return (
-            <View style={styles.container}>
-                <View style={styles.header}></View>
-                <View style={styles.title}>
-                    <Text style={{ fontSize: 25, color: 'black', fontWeight: '700' }}>{club_title}{'\t'} {String(club_id).slice(-5)} </Text>
-                </View>
-                <View style={styles.content}>
-                    <View style={{ alignItems: 'center' }}>
-                        <Text style={{ fontSize: 25, fontWeight: '700', color: 'black', marginTop: 15, marginLeft: 15 }}>잔액 : {club_balance}</Text>
-                        <Text style={{ fontSize: 15, fontWeight: '500', color: 'black', marginTop: 10, marginLeft: 15, marginBottom: 5 }}>회비 사용내역</Text>
-                    </View>
-                    <FlatList
-                        style={styles.list}
-                        data={data}
-                        renderItem={_renderItem}
-                        ListEmptyComponent={EmptyListMessage}
-                        contentContainerStyle={{ flexGrow: 1 }}
-                    />
-                    <Text style={{ fontSize: 10, fontWeight: '700', color: 'white', marginLeft: 30, }}>emptyspace</Text>
-                </View>
+    // 권한에 따라 분기
+    const renderButton = (flag) => {
+        console.log(members)
+        if (flag == club_leader_id) {
+            return (
                 <View style={styles.footer}>
                     <CustomButton
                         buttonColor={'#4169e1'}
@@ -178,9 +119,95 @@ function Club({ route, navigation }) {
                         )}
                     />
                 </View>
-            </View >
-        );
+            );
+        } else if (members.includes(flag)) {
+            return (
+                <View style={styles.footer}>
+                    <CustomButton
+                        buttonColor={'#4169e1'}
+                        title="회비 입금"
+                        onPress={() => navigation.navigate('AddFee', {
+                            club_title: club_title,
+                            club_id: club_id,
+                        })}
+                    />
+                    <CustomButton
+                        buttonColor={'#4169e1'}
+                        title="회비 출금"
+                        onPress={() => navigation.navigate("WithDraw",
+                            {
+                                club_id: club_id
+                            },
+                        )}
+                    />
+                </View>
+            );
+        } else {
+            return (
+                <View style={styles.footer}>
+                    <CustomButton
+                        buttonColor={'#4169e1'}
+                        title="회비 입금"
+                        onPress={() => navigation.navigate('AddFee', {
+                            club_title: club_title,
+                            club_id: club_id,
+                        })}
+                    />
+                </View>
+            );
+        }
     }
+
+    return (
+        <View style={styles.container}>
+            <View style={styles.header}></View>
+            <View style={styles.title}>
+                <Text style={{ fontSize: 25, color: 'black', fontWeight: '700' }}>{club_title}{'\t'} {String(club_id).slice(-5)} </Text>
+            </View>
+            <View style={styles.content}>
+                <View style={{ alignItems: 'center' }}>
+                    <Text style={{ fontSize: 25, fontWeight: '700', color: 'black', marginTop: 15, marginLeft: 15 }}>잔액 : {club_balance}</Text>
+                    <Text style={{ fontSize: 15, fontWeight: '500', color: 'black', marginTop: 10, marginLeft: 15, marginBottom: 5 }}>회비 사용내역</Text>
+                </View>
+                <FlatList
+                    style={styles.list}
+                    data={data}
+                    renderItem={_renderItem}
+                    ListEmptyComponent={EmptyListMessage}
+                    contentContainerStyle={{ flexGrow: 1 }}
+                />
+                <Text style={{ fontSize: 10, fontWeight: '700', color: 'white', marginLeft: 30, }}>emptyspace</Text>
+            </View>
+            {renderButton(user_id)}
+            {/* <View style={styles.footer}>
+                <CustomButton
+                    buttonColor={'#4169e1'}
+                    title="총무 추가"
+                    onPress={() => navigation.navigate('AddMember', {
+                        club_id: club_id,
+                        joined_user: joined_user,
+                    })}
+                />
+                <CustomButton
+                    buttonColor={'#4169e1'}
+                    title="회비 입금"
+                    onPress={() => navigation.navigate('AddFee', {
+                        club_title: club_title,
+                        club_id: club_id,
+                    })}
+                />
+                <CustomButton
+                    buttonColor={'#4169e1'}
+                    title="회비 출금"
+                    onPress={() => navigation.navigate("WithDraw",
+                        {
+                            club_id: club_id
+                        },
+                    )}
+                />
+            </View> */}
+        </View >
+    );
 }
 
 const styles = StyleSheet.create({
