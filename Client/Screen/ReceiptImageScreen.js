@@ -8,7 +8,7 @@ import CustomButton from '../src/CustomButton';
 const theme = 'white'
 
 function CreateClub({ route, navigation }) {
-    const { mime, base64, path } = route.params;
+    const { mime, base64 } = route.params;
 
     return (
         <View style={[styles.container, { backgroundColor: styles.Color_Main2 }]}>
@@ -39,19 +39,6 @@ const extra = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         alignItems: 'center',
-    },
-    imagecard: {
-        paddingTop: 100,
-        display: 'flex',
-        marginTop: 10,
-        width: '100%',
-        height: 500,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'white',
-        borderRadius: 12,
-        borderColor: '#F2F3F4',
-        borderWidth: 1,
     },
     images: {
         marginBottom: 100,
