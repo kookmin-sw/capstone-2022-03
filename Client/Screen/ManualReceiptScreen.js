@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, Platform, StyleSheet, Alert } from 'react-native';
 import CustomButton from '../src/CustomButton';
 import styles from '../src/Styles';
 import { TextInput } from 'react-native-paper';
-import router from '../src/Router.json';
-
 
 const theme = 'white'
 
