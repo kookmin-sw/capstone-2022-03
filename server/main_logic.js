@@ -270,7 +270,6 @@ exports.addClubReceipt = function(body, res) {
         else {
             // 블록체인 클럽
             if (club.flag === 'BC') {
-                let temp_receipt = { image : body.receipt.image, mime : body.receipt.mime }
                 blockchain.addClubReceipt(club.address, body.user_address, body.receipt)
                     .then(async () => {
                         await blockchain.clubBalance(club.address, body.user_address)
