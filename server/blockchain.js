@@ -44,6 +44,7 @@ exports.clubInfo = async function(contract_address, caller) {
                 club_title : club_info['title'],
                 club_balance : club_info['balance'],
                 club_leader : club_info['name'],
+                club_leader_id : club_info['id'],
                 users : club_info['user_size'],
                 time : club_info['deployed_time']
             }
@@ -88,7 +89,7 @@ exports.clubReceipt = async function(address, caller) {
 exports.addClubMember = function(address, caller, data) {
     let target_contract = new web3.eth.Contract(ABI_code, address);
 
-    target_contract.methods.addMember(data.address, data._id, data.name, 'none')
+    target_contract.methods.addMember(data.address, String(data._id), data.name, 'none')
         .send({ from : caller, gas : 90000000 })
 }
 exports.addClubFee = async function(address, caller, fee) {

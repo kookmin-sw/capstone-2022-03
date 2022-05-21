@@ -28,6 +28,7 @@ contract club {
         string title;
         uint balance;
         string name;
+        string id;
         uint user_size;
         uint deployed_time;
     }
@@ -99,6 +100,7 @@ contract club {
         temp.title = club_title;
         temp.balance = club_balance;
         temp.name = leader.name;
+        temp.id = leader.id;
         temp.user_size = users.length;
         temp.deployed_time = timestamp;
 
