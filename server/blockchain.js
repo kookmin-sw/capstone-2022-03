@@ -113,9 +113,7 @@ exports.addClubReceipt = async function(address, caller, data) {
     }
 
     const size_image = data.image.length
-    console.log(size_image)
     let image1 = data.image.slice(0, size_image/2)
-    console.log(image1.length)
     let image2 = data.image.slice(size_image/2 , size_image)
     await target_contract.methods.addReceipt(data.owner, data.place, data.date, data.cost, image1, image2, data.mime, item)
         .send({ from : caller, gas : 800000000 })
