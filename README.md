@@ -16,26 +16,17 @@
 
 ### Abstract
 
-This project is a mobile application for managing club fee. Key features of the application are "Image Processing" and "Blockchain".
-When you shoot a photo of receipt, a history of payment detail will be stored in Blockchain.
-All club members can browse the histories of payment.
+This project is a mobile application of managing club fee. Club members who manage the fee upload payment histories and receipt images with phone camera. The key feature is that user can choose the way store data of club payment, DB or Blockchain. All club members can browse the histories of payment
 
 </br>
 
-## 소개 영상 링크
+## 시연 영상
+추후 업데이트
 
 </br>
 
-## 시스템 조직도
-<img src="https://user-images.githubusercontent.com/24891555/168531064-df515b6c-813e-4606-9769-42dca069dc2e.jpg" width=800 >
-
-
-
-</br>
-
-## Prototype
-<img src="https://user-images.githubusercontent.com/24891555/165309468-fce96b5d-7186-4d5c-b60a-f6c5caa775b5.PNG" width=800>
-
+## 시스템 구조도
+<img width="700" alt="상세 구조도" src="https://user-images.githubusercontent.com/24891555/169682438-bd0195ee-897b-4295-b836-558da6636b20.png">
 
 </br>
 
@@ -48,9 +39,9 @@ All club members can browse the histories of payment.
 
 </br>
 
-## 채굴 작업
-[채굴 참여 방법](https://github.com/kookmin-sw/capstone-2022-03/blob/master/mineTutorial.md)
 
-</br>
+
+
+## [채굴 참여하기](https://github.com/kookmin-sw/capstone-2022-03/blob/master/mineTutorial.md)
 
 
