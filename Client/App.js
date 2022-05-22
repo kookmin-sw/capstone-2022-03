@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import SplashScreen from 'react-native-splash-screen'; /** Splash 추가 **/
+
 import MainScreen from './Screen /MainScreen';
 import RegisterScreen from './Screen /RegisterScreen';
 import LoginScreen from './Screen /LoginScreen';
@@ -11,6 +13,11 @@ import JoinClubScreen from './Screen /JoinClubScreen';
 import CreateClubScreen from './Screen /CreateClubScreen';
 import AddFeeScreen from './Screen /AddFeeScreen';
 import AddMemberScreen from './Screen /AddMemberScreen';
+import WithDrawScreen from './Screen /WithDrawScreen';
+import ManualReceiptScreen from './Screen /ManualReceiptScreen';
+import ManualReceiptDetailScreen from './Screen /ManualReceiptDetailScreen';
+import ReceiptInfoScreen from './Screen /ReceiptInfoScreen';
+import ReceiptImageScreen from './Screen /ReceiptImageScreen';
 const stack = createStackNavigator();
 
 function BackBtn() {
@@ -24,6 +31,11 @@ function BackBtn() {
 
 class App extends Component {
   render() {
+
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 2000);
+
     return (
       <NavigationContainer>
         <stack.Navigator initialRouteName='Login'>
@@ -44,13 +56,14 @@ class App extends Component {
             name="Register"
             component={RegisterScreen}
             options={{
-              title: '회원가입',
+              title: '',
               headerTitleStyle: {
                 fontWeight: 'bold',
                 fontSize: 20,
                 color: "#707070"
               },
               headerBackTitleVisible: false,
+              headerTransparent: true,
               headerBackImage: BackBtn,
             }}
           />
@@ -71,13 +84,14 @@ class App extends Component {
             name="Camera"
             component={CameraScreen}
             options={{
-              title: "영수증 촬영",
+              title: "",
               headerTitleStyle: {
                 fontWeight: 'bold',
                 fontSize: 20,
                 color: "#707070"
               },
               headerBackTitleVisible: false,
+              headerTransparent: true,
               headerBackImage: BackBtn,
             }}
           />
@@ -135,8 +149,57 @@ class App extends Component {
               headerBackImage: BackBtn,
             }}
           />
+          <stack.Screen
+            name="WithDraw"
+            component={WithDrawScreen}
+            options={{
+              title: "",
+              headerBackTitleVisible: false,
+              headerTransparent: true,
+              headerBackImage: BackBtn,
+            }}
+          />
+          <stack.Screen
+            name="ManualReceipt"
+            component={ManualReceiptScreen}
+            options={{
+              title: "",
+              headerBackTitleVisible: false,
+              headerTransparent: true,
+              headerBackImage: BackBtn,
+            }}
+          />
+          <stack.Screen
+            name="ManualReceiptDetail"
+            component={ManualReceiptDetailScreen}
+            options={{
+              title: "",
+              headerBackTitleVisible: false,
+              headerTransparent: true,
+              headerBackImage: BackBtn,
+            }}
+          />
+          <stack.Screen
+            name="ReceiptInfo"
+            component={ReceiptInfoScreen}
+            options={{
+              title: "",
+              headerBackTitleVisible: false,
+              headerTransparent: true,
+              headerBackImage: BackBtn,
+            }}
+          />
+          <stack.Screen
+            name="ReceiptImage"
+            component={ReceiptImageScreen}
+            options={{
+              title: "",
+              headerBackTitleVisible: false,
+              headerTransparent: true,
+              headerBackImage: BackBtn,
+            }}
+          />
         </stack.Navigator>
-
       </NavigationContainer>
     )
   }
