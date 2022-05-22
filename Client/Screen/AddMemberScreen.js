@@ -6,6 +6,7 @@ import CustomButton from '../src/CustomButton';
 import CheckBox from '@react-native-community/checkbox';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import router from '../src/Router.json';
+import AsyncStorage from '@react-native-community/async-storage';
 
 StatusBar.setBarStyle("dark-content");
 if (Platform.OS === 'android') {
@@ -23,7 +24,6 @@ function AddMember({ navigation, route }) {
 
     const onChangeValue = (itemSelected, index) => {
         console.log(itemSelected)
-        console.log(itemSelected.user_id)
         const newData = data.map(item => {
             if (item.user_id == itemSelected.user_id) {
                 return {
@@ -39,9 +39,6 @@ function AddMember({ navigation, route }) {
         setData(newData)
     }
 
-    const IsChecked = (e) => {
-        console.log(e);
-    }
     const _renderItem = ({ item, index }) => {
         if (Platform.OS == 'ios') {
             return (
@@ -85,22 +82,26 @@ function AddMember({ navigation, route }) {
     const onShowItemSelected = () => {
         const listSelected = data.filter(item => item.department == true);
         console.log(listSelected)
-        fetch(router.aws + '/add_member', {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                "club_id": club_id,
-                "members": data
-            })
-        }).then(res => res.json())
-            .then(res => {
-                if (res.success) {
-                    console.log(res)
-                    navigation.goBack()
-                }
-            })
+        AsyncStorage.getItem('user_information', async (err, res) => {
+            const user = JSON.parse(res);
+            fetch(router.aws + '/add_member', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "club_id": club_id,
+                    "user_address": user.user_address,
+                    "members": listSelected
+                })
+            }).then(res => res.json())
+                .then(res => {
+                    if (res.success) {
+                        console.log(res)
+                        navigation.goBack()
+                    }
+                })
+        })
     }
     return (
         <View style={styles.container}>
@@ -112,8 +113,6 @@ function AddMember({ navigation, route }) {
                     data={joined_user}
                     renderItem={_renderItem}
                     ListEmptyComponent={EmptyListMessage}
-                    // keyExtractor={item => `key-${item.id}`}
-                    // onRefresh={refreshItems}
                     refreshing={isRefreshing}
                 />
                 <Text style={{ fontSize: 10, fontWeight: '700', color: 'white', marginLeft: 30, }}> </Text>

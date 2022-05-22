@@ -98,6 +98,7 @@ function CreateClub({ route, navigation }) {
                 })
         })
     }
+
     // 데이터가 없는 경우
     const EmptyListMessage = ({ item }) => {
         return (
@@ -153,21 +154,32 @@ function CreateClub({ route, navigation }) {
                         <View style={extra.content}>
                             <FlatList
                                 showsVerticalScrollIndicator={true}
-                                style={styles.list}
+                                style={extra.list}
                                 ListEmptyComponent={EmptyListMessage}
                                 data={data}
                                 renderItem={_renderItem}
                             />
-                            <Text style={{ fontSize: 10, fontWeight: '700', color: 'white', marginLeft: 30, }}>emptyspace</Text>
                         </View>
                     </View>
                 </View>
             </View>
             <View style={[styles.footer, { height: '8%', marginBottom: 20, backgroundColor: styles.Color_Main2 }]}>
-                <CustomButton
+                {/* <CustomButton
                     buttonColor={styles.Color_Main1}
                     title="등록하기"
                     onPress={() => addReceipt()}
+                /> */}
+                <CustomButton
+                    buttonColor={styles.Color_Main1}
+                    title="사진 등록하기"
+                    onPress={() => navigation.navigate("Camera", {
+                        owner: owner,
+                        place: place,
+                        date: date,
+                        cost: cost,
+                        detail: data,
+                        club_id: club_id,
+                    })}
                 />
             </View>
         </View>
@@ -232,6 +244,7 @@ const extra = StyleSheet.create({
     content: {
         flex: 1,
         width: '100%',
+        height: '70%',
         backgroundColor: 'white',
     },
     itemClubtitle: {
@@ -249,8 +262,10 @@ const extra = StyleSheet.create({
                 marginRight: 5,
             }
         })
-
-    }
+    },
+    list: {
+        paddingBottom: 10,
+    },
 })
 
 export default CreateClub;

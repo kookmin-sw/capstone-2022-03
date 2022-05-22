@@ -8,17 +8,7 @@ import CustomButton from '../src/CustomButton';
 const theme = 'white'
 
 function CreateClub({ route, navigation }) {
-
-    const data = [{
-        item_name: "Hamburger",
-        item_cost: "10000"
-    }, {
-        item_name: "Chicken",
-        item_cost: "22000",
-    }, {
-        item_name: "Coffee",
-        item_cost: "6000",
-    }]
+    const { place, date, cost, detail, mime, image } = route.params;
 
     const _renderItem = ({ item, i }) => {
         return (
@@ -43,9 +33,9 @@ function CreateClub({ route, navigation }) {
                 <View style={extra.card}>
                     <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                         <View style={{ marginLeft: 10, }}>
-                            <Text style={[extra.itemClubtitle, { marginTop: 3 }]}>사용처: </Text>
-                            <Text style={[extra.itemClubtitle, { marginTop: 5 }]}>거래일자: </Text>
-                            <Text style={[extra.itemClubtitle, { marginTop: 5 }]}>금액: </Text>
+                            <Text style={[extra.itemClubtitle, { marginTop: 3 }]}>사용처: {place}</Text>
+                            <Text style={[extra.itemClubtitle, { marginTop: 5 }]}>거래일자: {date}</Text>
+                            <Text style={[extra.itemClubtitle, { marginTop: 5 }]}>금액: {cost}</Text>
                         </View>
                     </View>
                 </View>
@@ -53,15 +43,18 @@ function CreateClub({ route, navigation }) {
                     <FlatList
                         showsVerticalScrollIndicator={true}
                         style={styles.list}
-                        data={data}
+                        data={detail}
                         renderItem={_renderItem}
                     />
                 </View>
                 <View><Text style={extra.emptyspace}>emptyspace</Text></View>
                 <CustomButton
                     buttonColor={styles.Color_Main1}
-                    title="등록하기"
-                    onPress={() => addReceipt()}
+                    title="영수증 이미지"
+                    onPress={() => navigation.navigate("ReceiptImage", {
+                        mime: mime,
+                        base64: image,
+                    })}
                 />
             </View>
 
