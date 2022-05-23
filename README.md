@@ -21,7 +21,7 @@ This project is a mobile application of managing club fee. Club members who mana
 </br>
 
 ## 시연 영상
-추후 업데이트
+[시연 영상 링크](https://youtu.be/U8GoKgb60a0)
 
 </br>
 
