@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, Platform, StyleSheet, Alert } from 'react-native';
+import { View, Text, Platform, StyleSheet, Alert, Keyboard } from 'react-native';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import CustomButton from '../src/CustomButton';
 import styles from '../src/Styles';
 import { TextInput } from 'react-native-paper';
@@ -7,11 +8,16 @@ import { TextInput } from 'react-native-paper';
 const theme = 'white'
 
 function CreateClub({ route, navigation }) {
-    const { club_id } = route.params;
+    const { club_title, club_id, user_id, club_leader_id, members } = route.params;
     const [owner, setOwner] = useState("");
     const [place, setPlace] = useState("");
     const [date, setDate] = useState("");
     const [cost, setCost] = useState("");
+
+    console.log("manual")
+    console.log(user_id);
+    console.log(club_leader_id);
+    console.log(members);
 
     async function gotoDetail() {
         if (!owner || !place || !date || !cost) {
@@ -22,7 +28,11 @@ function CreateClub({ route, navigation }) {
                 place: place,
                 date: date,
                 cost: cost,
+                user_id: user_id,
+                club_title: club_title,
                 club_id: club_id,
+                club_leader_id: club_leader_id,
+                members: members
             })
         }
     }
@@ -36,7 +46,9 @@ function CreateClub({ route, navigation }) {
             <View style={[styles.content, { alignItems: 'flex-start', paddingHorizontal: 15, backgroundColor: styles.Color_Main2 }]}>
                 <View style={[styles.Login_container, { width: '100%', height: '90%', justifyContent: 'flex-start', backgroundColor: styles.Color_Main }]}>
                     <View style={[extra.input_container, { paddingBottom: 15 }]}>
-                        <Text style={[styles.Font_Subtext1, { marginTop: 15, marginBottom: 5 }]}>결제자 이름</Text>
+                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                            <Text style={[styles.Font_Subtext1, { marginTop: 15, marginBottom: 5 }]}>결제자 이름</Text>
+                        </TouchableWithoutFeedback>
                         <TextInput
                             placeholder='결제한 사람의 이름을 입력해주세요'
                             mode='flat'
@@ -47,7 +59,9 @@ function CreateClub({ route, navigation }) {
                             value={owner}
                             onChangeText={newText => setOwner(newText)}
                         />
-                        <Text style={[styles.Font_Subtext1, { marginTop: 15, marginBottom: 5 }]}>사용처</Text>
+                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                            <Text style={[styles.Font_Subtext1, { marginTop: 15, marginBottom: 5 }]}>사용처</Text>
+                        </TouchableWithoutFeedback>
                         <TextInput
                             placeholder='결제한 장소명을 입력해주세요'
                             mode='flat'
@@ -58,7 +72,10 @@ function CreateClub({ route, navigation }) {
                             value={place}
                             onChangeText={newText => setPlace(newText)}
                         />
-                        <Text style={[styles.Font_Subtext1, { marginTop: 15, marginBottom: 5 }]}>결제 일자</Text>
+                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                            <Text style={[styles.Font_Subtext1, { marginTop: 15, marginBottom: 5 }]}>결제 일자</Text>
+                        </TouchableWithoutFeedback>
+
                         <TextInput
                             placeholder='결제 일자를 입력해주세요'
                             mode='flat'
@@ -69,7 +86,10 @@ function CreateClub({ route, navigation }) {
                             value={date}
                             onChangeText={newText => setDate(newText)}
                         />
-                        <Text style={[styles.Font_Subtext1, { marginTop: 15, marginBottom: 5 }]}>결제 금액</Text>
+                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                            <Text style={[styles.Font_Subtext1, { marginTop: 15, marginBottom: 5 }]}>결제 금액</Text>
+                        </TouchableWithoutFeedback>
+
                         <TextInput
                             placeholder='총 결제 금액을 입력해주세요'
                             mode='flat'
