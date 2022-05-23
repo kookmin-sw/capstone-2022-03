@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, Alert, TextInput } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Image, Alert, TextInput, Keyboard, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {
     widthPercentageToDP as wp,
@@ -8,6 +8,7 @@ import {
 } from 'react-native-responsive-screen';
 import router from '../src/Router.json';
 import AsyncStorage from '@react-native-community/async-storage';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 export function LoginScreen() {
     const navigation = useNavigation();
@@ -77,54 +78,59 @@ export function LoginScreen() {
 
     return (
         <View style={styles.container}>
-            <View style={styles.topArea}>
-                <View style={styles.titleArea}>
-                    <Image
-                        source={require('../src/icon/Login.png')}
-                        style={{ width: wp(30), resizeMode: 'contain' }}
+            <View style={styles.content}>
+                <View style={styles.topArea}>
+                    <View style={styles.titleArea}>
+                        <Image
+                            source={require('../src/icon/Login.png')}
+                            style={{ width: wp(30), resizeMode: 'contain', marginTop: 30 }}
+                        />
+                    </View>
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{ height: 100, marginTop: 50 }}>
+                        <View style={styles.TextArea}>
+                            <Text style={styles.Text}>🧾여기, 모두의 영수증🧾</Text>
+                            <Text style={styles.Text}>'여기모영' 에 오신것을 환영합니다!</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </View>
+
+                <View style={styles.formArea}>
+                    <TextInput
+                        style={styles.textFormTop}
+                        placeholder={'아이디'}
+                        autoCapitalize='none'
+                        onChangeText={(text) => { setEmail(text); }}
                     />
+                    <TextInput
+                        style={styles.textFormBottom}
+                        placeholder={'비밀번호'}
+                        autoCapitalize='none'
+                        onChangeText={(text) => { setPassword(text); }}
+                        secureTextEntry={true} //텍스트 숨김처리
+                    />
+                    {errtext != '' ? (
+                        <Text style={styles.TextValidation}> {errtext}</Text>
+                    ) : null}
                 </View>
-                <View style={styles.TextArea}>
-                    <Text style={styles.Text}>🧾여기, 모두의 영수증🧾</Text>
-                    <Text style={styles.Text}>'여기모영' 에 오신것을 환영합니다!</Text>
+                <View style={{ flex: 0.5 }}>
+                    <View style={styles.btnArea}>
+                        <TouchableOpacity style={styles.btn}
+                            onPress={() => onLogin()}>
+                            <Text style={(styles.Text, { color: 'white', fontSize: 20 })}>로그인</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
+                <View style={{ flex: 0.5 }}>
+                    <View style={styles.btnArea}>
+                        <TouchableOpacity style={styles.btn_register}
+                            onPress={() => goToRegister()}>
+                            <Text style={(styles.Text, { color: 'white', fontSize: 20 })}>회원가입</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={{ flex: 2 }} />
             </View>
 
-            <View style={styles.formArea}>
-                <TextInput
-                    style={styles.textFormTop}
-                    placeholder={'아이디'}
-                    autoCapitalize='none'
-                    onChangeText={(text) => { setEmail(text); }}
-                />
-                <TextInput
-                    style={styles.textFormBottom}
-                    placeholder={'비밀번호'}
-                    autoCapitalize='none'
-                    onChangeText={(text) => { setPassword(text); }}
-                    secureTextEntry={true} //텍스트 숨김처리
-                />
-                {errtext != '' ? (
-                    <Text style={styles.TextValidation}> {errtext}</Text>
-                ) : null}
-            </View>
-            <View style={{ flex: 0.5 }}>
-                <View style={styles.btnArea}>
-                    <TouchableOpacity style={styles.btn}
-                        onPress={() => onLogin()}>
-                        <Text style={(styles.Text, { color: 'white', fontSize: 20 })}>로그인</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-            <View style={{ flex: 0.5 }}>
-                <View style={styles.btnArea}>
-                    <TouchableOpacity style={styles.btn_register}
-                        onPress={() => goToRegister()}>
-                        <Text style={(styles.Text, { color: 'white', fontSize: 20 })}>회원가입</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-            <View style={{ flex: 2 }} />
         </View>
     );
 }
@@ -134,8 +140,22 @@ const styles = StyleSheet.create({
         flex: 1, //전체의 공간을 차지한다는 의미
         flexDirection: 'column',
         backgroundColor: '#f2f2f2',
-        paddingLeft: wp(7),
-        paddingRight: wp(7),
+    },
+    content: {
+        paddingLeft: 30,
+        paddingRight: 30,
+        height: '100%',
+        backgroundColor: '#f2f2f2',
+        ...Platform.select({
+            ios: {
+                paddingTop: 20
+            },
+
+            android: {
+                paddingTop: 40
+            }
+
+        })
     },
     topArea: {
         flex: 1,
@@ -148,6 +168,7 @@ const styles = StyleSheet.create({
         paddingTop: wp(3),
     },
     TextArea: {
+        marginTop: 30,
         flex: 0.3,
         justifyContent: 'center',
         backgroundColor: '#f2f2f2',
