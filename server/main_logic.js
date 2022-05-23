@@ -16,10 +16,10 @@ exports.register = function (body, res) {
         else {
             const new_user = new User(body);
 
-            blockchain.makeAccount(body.name).then((new_address) => {
+            blockchain.makeAccount(body.name).then(async (new_address) => {
                 new_user.address = new_address;
 
-                new_user.save().then(() => {
+                await new_user.save().then(() => {
                     console.log(body.name, "회원가입")
                     res.send({ success : true, message : '회원가입 완료'})
                 })

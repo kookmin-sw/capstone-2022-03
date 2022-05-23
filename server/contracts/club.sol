@@ -136,7 +136,7 @@ contract club {
         string memory name, string memory department) public onlyLeader{
         members.push(User(addr, id, name, department));
     }
-    function addBalance(uint fee) public onlyMember {
+    function addBalance(uint fee) public onlyUser {
         club_balance = club_balance + fee;
     }
 
