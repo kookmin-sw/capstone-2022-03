@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Platform, StyleSheet, FlatList, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, Platform, StyleSheet, FlatList, TouchableOpacity, Image, Alert, Keyboard } from 'react-native';
 import CustomButton from '../src/CustomButton';
 import styles from '../src/Styles';
 import { TextInput } from 'react-native-paper';
@@ -8,16 +8,21 @@ import {
 } from 'react-native-responsive-screen';
 import router from "../src/Router.json";
 import AsyncStorage from '@react-native-community/async-storage';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const theme = 'white'
 
 function CreateClub({ route, navigation }) {
-    const { owner, place, date, cost, club_id } = route.params;
+    const { owner, place, date, cost, club_title, club_id, user_id, club_leader_id, members } = route.params;
 
     const [itemname, setItemname] = useState("");
     const [itemcost, setItemcost] = useState("");
     const [data, setData] = useState([]);
 
+    console.log("detail");
+    console.log(user_id);
+    console.log(club_leader_id);
+    console.log(members);
 
     const itemnameHandler = name => {
         setItemname(name);
@@ -64,41 +69,6 @@ function CreateClub({ route, navigation }) {
         })
     }
 
-    function addReceipt() {
-        AsyncStorage.getItem('user_information', async (err, res) => {
-            const user = JSON.parse(res);
-            console.log(data);
-            fetch(router.aws + '/add_receipt', {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    club_id: club_id,
-                    user_name: owner,
-                    user_address: user.user_address,
-                    receipt: {
-                        owner: owner,
-                        place: place,
-                        date: date,
-                        cost: cost,
-                        detail: data,
-                    },
-                })
-            }).then(res => res.json())
-                .then(res => {
-                    if (res.success) {
-                        console.log(res);
-                        navigation.navigate('Club', {
-                            club_title: res.club_title,
-                            club_id: club_id,
-                            club_balance: res.balance
-                        })
-                    }
-                })
-        })
-    }
-
     // 데이터가 없는 경우
     const EmptyListMessage = ({ item }) => {
         return (
@@ -121,7 +91,9 @@ function CreateClub({ route, navigation }) {
                 <View style={[styles.Login_container, { width: '100%', height: '90%', justifyContent: 'flex-start', backgroundColor: styles.Color_Main }]}>
                     <View style={[extra.input_container]}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={[styles.Font_Subtext1, { marginTop: 20, marginLeft: 10, fontSize: 24 }]}>상세내역</Text>
+                            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                                <Text style={[styles.Font_Subtext1, { marginTop: 20, marginLeft: 10, fontSize: 24 }]}>상세내역</Text>
+                            </TouchableWithoutFeedback>
                             <TouchableOpacity onPress={() => insertData()}>
                                 <Image
                                     source={require('../src/icon/add.png')}
@@ -178,7 +150,11 @@ function CreateClub({ route, navigation }) {
                         date: date,
                         cost: cost,
                         detail: data,
+                        user_id: user_id,
+                        club_title: club_title,
                         club_id: club_id,
+                        club_leader_id: club_leader_id,
+                        members: members
                     })}
                 />
             </View>
