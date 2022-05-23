@@ -1,213 +1,150 @@
 import 'react-native-gesture-handler';
 import React, { useEffect, useState } from 'react';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { Image, View, Text, FlatList, StatusBar, StyleSheet, Platform, Alert } from 'react-native';
-import CustomButton from '../src/CustomButton';
-import CheckBox from '@react-native-community/checkbox';
-import BouncyCheckbox from "react-native-bouncy-checkbox";
-import router from '../src/Router.json';
+import { StyleSheet, View, Text, TouchableOpacity, Image, Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import ImagePicker from 'react-native-image-crop-picker';
+import Plus from '../src/icon/plus.png';
 import AsyncStorage from '@react-native-community/async-storage';
+import CustomButton from '../src/CustomButton';
+import styles from '../src/Styles';
+import router from '../src/Router.json';
 
-StatusBar.setBarStyle("dark-content");
-if (Platform.OS === 'android') {
-    StatusBar.setTranslucent(true);
-    StatusBar.setBackgroundColor('transparent');
-}
 
-const StatusBarHeight =
-    Platform.OS === 'ios' ? getStatusBarHeight(true) : StatusBar.currentHeight;
+function CameraScreen({ navigation, route }) {
+    const { owner, place, date, cost, club_title, club_id, user_id, club_leader_id, members, detail } = route.params;
+    const [receipt, captured_receipt] = useState({});
 
-function AddMember({ navigation, route }) {
-    const { club_id, joined_user } = route.params;
-    const [data, setData] = useState(joined_user);
-    const [isRefreshing, setIsRefreshing] = useState(false);
-
-    const onChangeValue = (itemSelected, index) => {
-        console.log(itemSelected)
-        const newData = data.map(item => {
-            if (item.user_id == itemSelected.user_id) {
-                return {
-                    ...item,
-                    department: !item.department
-                }
-            }
-            return {
-                ...item,
-                department: item.department
-            }
-        })
-        setData(newData)
+    console.log("camera");
+    console.log(user_id);
+    console.log(club_leader_id);
+    console.log(members);
+    runCamera = async () => {
+        ImagePicker.openCamera({
+            width: 300,
+            height: 400,
+            includeBase64: true,
+            useFrontCamera: false,
+            cropping: true,
+        }).then(image => {
+            captured_receipt({
+                uri: image.path,
+                width: image.width,
+                height: image.height,
+                mime: image.mime,
+                data: image.data,
+            })
+        }).catch(function (error) {
+            console.log('There has been a problem with your fetch operation: ' + error.message);
+        });
     }
 
-    const _renderItem = ({ item, index }) => {
-        if (Platform.OS == 'ios') {
-            return (
-                <View style={styles.card}>
-                    <CheckBox
-                        style={styles.checkBox}
-                        disabled={false}
-                        onAnimationType='fill'
-                        offAnimationType='fade'
-                        boxType='circle'
-                        onValueChange={() => onChangeValue(item, index)}
-                    />
-                    <Text style={styles.item}>{item.user_name}</Text>
-                </View>
-            )
+    const renderImage = (flag) => {
+        if (receipt.uri != undefined && flag == 1) {
+            return <Image
+                source={{ uri: receipt.uri }}
+                style={extra.images}
+            />
         } else {
-            return (
-                <View style={styles.card}>
-                    <BouncyCheckbox
-                        size={20}
-                        fillColor="#4880EE"
-                        unfillColor="#FFFFFF"
-                        onPress={() => onChangeValue(item, index)}
-                    />
-                    <Text style={styles.item}>{item.user_name}</Text>
-                </View>
-            )
+            return <View style={extra.images}>
+                <Image
+                    source={Plus}
+                    style={extra.plusIcon}
+                />
+            </View>
         }
     }
-    const EmptyListMessage = ({ item }) => {
-        return (
-            <View style={{ flex: 1, alignItems: 'center', marginVertical: '65%' }}>
-                <Text style={{ fontSize: 18, fontWeight: '500', color: 'gray', textAlign: 'center' }}>
-                    참여한 인원이 없습니다 {'\n'}
-                    모임 상대를 초대해 보세요
-                </Text>
-            </View>
-        );
-    };
 
-    const onShowItemSelected = () => {
-        const listSelected = data.filter(item => item.department == true);
-        console.log(listSelected)
+    function addReceipt() {
         AsyncStorage.getItem('user_information', async (err, res) => {
             const user = JSON.parse(res);
-            fetch(router.aws + '/add_member', {
+            fetch(router.aws + '/add_receipt', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    "club_id": club_id,
-                    "user_address": user.user_address,
-                    "members": listSelected
+                    club_id: club_id,
+                    user_name: owner,
+                    user_address: user.user_address,
+                    receipt: {
+                        owner: owner,
+                        place: place,
+                        date: date,
+                        cost: cost,
+                        detail: detail,
+                        image: receipt.data,
+                        mime: receipt.mime,
+                    },
                 })
             }).then(res => res.json())
                 .then(res => {
                     if (res.success) {
-                        console.log(res)
-                        navigation.goBack()
+                        console.log(res);
+                        navigation.navigate("Club", {
+                            club_id: club_id,
+                            club_balance: res.balance,
+                            user_id: user_id,
+                            club_title: club_title,
+                            club_leader_id: club_leader_id,
+                            members: members,
+                        })
                     }
                 })
         })
     }
     return (
-        <View style={styles.container}>
-            <Text style={{ fontSize: 10, fontWeight: '700', color: 'white', marginLeft: 30, }}> </Text>
-            <View style={styles.content}>
-                <FlatList
-                    showsVerticalScrollIndicator={true}
-                    style={styles.list}
-                    data={joined_user}
-                    renderItem={_renderItem}
-                    ListEmptyComponent={EmptyListMessage}
-                    refreshing={isRefreshing}
-                />
-                <Text style={{ fontSize: 10, fontWeight: '700', color: 'white', marginLeft: 30, }}> </Text>
+        <View style={[styles.container, { backgroundColor: styles.Color_Main2, alignItems: 'center', justifyContent: 'center' }]}>
+            <View style={{ marginTop: 150 }}></View>
+            <View style={extra.TextView}>
+                <Text style={extra.text}>+를 터치하여 <Text style={extra.highlight}>영수증</Text>을 찍어주세요</Text>
             </View>
-            <View style={styles.footer}>
+            <TouchableOpacity onPress={runCamera} >
+                {renderImage(1)}
+            </TouchableOpacity>
+            <View style={[{ marginTop: 50, width: '90%', height: 55, backgroundColor: 'theme' }]}>
                 <CustomButton
                     buttonColor={'#4169e1'}
-                    title="확인"
-                    onPress={onShowItemSelected}
+                    title="등록"
+                    onPress={() => { addReceipt() }}
                 />
             </View>
-        </View >
-    );
+        </View>
+    )
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#f2f2f2',
-    },
-    header: {
-        width: '100%',
-        height: StatusBarHeight,
-        justifyContent: 'center',
+const extra = StyleSheet.create({
+    images: {
+        marginBottom: 100,
+        width: 300,
+        height: 400,
+        borderWidth: 3,
+        borderColor: "#cccccc",
         alignItems: 'center',
-    },
-    title: {
-        width: '100%',
-        height: '10%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginTop: 10,
-        marginBottom: 10,
-        marginLeft: 30,
-    },
-    content: {
-        flex: 1,
-        marginLeft: 15,
-        marginRight: 15,
-        backgroundColor: 'white',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
-    },
-    list: {
-        paddingBottom: 10,
-    },
-    item: {
-        marginLeft: 30,
-        fontSize: 15,
-        fontWeight: 'bold'
-    },
-    checkBox: {
-        width: 20,
-        height: 20,
-    },
-    card: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        marginTop: 4,
-        marginBottom: 4,
-        marginHorizontal: 12,
-        paddingVertical: 20,
-        paddingHorizontal: 15,
-        height: 60,
-        ...Platform.select({
-            ios: {
-                shadowColor: '#d3d3d3',
-                shadowOffset: {
-                    width: 1.5,
-                    height: 1.5
-                },
-                shadowOpacity: 1,
-                shadowRadius: 1,
-            },
-            android: {
-                shadowColor: 'black',
-                elevation: 1,
-            }
-        }),
-        backgroundColor: 'white',
-        borderRadius: 12,
-        borderColor: '#F2F3F4',
-        borderWidth: 1,
-    },
-    footer: {
-        width: '100%',
-        height: '10%',
-        backgroundColor: '#f2f2f2',
         justifyContent: 'center',
-        flexDirection: "row",
-        paddingBottom: 15
+        backgroundColor: 'white'
+    },
+    plusIcon: {
+        width: 50,
+        height: 50,
+    },
+    TextView: {
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: 15,
+    },
+    text: {
+        color: 'white',
+    },
+    highlight: {
+        width: 266,
+        height: 19,
+        fontSize: 16,
+        fontWeight: "500",
+        fontStyle: "normal",
+        letterSpacing: 0,
+        textAlign: "center",
+        color: "white",
     },
 })
-export default AddMember;
+
+export default CameraScreen
