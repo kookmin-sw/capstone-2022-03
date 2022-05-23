@@ -24,6 +24,11 @@ function Club({ route, navigation }) {
     const [joined_user, setJoined_User] = useState([]);
     const { user_id, club_title, club_id, club_balance, club_leader_id, members } = route.params;
 
+    console.log("club");
+    console.log(user_id);
+    console.log(club_leader_id);
+    console.log(members);
+
     useEffect(() => {
         AsyncStorage.getItem('user_information', async (err, res) => {
             const user = JSON.parse(res);
@@ -63,13 +68,13 @@ function Club({ route, navigation }) {
                 }}
             >
                 <View style={styles.card} key={i}>
-                    <View>
+                    <View >
                         <Text style={styles.itemPlacetitle}>{item.place}</Text>
                         <Text style={styles.itemdate}>결제일</Text>
                         <Text>{item.date}</Text>
                     </View>
                     <View style={styles.itemcost}>
-                        <Text style={{ textAlign: 'right', marginTop: 35 }}>사용금액</Text>
+                        <Text style={{ textAlign: 'right', marginTop: 25 }}>사용금액</Text>
                         <Text style={styles.itemPaymentCost}>{item.cost}</Text>
                     </View>
                 </View>
@@ -99,6 +104,11 @@ function Club({ route, navigation }) {
                         onPress={() => navigation.navigate('AddMember', {
                             club_id: club_id,
                             joined_user: joined_user,
+                            club_title: club_title,
+                            user_id: user_id,
+                            club_leader_id: club_leader_id,
+                            members: members,
+                            club_balance: club_balance
                         })}
                     />
                     <CustomButton
@@ -108,6 +118,9 @@ function Club({ route, navigation }) {
                         onPress={() => navigation.navigate('AddFee', {
                             club_title: club_title,
                             club_id: club_id,
+                            user_id: user_id,
+                            club_leader_id: club_leader_id,
+                            members: members,
                         })}
                     />
                     <CustomButton
@@ -115,7 +128,11 @@ function Club({ route, navigation }) {
                         title="출금"
                         onPress={() => navigation.navigate("WithDraw",
                             {
-                                club_id: club_id
+                                club_title: club_title,
+                                club_id: club_id,
+                                user_id: user_id,
+                                club_leader_id: club_leader_id,
+                                members: members,
                             },
                         )}
                     />
@@ -131,6 +148,9 @@ function Club({ route, navigation }) {
                         onPress={() => navigation.navigate('AddFee', {
                             club_title: club_title,
                             club_id: club_id,
+                            user_id: user_id,
+                            club_leader_id: club_leader_id,
+                            members: members,
                         })}
                     />
                     <CustomButton
@@ -138,7 +158,11 @@ function Club({ route, navigation }) {
                         title="출금"
                         onPress={() => navigation.navigate("WithDraw",
                             {
-                                club_id: club_id
+                                club_title: club_title,
+                                club_id: club_id,
+                                user_id: user_id,
+                                club_leader_id: club_leader_id,
+                                members: members,
                             },
                         )}
                     />
@@ -154,6 +178,9 @@ function Club({ route, navigation }) {
                         onPress={() => navigation.navigate('AddFee', {
                             club_title: club_title,
                             club_id: club_id,
+                            user_id: user_id,
+                            club_leader_id: club_leader_id,
+                            members: members,
                         })}
                     />
                 </View>
@@ -258,6 +285,7 @@ const styles = StyleSheet.create({
                 paddingVertical: 10,
                 shadowColor: 'black',
                 elevation: 10,
+
             }
         }),
         zIndex: 1,
@@ -306,7 +334,7 @@ const styles = StyleSheet.create({
                 marginBottom: 5,
             },
             android: {
-                marginBottom: 20,
+                marginBottom: 30,
             }
         })
     },
