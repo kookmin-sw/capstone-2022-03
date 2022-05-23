@@ -9,6 +9,7 @@ import {
     TextInput,
     Alert,
     Platform,
+    Keyboard,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {
@@ -16,6 +17,7 @@ import {
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import router from '../src/Router.json';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 export function RegisterScreen() {
     const navigation = useNavigation();
@@ -86,13 +88,15 @@ export function RegisterScreen() {
                 <View style={styles.titleArea}>
                     <Image
                         source={require('../src/icon/Register.png')}
-                        style={{ width: wp(30), resizeMode: 'contain' }}
+                        style={{ width: wp(30), resizeMode: 'contain', marginTop: 80 }}
                     />
                 </View>
-                <View style={styles.TextArea}>
-                    <Text style={styles.Text}>간편한 회원가입으로</Text>
-                    <Text style={styles.Text}>'여기모영'의 일원이 되어보세요!</Text>
-                </View>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{ height: 100, marginTop: 80 }}>
+                    <View style={[styles.TextArea, { marginTop: 5 }]}>
+                        <Text style={styles.Text}>간편한 회원가입으로</Text>
+                        <Text style={styles.Text}>'여기모영'의 일원이 되어보세요!</Text>
+                    </View>
+                </TouchableWithoutFeedback>
             </View>
             <View style={styles.blankArea}></View>
             <View style={styles.formArea}>
@@ -125,7 +129,7 @@ export function RegisterScreen() {
             </View>
             <View style={[styles.blankArea,]}></View>
             <View style={{ flex: 0.5 }}>
-                <View style={[styles.btnArea, { marginTop: 50 }]}>
+                <View style={[styles.btnArea, {}]}>
                     <TouchableOpacity style={styles.btn_register}
                         onPress={() => onRegister()}>
                         <Text style={(styles.Text, { color: 'white', fontSize: 20 })}>회원가입</Text>
