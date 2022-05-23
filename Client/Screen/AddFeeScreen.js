@@ -15,7 +15,7 @@ const dollarMask = createNumberMask({
 })
 
 function AddFee({ route, navigation }) {
-    const { club_title, club_id } = route.params;
+    const { club_title, club_id, user_id, club_leader_id, members } = route.params;
     const [fee, setFee] = useState('');
     let set_fee = fee.replace(/[ ,원]/gi, "");
 
@@ -42,9 +42,12 @@ function AddFee({ route, navigation }) {
                         if (res.success) {
                             console.log(res);
                             navigation.navigate('Club', {
+                                user_id: user_id,
                                 club_title: club_title,
                                 club_id: club_id,
-                                club_balance: res.balance
+                                club_balance: res.balance,
+                                club_leader_id: club_leader_id,
+                                members: members
                             })
                         }
                     })
