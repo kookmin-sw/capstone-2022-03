@@ -8,7 +8,12 @@ import 'react-native-gesture-handler';
 const theme = styles.Color_Main2
 
 function WithDraw({ route, navigation }) {
-    const { club_id } = route.params;
+    const { club_title, club_id, user_id, club_leader_id, members } = route.params;
+
+    console.log("withdraw");
+    console.log(user_id);
+    console.log(club_leader_id);
+    console.log(members);
     return (
         <View style={[styles.Center_Container, { backgroundColor: theme }]}>
             <View style={[styles.title, extra.Input_container, { alignItems: 'center', backgroundColor: theme }]}>
@@ -21,7 +26,11 @@ function WithDraw({ route, navigation }) {
                         buttonColor='white'
                         titleColor='#3a527a'
                         onPress={() => navigation.navigate("ManualReceipt", {
-                            club_id: club_id
+                            user_id: user_id,
+                            club_title: club_title,
+                            club_id: club_id,
+                            club_leader_id: club_leader_id,
+                            members: members
                         })}
                     />
                 </View>
