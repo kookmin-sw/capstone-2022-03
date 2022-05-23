@@ -11,15 +11,20 @@ import router from '../src/Router.json';
 
 
 function CameraScreen({ navigation, route }) {
-    const { owner, place, date, cost, detail, club_id } = route.params;
+    const { owner, place, date, cost, club_title, club_id, user_id, club_leader_id, members, detail } = route.params;
     const [receipt, captured_receipt] = useState({});
 
+    console.log("camera");
+    console.log(user_id);
+    console.log(club_leader_id);
+    console.log(members);
     runCamera = async () => {
         ImagePicker.openCamera({
             width: 300,
             height: 400,
-            cropping: true,
             includeBase64: true,
+            useFrontCamera: false,
+            cropping: true,
         }).then(image => {
             captured_receipt({
                 uri: image.path,
@@ -77,8 +82,11 @@ function CameraScreen({ navigation, route }) {
                         console.log(res);
                         navigation.navigate("Club", {
                             club_id: club_id,
-                            club_title: res.club_title,
                             club_balance: res.balance,
+                            user_id: user_id,
+                            club_title: club_title,
+                            club_leader_id: club_leader_id,
+                            members: members,
                         })
                     }
                 })
