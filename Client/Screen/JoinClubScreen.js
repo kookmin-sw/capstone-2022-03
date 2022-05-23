@@ -77,7 +77,7 @@ function JoinClub({ navigation }) {
                 onTextChange={newText => SetClub_Number(newText)}
                 onFulfill={_checkcode}
                 cellSpacing={5}
-                keyboardType='numeric'
+                keyboardType='default'
             />
         </View>
     );
