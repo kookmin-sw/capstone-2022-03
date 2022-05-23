@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Platform, Alert, StyleSheet, StatusBar } from 'react-native';
+import { View, Text, Platform, Alert, StyleSheet, StatusBar, Keyboard } from 'react-native';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import CustomButton from '../src/CustomButton';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import Styles from '../src/Styles';
@@ -137,47 +138,49 @@ function CreateClub({ route, navigation }) {
                 <View style={{ height: 10, backgroundColor: '#f2f2f2', }}></View>
                 <View style={[styles.content, { alignItems: 'flex-start', paddingHorizontal: 15 }]}>
                     <View style={[styles.Login_container, { width: '100%', height: '90%', justifyContent: 'flex-start' }]}>
-                        <Text style={[Styles.Font_Subtext1, { fontSize: 18 }]}>모임명</Text>
-                        <TextInput
-                            placeholder='모임명을 입력해주세요'
-                            mode='flat'
-                            style={styles.textInput}
-                            selectionColor={Styles.Color_Main2}
-                            activeUnderlineColor={Styles.Color_Main1}
-                            backgroundColor={theme}
-                            onChangeText={newText => setClub_Title(newText)}
-                        />
-                        <Text style={[Styles.Font_Subtext1, { fontSize: 18, marginTop: 15, }]}>은행명</Text>
-                        <TextInput
-                            placeholder='은행명을 입력해주세요'
-                            mode='flat'
-                            style={styles.textInput}
-                            selectionColor={Styles.Color_Main2}
-                            activeUnderlineColor={Styles.Color_Main1}
-                            backgroundColor={theme}
-                            onChangeText={newText => setClub_Bank_Name(newText)}
-                        />
-                        <Text style={[Styles.Font_Subtext1, { fontSize: 18, marginTop: 15, }]}>모임 계좌번호</Text>
-                        <TextInput
-                            placeholder='모임 계좌번호를 입력해주세요'
-                            mode='flat'
-                            style={styles.textInput}
-                            selectionColor={Styles.Color_Main2}
-                            activeUnderlineColor={Styles.Color_Main1}
-                            backgroundColor={theme}
-                            onChangeText={newText => setClub_Bank_Account(newText)}
-                        />
-                        <Text style={[Styles.Font_Subtext1, { fontSize: 18, marginTop: 15, }]}>예금주</Text>
-                        <TextInput
-                            placeholder='예금주를 입력해주세요'
-                            mode='flat'
-                            style={styles.textInput}
-                            selectionColor={Styles.Color_Main2}
-                            activeUnderlineColor={Styles.Color_Main1}
-                            backgroundColor={theme}
-                            onChangeText={newText => setClub_Bank_Holder(newText)}
-                        />
-                        <Text style={[Styles.Font_Subtext1, { fontSize: 18, marginTop: 15, }]}>저장방식</Text>
+                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                            <Text style={[Styles.Font_Subtext1, { fontSize: 18 }]}>모임명</Text>
+                            <TextInput
+                                placeholder='모임명을 입력해주세요'
+                                mode='flat'
+                                style={styles.textInput}
+                                selectionColor={Styles.Color_Main2}
+                                activeUnderlineColor={Styles.Color_Main1}
+                                backgroundColor={theme}
+                                onChangeText={newText => setClub_Title(newText)}
+                            />
+                            <Text style={[Styles.Font_Subtext1, { fontSize: 18, marginTop: 15, }]}>은행명</Text>
+                            <TextInput
+                                placeholder='은행명을 입력해주세요'
+                                mode='flat'
+                                style={styles.textInput}
+                                selectionColor={Styles.Color_Main2}
+                                activeUnderlineColor={Styles.Color_Main1}
+                                backgroundColor={theme}
+                                onChangeText={newText => setClub_Bank_Name(newText)}
+                            />
+                            <Text style={[Styles.Font_Subtext1, { fontSize: 18, marginTop: 15, }]}>모임 계좌번호</Text>
+                            <TextInput
+                                placeholder='모임 계좌번호를 입력해주세요'
+                                mode='flat'
+                                style={styles.textInput}
+                                selectionColor={Styles.Color_Main2}
+                                activeUnderlineColor={Styles.Color_Main1}
+                                backgroundColor={theme}
+                                onChangeText={newText => setClub_Bank_Account(newText)}
+                            />
+                            <Text style={[Styles.Font_Subtext1, { fontSize: 18, marginTop: 15, }]}>예금주</Text>
+                            <TextInput
+                                placeholder='예금주를 입력해주세요'
+                                mode='flat'
+                                style={styles.textInput}
+                                selectionColor={Styles.Color_Main2}
+                                activeUnderlineColor={Styles.Color_Main1}
+                                backgroundColor={theme}
+                                onChangeText={newText => setClub_Bank_Holder(newText)}
+                            />
+                            <Text style={[Styles.Font_Subtext1, { fontSize: 18, marginTop: 15, }]}>저장방식</Text>
+                        </TouchableWithoutFeedback>
                         <View style={{ justifyContent: 'flex-start', marginTop: 15 }}>
                             <RadioGroup
                                 layout='row'
