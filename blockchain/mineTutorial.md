@@ -15,10 +15,10 @@
 > $ cd blockchain_net
 
 3. genesis.json 파일 다운로드
-> 깃허브 저장소 -> genesis.json 다운로드 -> 2번에서 생성한 디렉토리로 파일 이동
+> blockchain folder -> genesis.json 다운로드 -> 2번에서 생성한 디렉토리로 파일 이동
 
 4. automine.js 스크립트 다운로드
-> 깃허브 저장소 -> automine.js 다운로드 -> 2번에서 생성한 디렉토리로 파일 이동
+> blockchain folder -> automine.js 다운로드 -> 2번에서 생성한 디렉토리로 파일 이동
 > pwd 후 파일 경로 저장
 
 5. Geth 초기화
@@ -57,10 +57,10 @@
 > https://geth.ethereum.org/
 
 3. genesis.json 파일 다운로드
-> 깃허브 저장소 -> genesis.json 다운로드 -> 1번에서 생성한 폴더로 파일 이동
+> blockchain folder -> genesis.json 다운로드 -> 1번에서 생성한 폴더로 파일 이동
 
 4. automine.json 스크립트 다운로드
-> 깃허브 저장소 -> automine.js 다운로드 -> 1번에서 생성한 폴더로 파일 이동
+> blockchain folder -> automine.js 다운로드 -> 1번에서 생성한 폴더로 파일 이동
 
 5. 1번에서 생성한 폴더에서 커맨드창 생성 (환경변수 사용하지 않음)
 
