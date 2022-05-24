@@ -42,6 +42,6 @@ This project is a mobile application of managing club fee. Club members who mana
 
 
 
-## [채굴 참여하기](https://github.com/kookmin-sw/capstone-2022-03/blob/master/mineTutorial.md)
+## [채굴 참여하기](https://github.com/kookmin-sw/capstone-2022-03/blob/master/blockchain/mineTutorial.md)
 
 
