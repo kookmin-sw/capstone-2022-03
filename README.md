@@ -28,9 +28,10 @@ This project is a mobile application of managing club fee. Club members who mana
 </br>
 
 ## 시스템 구조도
-<img width="700" alt="상세 구조도" src="https://user-images.githubusercontent.com/24891555/169682438-bd0195ee-897b-4295-b836-558da6636b20.png">
+<img width="700" alt="상세 구조도" src="https://user-images.githubusercontent.com/24891555/170430238-bed437ce-2f80-42ce-9bc0-9a5bf21e4f2c.png">
 
 </br>
+
 
 ## 팀 소개
 
