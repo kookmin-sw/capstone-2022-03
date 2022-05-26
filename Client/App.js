@@ -18,6 +18,9 @@ import ManualReceiptScreen from './Screen /ManualReceiptScreen';
 import ManualReceiptDetailScreen from './Screen /ManualReceiptDetailScreen';
 import ReceiptInfoScreen from './Screen /ReceiptInfoScreen';
 import ReceiptImageScreen from './Screen /ReceiptImageScreen';
+import OCRScreen from './Screen /OCRScreen';
+import OCRReceiptScreen from './Screen /OCRReceiptScreen';
+import OCRReceiptDetailScreen from './Screen /OCRReceiptDetailScreen';
 const stack = createStackNavigator();
 
 function BackBtn() {
@@ -192,6 +195,36 @@ class App extends Component {
           <stack.Screen
             name="ReceiptImage"
             component={ReceiptImageScreen}
+            options={{
+              title: "",
+              headerBackTitleVisible: false,
+              headerTransparent: true,
+              headerBackImage: BackBtn,
+            }}
+          />
+          <stack.Screen
+            name="OCR"
+            component={OCRScreen}
+            options={{
+              title: "",
+              headerBackTitleVisible: false,
+              headerTransparent: true,
+              headerBackImage: BackBtn,
+            }}
+          />
+          <stack.Screen
+            name="OCRReceipt"
+            component={OCRReceiptScreen}
+            options={{
+              title: "",
+              headerBackTitleVisible: false,
+              headerTransparent: true,
+              headerBackImage: BackBtn,
+            }}
+          />
+          <stack.Screen
+            name="OCRReceiptDetail"
+            component={OCRReceiptDetailScreen}
             options={{
               title: "",
               headerBackTitleVisible: false,
