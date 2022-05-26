@@ -21,21 +21,24 @@ This project is a mobile application of managing club fee. Club members who mana
 </br>
 
 ## 시연 영상
-[시연 영상 링크](https://youtu.be/U8GoKgb60a0)
+[OCR 사용 시연 영상](https://youtu.be/fFM_yHqk-98)
+
+[수동 시연 영상 링크](https://youtu.be/U8GoKgb60a0)
 
 </br>
 
 ## 시스템 구조도
-<img width="700" alt="상세 구조도" src="https://user-images.githubusercontent.com/24891555/169682438-bd0195ee-897b-4295-b836-558da6636b20.png">
+<img width="700" alt="상세 구조도" src="https://user-images.githubusercontent.com/24891555/170430238-bed437ce-2f80-42ce-9bc0-9a5bf21e4f2c.png">
 
 </br>
+
 
 ## 팀 소개
 
 
 |<img src="https://ifh.cc/g/J9csdn.jpg" width="250" height="250">|<img src="https://user-images.githubusercontent.com/24891555/160340738-9ab2ce92-001f-44a6-a4cf-e6c6597be2b4.jpeg" width="250">|<img src="https://user-images.githubusercontent.com/24891555/160343995-d313df3f-b252-4271-800e-4ff67111336f.jpg" width="250">|
 |:--|:--|:--|
-|이름: 김상윤 </br> 학번: ****3092 </br> Email: skwk50000@gmail.com </br> 역할 : 프론트디자인 및 기능구현, 서버 구축, DB구축|이름: 민태식 </br> 학번: ****3106 </br> Email: rth2443@kookmin.ac.kr </br> 역할 : 모임생성, 모임참가, 회비입금 페이지구성|이름: 안성열 </br> 학번: ****3121 </br> Email: zxcv123594@gmail.com </br> 역할 : 블록체인, 서버, AWS|
+|이름: 김상윤 </br> 학번: ****3092 </br> Email: skwk50000@gmail.com </br> 역할 : 프론트디자인 및 OCRApi통신 및 기능구현, 서버 구축, DB구축|이름: 민태식 </br> 학번: ****3106 </br> Email: rth2443@kookmin.ac.kr </br> 역할 : 모임생성, 모임참가, 회비입금 페이지구성|이름: 안성열 </br> 학번: ****3121 </br> Email: zxcv123594@gmail.com </br> 역할 : 블록체인, 서버, AWS|
 
 </br>
 
