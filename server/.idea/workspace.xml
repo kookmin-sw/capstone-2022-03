@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b3bfdf96-4e2d-4b8d-87d7-12316054a07e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/blockchain.js" beforeDir="false" afterPath="$PROJECT_DIR$/blockchain.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main_logic.js" beforeDir="false" afterPath="$PROJECT_DIR$/main_logic.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -112,7 +113,7 @@
       <workItem from="1651564262157" duration="21000" />
       <workItem from="1651904995035" duration="4756000" />
       <workItem from="1651982510092" duration="16315000" />
-      <workItem from="1653962229417" duration="7220000" />
+      <workItem from="1653962229417" duration="7808000" />
     </task>
     <servers />
   </component>

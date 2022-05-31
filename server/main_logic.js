@@ -314,36 +314,41 @@ exports.addClubReceipt = async function(body, res) {
 }
 
 // 모임 총무 추가
-exports.addClubMember = function(body, res) {
-    Club.findOne({ _id : body.club_id}, (err, club) => {
-        if (err) { res.send(err) }
-        else if (!club) { res.send({ success : false, message : "존재하지 않는 클럽입니다."})}
-        else {
-            if(club.flag === 'BC') {
-                let promise_list = []
+exports.addClubMember = async function(body, res) {
+    const club = Club.findOne({ _id : body.club_id })
+    if (!club) {
+        console.log('addClubMember fail, no club')
+        res.send({ success : false })
+        return
+    }
 
-                body.members.forEach((member) => {
-                    promise_list.push(User.findOne({ _id : member.user_id}).then(   (user) => {
-                        blockchain.addClubMember(club.address, body.user_address, user, 'member')
-                    }))
-                })
-                Promise.all(promise_list)
-                    .then(() => { res.send({ success : true })} )
-                    .catch(() => { res.send({ success : false })} )
-            }
-            else if (club.flag === 'DB') {
-                let promise_list = []
+    if (club.flag === 'BC') {
+        let promise_list = []
 
-                body.members.forEach((member) => {
-                    let temp = {user_id : member.user_id, department : 'member'}
-                    promise_list.push(Club.findOneAndUpdate({_id : body.club_id}, {$push : { joined_member : temp }}) )
+        body.members.forEach((member_id) => {
+            promise_list.push(
+                User.findOne({ _id : member_id}).then((user) => {
+                    blockchain.addClubMember(club.address, body.user_address, user, 'member')
                 })
-                Promise.all(promise_list)
-                    .then(() => { res.send({ success : true })})
-                    .catch(() => { res.send({ success : false })})
-            } else { res.send({ success : false }) }
-        }
-    })
+            )
+        })
+        Promise.all(promise_list).then(() => {
+            res.send({ success : true })
+        })
+    }
+    else if (club.flag === 'DB') {
+        let promise_list = []
+
+        body.members.forEach((member_id) => {
+            let user_data_to_push = { user_id : member_id, department : 'member' }
+            promise_list.push(Club.findOneAndUpdate({ _id : body.club_id }, { $push : { joined_member : user_data_to_push }}))
+        })
+
+        Promise.all(promise_list).then(() => {
+            res.send({ success : true })
+        })
+    }
+    else {}
 }
 
 // 사용하는 함수인가?
@@ -398,10 +403,7 @@ exports.getJoinedMember = function(body, res) {
     })
 }
 
-
-
-
-
+// 관리자용 함수
 exports.removeClub = function(body, res) {
     User.findOneAndUpdate({ _id : body.user_id}, {$pop : { joined_club : body.club_id}}, (err, isPoped) => {
         if (err) { res.send({ success : false, message : err}) }
