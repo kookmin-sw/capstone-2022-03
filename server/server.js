@@ -24,7 +24,7 @@ server.post('/create_club', (req, res) => {
 })
 // 모임 리스트 정보 리프레시
 server.post('/my_clubs', (req, res) => {
-    main.userClubInfo(req.body, res);
+    main.userClubList(req.body, res);
 })
 // 모임 정보 리프레시
 server.post('/goto_club', (req, res) => {
