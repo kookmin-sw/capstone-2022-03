@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="b3bfdf96-4e2d-4b8d-87d7-12316054a07e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blockchain.js" beforeDir="false" afterPath="$PROJECT_DIR$/blockchain.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main_logic.js" beforeDir="false" afterPath="$PROJECT_DIR$/main_logic.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
     </list>
@@ -21,6 +22,14 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -49,7 +58,7 @@
       <recent name="$PROJECT_DIR$/contracts" />
     </key>
   </component>
-  <component name="RunManager" selected="Node.js.refact_server.js">
+  <component name="RunManager" selected="Node.js.server.js">
     <configuration name="blockchain.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/blockchain.js" working-dir="$PROJECT_DIR$/refactoring">
       <method v="2" />
     </configuration>
@@ -62,16 +71,16 @@
     <configuration name="refact_server.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/refact_server.js" working-dir="$PROJECT_DIR$/refactoring">
       <method v="2" />
     </configuration>
-    <configuration name="testplace.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/testplace.js" working-dir="$PROJECT_DIR$">
+    <configuration name="server.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/server.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Node.js.server.js" />
         <item itemvalue="Node.js.refact_server.js" />
         <item itemvalue="Node.js.blockchain.js" />
         <item itemvalue="Node.js.compile.js" />
         <item itemvalue="Node.js.deploy_receipt.js" />
-        <item itemvalue="Node.js.testplace.js" />
       </list>
     </recent_temporary>
   </component>
@@ -106,7 +115,7 @@
       <workItem from="1651564262157" duration="21000" />
       <workItem from="1651904995035" duration="4756000" />
       <workItem from="1651982510092" duration="16315000" />
-      <workItem from="1653962229417" duration="3532000" />
+      <workItem from="1653962229417" duration="6423000" />
     </task>
     <servers />
   </component>

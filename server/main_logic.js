@@ -17,12 +17,13 @@ exports.register = async function (body, res) {
     if (existed) {
         console.log('register fail, email existed')
         res.send({ success : false, message : '중복된 이메일 입니다.' })
-        break
+        return
     }
 
     const new_user = new User(body);
     new_user.address = await blockchain.makeAccount(body.name)
-    await new_user.save().then(() => {
+
+    new_user.save().then(() => {
         console.log(body.name, '회원가입')
         res.send({ success : true })
     })
@@ -30,23 +31,29 @@ exports.register = async function (body, res) {
 
 // 로그인
 exports.login = async function (body, res) {
-    const existed_user = User.findOne({ email : body.email })
+    const existed_user = await User.findOne({ email : body.email })
     if(!existed_user) {
         console.log('login fail, no user')
         res.send({ success : false })
-        break
+        return
     }
-    
-    const isMatch = await existed_user.comparePassword(body.password)
-    blockchain.unlockAccount(existed_user.address, existed_user.name)
 
-    console.log(existed_user.name, '로그인')
-    res.send({
-        success : true,
-        user_id : existed_user._id,
-        user_name : existed_user.name,
-        user_email : existed_user.email,
-        user_address : existed_user.address
+    existed_user.comparePassword(body.password, (err, isMatch) => {
+        if(!isMatch) {
+            console.log('login fail, wrong password')
+            res.send({ success : false })
+            return
+        }
+
+        blockchain.unlockAccount(existed_user.address, existed_user.name)
+        console.log(existed_user.name, '로그인')
+        res.send({
+            success : true,
+            user_id : existed_user._id,
+            user_name : existed_user.name,
+            user_email : existed_user.email,
+            user_address : existed_user.address
+        })
     })
 }
 
@@ -99,177 +106,166 @@ exports.createClub = async function (body, res) {
     else { console.log('wrong flag') }
 }
 
-// 유저의 모임 목록
+// 모임 참가
+exports.joinClub = async function(body, res) {
+    const club = await Club.findOne({ club_number : body.club_number })
+    if (!club) {
+        console.log('joinClub fail, no club')
+        res.send({ success : false })
+        return
+    }
+
+    if (club.flag === 'BC') {
+        const promise_list = [
+            blockchain.addClubUser(club.address, body.user_address, body),
+            User.findOneAndUpdate({ _id : body.user_id}, {$push : { joined_club : club._id}})
+        ]
+
+        Promise.all(promise_list).then(() => {
+            res.send({ success : true })
+        })
+    }
+    else if (club.flag === 'DB') {
+        const promise_list = [
+            Club.findOneAndUpdate({club_number: body.club_number}, {$push: {joined_user: body.user_id}}),
+            User.findOneAndUpdate({_id: body.user_id}, {$push: {joined_club: club._id}})
+        ]
+
+        Promise.all(() => {
+            res.send({ success : true })
+        })
+    }
+    else {}
+}
+
+// 유저의 모임 목록 조회
 exports.userClubList = async function (body, res) {
     const existed_user = await User.findOne({ _id : body.user_id })
     if(!existed_user) {
         console.log('userClubList fail, no user')
         res.send({ success : false })
-        break
+        return
     }
 
     let promise_list = []
-
     existed_user.joined_club.forEach((club_id) => {
         promise_list.push(
-            Club.findOne({ _id : club_id }).then((club) => {
+            Club.findOne({ _id : club_id }).then(async (club) => {
                 if (club.flag === 'BC') {
+                    const club_info = await blockchain.clubInfo(club.address, user.address)
+                    const members = await blockchain.clubMembers(club.address, user.address)
 
+                    let member_id_list = []
+                    for (let member of members) {
+                        member_id_list.push(member.id)
+                    }
+
+                    club_info['members'] = member_id_list;
+                    club_info['club_id'] = club._id;
+                    club_info['flag'] = "BC"
+                    club_info['user_id'] = body.user_id
+                    club_info_result.push(club_info)
                 }
                 else if (club.flag === 'DB') {
-                    
+                    let member_id_list =[]
+                    for (let member of club.joined_member) {
+                        member_id_list.push(member.user_id)
+                    }
+
+                    club_info_result.push({
+                        club_id: String(club._id),
+                        club_title: club.club_title,
+                        club_balance: club.club_balance,
+                        club_leader: club.club_leader_name,
+                        club_leader_id : club.club_leader_id,
+                        members : member_id_list,
+                        user_id : body.user_id,
+                        users: club.joined_user.length,
+                        time : club.deployed_time,
+                        flag: "DB"
+                    })
                 }
                 else {}
             })
         )
     })
-    User.findOne({_id : body.user_id}, async (err, user) => {
-        if (!user) { res.send({ success : false, message : "해당 유저가 존재하지 않습니다."}) }
-        else {
-            let club_info_result = [];
-            let promise_list = [];
 
-            // 유저가 참가한 Club의 정보를 비동기로 가져옴
-            // promise_list에 쿼리 요청을 모두 담아 두고, 한번에 병렬 비동기 처리
-            user.joined_club.forEach((element) => {
-                promise_list.push(
-                    Club.findOne({_id: element}).then(async (club) => {
-                        // 블록체인 DB 방식
-                        if (club.flag === "BC") {
-                            let member_id_list = []
-
-                            const club_info = await blockchain.clubInfo(club.address, user.address)
-                            const members = await blockchain.clubMembers(club.address, user.address)
-
-                            for (let member of members) {
-                                member_id_list.push(member.id)
-                            }
-
-                            club_info['members'] = member_id_list;
-                            club_info['club_id'] = club._id;
-                            club_info['flag'] = "BC"
-                            club_info['user_id'] = body.user_id
-                            club_info_result.push(club_info)
-
-                        }
-                        // 일반 DB 방식
-                       else if (club.flag === "DB") {
-                            let member_id_list =[]
-                            for (let member of club.joined_member) {
-                                member_id_list.push(member.user_id)
-                            }
-                            club_info_result.push({
-                                club_id: String(club._id),
-                                club_title: club.club_title,
-                                club_balance: club.club_balance,
-                                club_leader: club.club_leader_name,
-                                club_leader_id : club.club_leader_id,
-                                members : member_id_list,
-                                user_id : body.user_id,
-                                users: club.joined_user.length,
-                                time : club.deployed_time,
-                                flag: "DB"
-                            })
-                        } else {}
-                    })
-                )
-            })
-
-            Promise.all(promise_list).then(() => {
-                res.send(club_info_result)
-            })
-
-        }
+    Promise.all(promise_list).then(() => {
+        res.send(club_info_result)
     })
 }
-exports.joinClub = function(body, res) {
-    Club.findOne({ club_number : body.club_number},  (err, club) => {
-        if (err) { res.send({ success : false, message : err}) }
-        else if (!club) { res.send({ success : false, message : "해당 클럽이 존재하지 않습니다."}) }
-        else {
-            if (club.flag === "BC") {
-                blockchain.addClubUser(club.address, body.user_address, body).then(() => {
-                    User.findOneAndUpdate({_id: body.user_id}, {$push: {joined_club: club._id}}).then(() => {
-                        res.send({ success: true })
-                    })
-                })
-            } else if (club.flag === "DB") {
-                Club.findOneAndUpdate({club_number: body.club_number}, {$push: {joined_user: body.user_id}}).then(() => {
-                    User.findOneAndUpdate({_id: body.user_id}, {$push: {joined_club: club._id}}).then(() => {
-                        res.send({ success: true })
-                    })
-                })
-            } else {}
+
+// 모임 선택 후 이동
+exports.gotoClub = async function(body, res) {
+    const club = await Club.findOne({ _id : body.club_id })
+    if (!club) {
+        console.log('gotoClub fail, no club')
+        res.send({ success : false })
+        return
+    }
+
+    // 프론트로 반환할 데이터 구조
+    let return_object = { 'joined_user' : [], 'receipt' : [] }
+
+    if(club.flag === 'BC') {
+        // 블록체인에서 정보 반환
+        const users_list = await blockchain.clubUsers(club.address, body.user_address)
+        const members_list = await blockchain.clubMembers(club.address, body.user_address)
+        const receipts_list = await blockchain.clubReceipt(club.address, body.user_address)
+
+        // 총무만 추출
+        let members_id = []
+        for (let member of members_list) {
+            members_id.push(member.id)
         }
-    })
-}
-exports.gotoClub = function(body, res) {
-    Club.findOne({_id : body.club_id},   async (err, club) => {
-        if (err) { res.send(err) }
-        else if (!club) { res.send({ success: false, message: "존재하지 않는 클럽입니다."}) }
-        else {
-            if (club.flag === 'BC') {
-                let temp_info = {'joined_user': [], 'receipt': []}
-
-                blockchain.clubUsers(club.address, body.user_address).then(async (users) => {
-                    let member_id_list = [];
-                    await blockchain.clubMembers(club.address, body.user_address).then(async (members) => {
-                        for (let member of members) {
-                            member_id_list.push(member.id)
-                        }
-                    })
-
-                    let user_info_list = []
-                    for (let temp_user of users) {
-                        if(member_id_list.includes(temp_user.id))
-                        { continue }
-                        user_info_list.push({ user_name: temp_user.name, user_id: temp_user.id })
-                    }
-                    temp_info['joined_user'] = user_info_list;
-
-                    await blockchain.clubReceipt(club.address, body.user_address).then(receipt_info => {
-                        if (receipt_info.length != null) {
-                            temp_info['receipt'] = receipt_info
-                        } else {
-                            temp_info['receipt'] = []
-                        }
-                    })
-                    return temp_info
-                }).then(async result => {
-                    res.send(result)
+        // 유저만 추출
+        for (let user of users_list) {
+            if (!members_id.includes(user.id)) {
+                return_object.joined_user.push({
+                    user_name : user.name,
+                    user_id : user.id
                 })
             }
-            else if (club.flag === 'DB') {
-                let temp_info = {'joined_user': [], 'receipt': []}
-                let member_id_list = []
-
-                for (let member of club.joined_member) {
-                    member_id_list.push(member.user_id)
-                }
-
-                temp_info['receipt'] = club.receipt
-
-                let promise_list = []
-                club.joined_user.forEach((element) => {
-                    promise_list.push(
-                        // promise function
-                        User.findOne({ _id : element}).then((user) => {
-                            if (!member_id_list.includes(String(user._id))) {
-                                temp_info['joined_user'].push({
-                                    user_name: user.name,
-                                    user_id: user._id
-                                })
-                            }
-                        })
-                    )
-                })
-                Promise.all(promise_list).then(() => {
-                    res.send(temp_info)
-                })
-            } else {}
         }
-    })
+        // 영수증 추출
+        if (receipts_list.length != null) {
+            return_object['receipt'] = receipts_list
+        }
+
+        // 프론트로 정보 반환
+        res.send(return_object)
+    }
+    else if (club.flag === 'DB') {
+        // 영수증 추출
+        return_object['receipt'] = club.receipt
+        // 총무만 추출
+        let members_id = []
+        for (let member of club.joined_member) {
+            members_id.push(member.user_id)
+        }
+        // 유저만 추출
+        let promise_list = []
+        club.joined_user.forEach((user_id) => {
+            promise_list.push(
+                User.findOne({ _id : user_id}).then((user) => {
+                    if(!members_id.includes(String(user._id))) {
+                        return_object.joined_user.push({
+                            user_name: user.name,
+                            user_id: user._id
+                        })
+                    }
+                })
+            )
+        })
+        Promise.all(promise_list).then(() => {
+            // 프론트로 정보 반환
+            res.send(return_object)
+        })
+    }
+    else {}
 }
+
+// 모임 회비 추가
 exports.addClubFee = function(body, res) {
     Club.findOne({ _id : body.club_id}, (err, club) => {
         if (err) { res.send(err) }

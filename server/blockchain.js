@@ -1,6 +1,6 @@
 const Web3 = require('web3');
-const blockchain_endpoint = 'http://172.31.8.46:8545';
-// const blockchain_endpoint = 'http://10.223.117.196:8545'
+// const blockchain_endpoint = 'http://172.31.8.46:8545';
+const blockchain_endpoint = 'http://10.30.108.5:8545'
 const web3 = new Web3(new Web3.providers.HttpProvider(blockchain_endpoint));
 const compile = require('./compile')
 
