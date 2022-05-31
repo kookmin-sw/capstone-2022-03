@@ -42,7 +42,7 @@ function CreateClub({ route, navigation }) {
             <View style={extra.card} key={i}>
                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <View style={{ paddingBottom: 10, marginLeft: 10, }}>
-                        <Text style={extra.itemClubtitle}>상품명: {item.item_name}</Text>
+                        <Text style={extra.itemClubtitle}>{item.item_name}</Text>
                         <Text style={{ marginTop: 3 }}>금액: {item.item_cost}</Text>
                     </View>
                     <TouchableOpacity onPress={() => deleteData(item.id)}>
@@ -74,6 +74,7 @@ function CreateClub({ route, navigation }) {
         setData(prevData => {
             return prevData.filter(data => data.id != item);
         })
+        await console.log(data)
     }
 
 
@@ -91,7 +92,6 @@ function CreateClub({ route, navigation }) {
 
     function addReceipt() {
         AsyncStorage.getItem('user_information', async (err, res) => {
-            console.log("image_data", image_data)
             const user = JSON.parse(res);
             fetch(router.aws + '/add_receipt', {
                 method: "POST",
@@ -124,6 +124,8 @@ function CreateClub({ route, navigation }) {
                             club_leader_id: club_leader_id,
                             members: members,
                         })
+                    } else {
+                        Alert.alert(res.message)
                     }
                 })
         })
@@ -176,7 +178,7 @@ function CreateClub({ route, navigation }) {
                                 showsVerticalScrollIndicator={true}
                                 style={extra.list}
                                 ListEmptyComponent={EmptyListMessage}
-                                data={detail}
+                                data={data}
                                 renderItem={_renderItem}
                             />
                         </View>
