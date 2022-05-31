@@ -1,9 +1,8 @@
 const express = require('express')
 const server = express()
-const server_port = 8080
+const server_port = 3001
 
 const main = require('./main_logic')
-
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 
@@ -72,6 +71,6 @@ server.post('/rmUser', (req, res) => {
 
 
 server.listen(server_port, () => {
-    main.connenct();
+    main.connenctdb();
     console.log('capstone server open');
 })

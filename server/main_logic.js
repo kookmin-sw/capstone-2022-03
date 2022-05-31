@@ -4,59 +4,71 @@ const {User} = require("./model/User.js")
 const {Club} = require("./model/Club.js")
 const blockchain = require('./blockchain')
 
-
-exports.connenct = function () {
+// mongodb 연결
+exports.connenctdb = function () {
     mongoose.connect(config.mongoURI)
         .then(() => console.log('DB connected...'))
-        .catch(err => console.log('DB connect fail', err));
+        .catch(err => console.log('DB connection fail', err));
 }
+
+// 회원가입
 exports.register = function (body, res) {
-    User.findOne({ email : body.email}, (err, user) => {
-        if (user) { res.send({ success : false, message : '중복된 이메일 입니다.'}) }
+    User.findOne({ email : body.email}, (err, existed) => {
+        if (existed) { res.send({ success : false, message : '중복된 이메일 입니다.'}) }
         else {
+            // 새로운 User 생성
             const new_user = new User(body);
 
-            blockchain.makeAccount(body.name).then(async (new_address) => {
-                new_user.address = new_address;
+            // 블록체인에서 EOA(External Owner Account) 생성
+            blockchain.makeAccount(body.name).then(async (EOA) => {
+                new_user.address = EOA;
 
                 await new_user.save().then(() => {
                     console.log(body.name, "회원가입")
-                    res.send({ success : true, message : '회원가입 완료'})
+                    res.send({ success : true })
                 })
             })
         }
     })
 }
+
+// 로그인
 exports.login = function (body, res) {
-    User.findOne({ email : body.email},  async (err, user) => {
-        if (!user) { res.send({ success : false, message : "이메일에 해당하는 유저가 없습니다."}) }
+    // 가입된 User 확인
+    User.findOne({ email : body.email },  async (err, existed_user) => {
+        if (!existed_user) { res.send({ success : false, message : "이메일에 해당하는 유저가 없습니다."}) }
         else {
-            user.comparePassword(body.password, (err, isMatch) => {
+            // User의 비밀번호 확인
+            existed_user.comparePassword(body.password, (err, isMatch) => {
                 if(!isMatch) { res.send({ success : false, message : "비밀번호가 맞지 않습니다."}) }
                 else {
-                    blockchain.unlockAccount(user.address, user.name)
+                    // 블록체인 EOA의 잠금 해제 -> 트랜잭션 생성 가능
+                    blockchain.unlockAccount(existed_user.address, existed_user.name)
 
-                    console.log(user.name, "로그인")
+                    console.log(existed_user.name, "로그인")
+                    // 프론트에서 사용할 캐시 정보 전달
                     res.send({
                         success : true,
-                        user_id : user._id,
-                        user_name : user.name,
-                        user_email : user.email,
-                        user_address : user.address
+                        user_id : existed_user._id,
+                        user_name : existed_user.name,
+                        user_email : existed_user.email,
+                        user_address : existed_user.address
                     })
                 }
             })
         }
     })
 }
-exports.createClub = function (body, res) {
-    let success = true;
-    let message = "default";
 
+// 모임 생성
+exports.createClub = function (body, res) {
+    // 새로운 Club 생성
     let new_club = new Club()
     const new_club_id_size = String(new_club._id).length
 
+    // 일반 DB 모임 방식
     if(body.flag === "DB") {
+        // Club 데이터 initialization
         new_club = new Club(body)
         new_club.club_balance = 0;
         new_club.club_leader_name = body.user_name;
@@ -66,35 +78,34 @@ exports.createClub = function (body, res) {
         new_club.club_number = String(new_club._id).slice(new_club_id_size-5, new_club_id_size)
         new_club.deployed_time = Math.round(Date.now()/1000)
 
-        message = "DB 클럽 생성"
-
-        new_club.save().then(function() {
-            User.findOneAndUpdate({ _id : body.user_id}, {$push : { joined_club : new_club._id}}, (err, isUpdated) => {
-                if (err) { success = false }
-                else if(!isUpdated) { success = false; message = '유저의 클럽 목록이 업데이트 되지 않았습니다.'}
-            })
-            console.log(message)
-            res.send({ success : success, message : message })
+        const promise_list = [
+            new_club.save(),
+            User.findOneAndUpdate({ _id : body.user_id}, {$push : { joined_club : new_club._id}})
+        ]
+        Promise.all(promise_list).then(() => {
+            console.log('DB 클럽 생성')
+            res.send({ success : true })
         })
     }
+
+    // 블록체인 DB 방식
     else if (body.flag === 'BC') {
-        blockchain.createClub(body).then((address) => {
-            new_club.address = address
+        blockchain.createClub(body).then((CA) => {
+            new_club.address = CA
             new_club.flag = "BC"
             new_club.club_number = String(new_club._id).slice(new_club_id_size-5, new_club_id_size)
-            message = "BC 클럽 생성"
 
-            new_club.save().then(function() {
-                User.findOneAndUpdate({ _id : body.user_id}, {$push : { joined_club : new_club._id}}, (err, isUpdated) => {
-                    if (err) { success = false }
-                    else if(!isUpdated) { success = false; message = '유저의 클럽 목록이 업데이트 되지 않았습니다.'}
-                })
-                console.log(message)
-                res.send({ success : success, message : message })
+            const promise_list = [
+                new_club.save(),
+                User.findOneAndUpdate({ _id : body.user_id}, {$push : { joined_club : new_club._id}})
+            ]
+            Promise.all(promise_list).then(() => {
+                console.log('DB 클럽 생성')
+                res.send({ success : true })
             })
         })
     }
-    else {}
+    else { console.log('wrong flag') }
 }
 exports.userClubInfo = function (body, res) {
     User.findOne({_id : body.user_id}, async (err, user) => {
