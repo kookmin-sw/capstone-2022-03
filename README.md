@@ -26,8 +26,6 @@ This project is a mobile application of managing club fee. Club members who mana
 <img width="700" alt="스크린샷 2022-05-31 오전 11 00 55" src="https://user-images.githubusercontent.com/74143534/171078888-4e94fa76-0e37-4319-89bf-8812dd0076c5.png">
 </br>
 
-## 기대 효과
-
 <img width="1255" alt="스크린샷 2022-05-31 오전 11 01 23" src="https://user-images.githubusercontent.com/74143534/171078986-edf335f9-518a-4a11-af3b-bae62906ea26.png">
 </br>
 
