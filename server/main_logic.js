@@ -212,7 +212,6 @@ exports.gotoClub = async function(body, res) {
         // 블록체인에서 정보 반환
         const users_list = await blockchain.clubUsers(club.address, body.user_address)
         const members_list = await blockchain.clubMembers(club.address, body.user_address)
-        const receipts_list = await blockchain.clubReceipt(club.address, body.user_address)
 
         // 총무만 추출
         let members_id = []
@@ -228,15 +227,23 @@ exports.gotoClub = async function(body, res) {
                 })
             }
         }
-        // 영수증 추출
-        return_object['receipt'] = club.receipt
+        // 영수증 데이터 - 이미지 데이터 가공
+        let receipt_for_return = club.receipt
+        for(let receipt of receipt_for_return) {
+            receipt_for_return.image = ""
+        }
+        return_object['receipt'] = receipt_for_return
 
         // 프론트로 정보 반환
         res.send(return_object)
     }
     else if (club.flag === 'DB') {
-        // 영수증 추출
-        return_object['receipt'] = club.receipt
+        // 영수증 데이터 - 이미지 데이터 가공
+        let receipt_for_return = club.receipt
+        for(let receipt of receipt_for_return) {
+            receipt_for_return.image = ""
+        }
+        return_object['receipt'] = receipt_for_return
         // 총무만 추출
         let members_id = []
         for (let member of club.joined_member) {
