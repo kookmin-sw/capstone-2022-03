@@ -189,7 +189,7 @@ exports.joinClub = async function(body, res) {
             User.findOneAndUpdate({_id: body.user_id}, {$push: {joined_club: club._id}})
         ]
 
-        Promise.all(() => {
+        Promise.all(promise_list).then(() => {
             res.send({ success : true })
         })
     }
@@ -230,7 +230,7 @@ exports.gotoClub = async function(body, res) {
         // 영수증 데이터 - 이미지 데이터 가공
         let receipt_for_return = club.receipt
         for(let receipt of receipt_for_return) {
-            receipt_for_return.image = ""
+            receipt.image = ""
         }
         return_object['receipt'] = receipt_for_return
 
@@ -240,10 +240,11 @@ exports.gotoClub = async function(body, res) {
     else if (club.flag === 'DB') {
         // 영수증 데이터 - 이미지 데이터 가공
         let receipt_for_return = club.receipt
-        for(let receipt of receipt_for_return) {
-            receipt_for_return.image = ""
+        for (let receipt of receipt_for_return) {
+            receipt.image = ""
         }
         return_object['receipt'] = receipt_for_return
+
         // 총무만 추출
         let members_id = []
         for (let member of club.joined_member) {
@@ -346,8 +347,8 @@ exports.addClubMember = async function(body, res) {
     else if (club.flag === 'DB') {
         let promise_list = []
 
-        body.members.forEach((member_id) => {
-            let user_data_to_push = { user_id : member_id, department : 'member' }
+        body.members.forEach((member) => {
+            let user_data_to_push = { user_id : member.user_id, department : 'member' }
             promise_list.push(Club.findOneAndUpdate({ _id : body.club_id }, { $push : { joined_member : user_data_to_push }}))
         })
 
@@ -359,18 +360,14 @@ exports.addClubMember = async function(body, res) {
 }
 
 // 영수증 이미지 불러오기
-exports.receiptImage = async function(body, res) {
-    Club.findOne({ _id : body.club_id},(err, club) => {
+exports.receiptImage = function(body, res) {
+    Club.findOne({ _id : body.club_id},async (err, club) => {
         if (!club) {
             console.log("receiptImage fail, no club")
             res.send({ success : false })
         } else {
-            for(let receipt of club.receipt) {
-                if (receipt._id === body.receipt_id) {
-                    res.send({ success : true, image : receipt.image})
-                    break
-                }
-            }
+            const target_object = await club.receipt.find(receipt => String(receipt._id) === body.receipt_id)
+            res.send({ success : true, image : target_object.image })
         }
     })
 }
