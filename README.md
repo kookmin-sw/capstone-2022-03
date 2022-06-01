@@ -20,19 +20,14 @@ This project is a mobile application of managing club fee. Club members who mana
 
 </br>
 
-<img width="700" alt="스크린샷 2022-05-31 오전 11 00 36" src="https://user-images.githubusercontent.com/74143534/171078763-5fcfeb01-f922-48a4-979f-2f9d02847929.png">
-</br>
+## 기대효과
+### 🙆🏻 투명한 회비 내역 조회
+### 🙆🏻‍♀️ 편리한 회비 내역 등록
 
-<img width="700" alt="스크린샷 2022-05-31 오전 11 00 55" src="https://user-images.githubusercontent.com/74143534/171078888-4e94fa76-0e37-4319-89bf-8812dd0076c5.png">
-</br>
-
-<img width="1255" alt="스크린샷 2022-05-31 오전 11 01 23" src="https://user-images.githubusercontent.com/74143534/171078986-edf335f9-518a-4a11-af3b-bae62906ea26.png">
 </br>
 
 ## 시연 영상
-[OCR 사용 시연 영상](https://youtu.be/qtUNFP2QTgw)
-
-[수동 시연 영상 링크](https://youtu.be/U8GoKgb60a0)
+[![icon](https://user-images.githubusercontent.com/24891555/171347851-4be08132-1d2e-4dc7-8610-89cb7782bd37.png)](https://youtu.be/cIr7XV0Gw64)
 
 </br>
 
