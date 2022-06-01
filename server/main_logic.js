@@ -351,54 +351,19 @@ exports.addClubMember = async function(body, res) {
     else {}
 }
 
-// 사용하는 함수인가?
-exports.clubReceipts = function(body, res) {
-    Club.findOne({_id : body.club_id}, (err, club) => {
-        if (!club) { res.send({ success : false, message : "존재하지 않는 클럽입니다."}) }
-        else {
-            let receipt_list = []
-
-            if (club.flag === 'BC'){
-                blockchain.clubReceipt(club.address, body.user_address).then(async(receipt) => {
-                    res.send(receipt)
-                })
-            }
-            else if (club.flag === 'DB'){
-                for (let receipt of club.receipt) {
-                    receipt_list.push(receipt)
+// 영수증 이미지 불러오기
+exports.receiptImage = async function(body, res) {
+    Club.findOne({ _id : body.club_id},(err, club) => {
+        if (!club) {
+            console.log("receiptImage fail, no club")
+            res.send({ success : false })
+        } else {
+            for(let receipt of club.receipt) {
+                if (receipt._id === body.receipt_id) {
+                    res.send({ success : true, image : receipt.image})
+                    break
                 }
-                res.send(receipt_list)
-            } else { res.send({ success : false }) }
-        }
-    })
-}
-
-// 사용하는 함수인가?
-exports.getJoinedMember = function(body, res) {
-    Club.findOne({_id : body.club_id}, (err, club) => {
-        if (err) { res.send(err) }
-        else if (!club) { res.send({ success : false, message : "해당 클럽이 존재하지 않습니다."}) }
-        else {
-            if(club.flag === 'BC') {
-                blockchain.clubMembers(club.address, body.user_address).then(async (members) => {
-                    let member_info_list = []
-                    for await (let temp_member of members) {
-                        member_info_list.push({user_name: temp_member.name, user_id: temp_member.id})
-                    }
-                    res.send(member_info_list)
-                })
             }
-            else if (club.flag === 'DB') {
-                let member_info_list = []
-                let promise_list = [];
-
-                club.joined_member.forEach(element => promise_list.push(
-                    User.findOne({_id : element}).then(user => {
-                        member_info_list.push({user_name : user.name, user_id : user._id})
-                    })
-                ))
-                Promise.all(promise_list).then(() => { res.send(promise_list)})
-            } else { res.send({ success : false }) }
         }
     })
 }

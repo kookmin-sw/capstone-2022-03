@@ -46,13 +46,9 @@ server.post('/add_fee', (req, res) => {
 server.post('/add_receipt', (req, res) => {
     main.addClubReceipt(req.body, res)
 })
-// 영수증 내역 조회
-server.post('/club_receipt', (req, res) => {
-    main.clubReceipts(req.body, res)
-})
-// 모임 삭제
-server.post("/remove_club", (req, res) => {
-    main.removeClub(req.body, res)
+// 영수증 이미지 조회
+server.post('/receipt_image', (req, res) => {
+    main.receiptImage(req.body, res)
 })
 
 
