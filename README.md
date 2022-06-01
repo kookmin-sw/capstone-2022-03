@@ -26,8 +26,11 @@ This project is a mobile application of managing club fee. Club members who mana
 
 </br>
 
-## 시연 영상
-[![icon](https://user-images.githubusercontent.com/24891555/171347851-4be08132-1d2e-4dc7-8610-89cb7782bd37.png)](https://youtu.be/cIr7XV0Gw64)
+## 영상 자료
+[소개영상(준비중)]
+</br>
+[시연영상](https://youtu.be/cIr7XV0Gw64)
+
 
 </br>
 
