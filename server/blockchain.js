@@ -1,5 +1,5 @@
-// const blockchain_endpoint = 'http://172.31.8.46:8545';
-const blockchain_endpoint = 'http://10.30.108.5:8545'
+const blockchain_endpoint = 'http://172.31.8.46:8545';
+// const blockchain_endpoint = 'http://10.30.96.248:8545'
 
 const compile = require('./compile')
 const Web3 = require('web3');
@@ -14,6 +14,7 @@ const blockchain_initialize = async function () {
     // 어드민 설정 및 잠금 해제
     admin = await web3.eth.getAccounts().then(accounts => { return accounts[0]} )
     await web3.eth.personal.unlockAccount(admin, "123", 0)
+    console.log('blockchain connected')
 }
 
 // 회원가입
@@ -119,7 +120,7 @@ exports.addClubReceipt = async function(address, caller, data) {
     const size_image = data.image.length
     let image1 = data.image.slice(0, size_image/2)
     let image2 = data.image.slice(size_image/2 , size_image)
-    await target_contract.methods.addReceipt(data.owner, data.place, data.date, data.cost, image1, image2, data.mime, item)
+    await target_contract.methods.addReceipt(data.owner, data.place, data.date, data.cost, item)
         .send({ from : caller, gas : 800000000 })
 }
 exports.clubBalance = async function(address, caller) {

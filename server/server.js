@@ -6,8 +6,8 @@ const main = require('./main_logic')
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 
-server.use(bodyParser.urlencoded({extended: true}));
-server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({ extended : true, limit : '10mb' }));
+server.use(bodyParser.json({ limit : '10mb' }));
 server.use(cookieParser());
 
 // 회원가입
@@ -68,7 +68,12 @@ server.post('/rmClub', (req, res) => {
 server.post('/rmUser', (req, res) => {
     main.rmUser(req.body, res)
 })
-
+server.post('/user_reset', (req, res) => {
+    main.userReset(req.body, res)
+})
+server.post('/club_reset', (req, res) => {
+    main.clubReset(req.body, res)
+})
 
 server.listen(server_port, () => {
     main.connenctdb();
