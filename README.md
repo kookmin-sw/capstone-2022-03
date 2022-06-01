@@ -20,6 +20,15 @@ This project is a mobile application of managing club fee. Club members who mana
 
 </br>
 
+<img width="700" alt="스크린샷 2022-05-31 오전 11 00 36" src="https://user-images.githubusercontent.com/74143534/171078763-5fcfeb01-f922-48a4-979f-2f9d02847929.png">
+</br>
+
+<img width="700" alt="스크린샷 2022-05-31 오전 11 00 55" src="https://user-images.githubusercontent.com/74143534/171078888-4e94fa76-0e37-4319-89bf-8812dd0076c5.png">
+</br>
+
+<img width="1255" alt="스크린샷 2022-05-31 오전 11 01 23" src="https://user-images.githubusercontent.com/74143534/171078986-edf335f9-518a-4a11-af3b-bae62906ea26.png">
+</br>
+
 ## 시연 영상
 [OCR 사용 시연 영상](https://youtu.be/qtUNFP2QTgw)
 
@@ -27,10 +36,13 @@ This project is a mobile application of managing club fee. Club members who mana
 
 </br>
 
+
 ## 시스템 구조도
 <img width="700" alt="상세 구조도" src="https://user-images.githubusercontent.com/24891555/170430238-bed437ce-2f80-42ce-9bc0-9a5bf21e4f2c.png">
 
 </br>
+
+
 
 
 ## 팀 소개
