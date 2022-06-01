@@ -29,7 +29,7 @@ This project is a mobile application of managing club fee. Club members who mana
 ## 영상 자료
 [소개영상링크](https://youtu.be/fv3mQjBrvQU)
 </br>
-[시연영상](https://youtu.be/cIr7XV0Gw64)
+[시연영상링크](https://youtu.be/cIr7XV0Gw64)
 
 
 </br>
